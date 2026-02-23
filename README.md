@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Team Practice CRM 🚀
 
-## Getting Started
+Современная CRM-система, построенная на базе Next.js. Проект разрабатывается с упором на производительность, типизацию и автоматизацию тестирования.
 
-First, run the development server:
+## 🛠 Технологический стек
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Core
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Framework:** [Next.js 15+](https://nextjs.org/) (App Router)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **UI Library:** [Shadcn UI](https://ui.shadcn.com/) + [Tailwind CSS v4](https://tailwindcss.com/)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### State Management & Data Fetching
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Global State:** [Zustand](https://docs.pmnd.rs/zustand/) (Client-side state)
+- **API Client:** [Apollo Client](https://www.apollographql.com/docs/react/)
+- **API Layer:** [GraphQL](https://graphql.org/)
 
-## Learn More
+### Infrastructure & Database
 
-To learn more about Next.js, take a look at the following resources:
+- **Containerization:** [Docker Desktop](https://www.docker.com/) (изоляция окружения бэкенда и БД)
+- **Database:** [PostgreSQL 16](https://www.postgresql.org/) (хранение данных сущностей: CV, Users, Projects)
+- **Database Management:** [pgAdmin 4](https://www.pgadmin.org/) (администрирование и визуализация данных БД)
+- **Caching:** [Apollo InMemoryCache](https://www.apollographql.com/docs/react/caching/cache-configuration/) (клиентское кэширование) + **PostgreSQL Shared Buffers** (буферизация данных на уровне БД)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Quality Assurance
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Unit Testing:** [Jest](https://jestjs.io/) + [React Testing Library](https://testing-library.com/)
+- **CI/CD:** [GitHub Actions](https://github.com/features/actions) (автозапуск тестов при Pull Request)
