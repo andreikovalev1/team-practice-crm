@@ -1,14 +1,46 @@
 import { Input } from "@/components/ui/input"
+import SignIn from "@/features/auth/SignIn";
+import Register from "@/features/auth/Register";
+import ResetPass from "@/features/auth/ResetPass";
+import { authContent } from "@/features/auth/config";
 
-export default function AuthForm({ type = 'login' }) {
+type AuthMode = "login" | "register" | "reset"
+
+type AuthProps = {
+  mode: AuthMode
+  setMode: (mode: AuthMode) => void
+}
+
+export default function AuthForm({ mode, setMode }: AuthProps) {
+    const { title, description, feature } = authContent[mode]
+
     return (
-      <>
-        <form>
-            <h2>Привет</h2>
-            <p>Текст</p>
-            <Input></Input>
-            <Input></Input>
+      <div className="flex items-center justify-center w-full px-4">
+        <form className="flex flex-col items-center w-full max-w-140">
+
+          <p className="text-4xl mb-7">{title}</p>
+          <p className="mb-7">{description}</p>
+
+          <Input placeholder="Почта" className="rounded-none border border-gray-300 mb-5"></Input>
+          {mode !== "reset" && <Input placeholder="Пароль" className="rounded-none border border-gray-300 mb-10"></Input>}
+          
+          <div className="mb-5">
+            {mode === "login" && <SignIn />}
+            {mode === "register" && <Register />}
+            {mode === "reset" && <ResetPass />}
+          </div>
+
+            <button
+              type="button"
+              onClick={() =>
+                mode === "login" ? setMode("reset") : setMode("login")
+              }
+              className="text-gray-500 cursor-pointer"
+            >
+              {feature}
+            </button>
+
         </form>
-      </>
+      </div>
     );
 }

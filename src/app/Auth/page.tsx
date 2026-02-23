@@ -1,5 +1,5 @@
-import  AuthForm  from '@/app/Auth/AuthForm';
+import Layout from "./Layout";
 
 export default function Page() {
-  return <AuthForm />;
+  return <Layout />;
 }
