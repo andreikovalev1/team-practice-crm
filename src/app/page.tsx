@@ -1,6 +1,8 @@
 import client from "@/lib/apollo-client";
 import { gql } from "@apollo/client";
 
+import Link from "next/link";
+
 interface User {
   id: string;
   email: string;
@@ -39,9 +41,12 @@ export default async function Home() {
           <p className="text-zinc-600 dark:text-zinc-300 text-lg">
             Доступ закрыт. Для просмотра данных необходимо войти в систему.
           </p>
-          <span className="px-4 py-2 bg-blue-600 text-white rounded-md opacity-50 cursor-not-allowed">
-            Перейти к авторизации (скоро)
-          </span>
+          <Link
+            href="/Auth"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          >
+            Перейти к авторизации
+          </Link>
         </div>
       </div>
     );
