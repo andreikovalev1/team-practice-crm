@@ -17,16 +17,17 @@ describe("Auth Layout Component (Zustand)", () => {
   });
 
   it("должен переключаться на форму регистрации при клике на вкладку СОЗДАТЬ", async () => {
-  const user = userEvent.setup();
-  render(<Layout />);
-  const registerTab = screen.getByRole("tab", { name: /СОЗДАТЬ/i });
-  await user.click(registerTab);
-  expect(useAuthModeStore.getState().mode).toBe("register");
-  await waitFor(() => {
-    expect(registerTab).toHaveAttribute("data-state", "active");
+    const user = userEvent.setup();
+    render(<Layout />);
+    const registerTab = screen.getByRole("tab", { name: /СОЗДАТЬ/i });
+    await user.click(registerTab);
+    expect(useAuthModeStore.getState().mode).toBe("register");
+    await waitFor(() => {
+        expect(registerTab).toHaveAttribute("data-state", "active");
+    });
+    const welcomeText = await screen.findByText(/Зарегистрируйтесь/i);
+    expect(welcomeText).toBeInTheDocument();
   });
-  expect(screen.getByText(/Зарегистрируйтесь/i)).toBeInTheDocument();
-});
 
   it("должен скрывать табы, если выбран режим сброса пароля (reset)", async () => {
     const user = userEvent.setup();
