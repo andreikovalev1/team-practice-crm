@@ -1,8 +1,13 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Layout from "./Layout";
+import { useAuthModeStore } from "@/store/useAuthModeStore";
 
-describe("Auth Layout Component", () => {
+describe("Auth Layout Component (Zustand)", () => {
+
+    beforeEach(() => {
+        useAuthModeStore.setState({mode: 'login'})
+    })
   
   it("должен по умолчанию отображать форму входа (login)", () => {
     render(<Layout />);
@@ -16,6 +21,7 @@ describe("Auth Layout Component", () => {
   render(<Layout />);
   const registerTab = screen.getByRole("tab", { name: /СОЗДАТЬ/i });
   await user.click(registerTab);
+  expect(useAuthModeStore.getState().mode).toBe("register");
   await waitFor(() => {
     expect(registerTab).toHaveAttribute("data-state", "active");
   });
@@ -27,6 +33,7 @@ describe("Auth Layout Component", () => {
     render(<Layout />);
     const forgotBtn = screen.getByText(/ЗАБЫЛИ ПАРОЛЬ/i);
     await user.click(forgotBtn);
+    expect(useAuthModeStore.getState().mode).toBe("reset");
     expect(screen.getByText(/Забыли пароль/i)).toBeInTheDocument();
     const tabsList = screen.queryByRole("tablist");
     expect(tabsList).not.toBeInTheDocument();
