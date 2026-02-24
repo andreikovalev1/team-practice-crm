@@ -2,6 +2,8 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import LogoutButton from "@/features/auth/LogoutButton";
 
+import { ROUTES } from "@/app/configs/routesConfig"
+
 interface User {
   id: string;
   email: string;
@@ -65,7 +67,8 @@ export default async function Home() {
             Доступ закрыт. Для просмотра данных необходимо войти в систему.
           </p>
           <Link
-            href="/auth"
+            href={ROUTES.LOGIN}
+            replace
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
           >
             Перейти к авторизации

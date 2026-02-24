@@ -1,33 +1,44 @@
 "use client"
 
-import AuthForm from "./AuthForm"
-import { useAuthModeStore } from "@/store/useAuthModeStore"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { usePathname, useRouter } from "next/navigation"
+import { ROUTES } from "@/app/configs/routesConfig"
 
+export default function Layout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
+  const router = useRouter()
 
-export default function Layout() {
-  const { mode, setMode } = useAuthModeStore()
+  const currentTab = pathname === ROUTES.LOGIN ? "login" : "register"
+  const isReset = pathname === ROUTES.RESET
 
   return (
     <div className="min-h-screen flex flex-col">
-      
-      { mode !== "reset" 
-        && 
+
+      {!isReset && (
         <div className="flex justify-center pt-6">
-            <Tabs
-            value={mode}
-            onValueChange={(value) => setMode(value as "login" | "register")}
-            >
+          <Tabs value={currentTab} onValueChange={(value) => {
+              router.push(
+                value === "login"
+                  ? ROUTES.LOGIN
+                  : ROUTES.REGISTER
+              )
+            }}
+          >
             <TabsList variant="line">
-                <TabsTrigger value="login">ВОЙТИ</TabsTrigger>
-                <TabsTrigger value="register">СОЗДАТЬ</TabsTrigger>
+              <TabsTrigger value="login">
+                ВОЙТИ
+              </TabsTrigger>
+
+              <TabsTrigger value="register">
+                СОЗДАТЬ
+              </TabsTrigger>
             </TabsList>
-            </Tabs>
+          </Tabs>
         </div>
-      }
+      )}
 
       <div className="flex-1 flex items-center justify-center">
-        <AuthForm />
+        {children}
       </div>
 
     </div>

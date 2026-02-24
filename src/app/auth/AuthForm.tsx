@@ -8,10 +8,14 @@ import SignIn from "@/features/auth/SignIn";
 import Register from "@/features/auth/Register";
 import ResetPass from "@/features/auth/ResetPass";
 import { authContent } from "@/features/auth/config";
-import { useAuthModeStore } from "@/store/useAuthModeStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { LOGIN_QUERY, REGISTER_MUTATION } from "@/features/auth/graphql"
 import { useUserStore } from "@/store/useUserStore";
+import { ROUTES } from "@/app/configs/routesConfig"
+
+interface AuthProp {
+  mode: "login" | "register" | "reset"
+}
 
 // 1. Описываем структуру ответов от бэкенда для TypeScript
 interface LoginData {
@@ -28,10 +32,9 @@ interface RegisterData {
   };
 }
 
-export default function AuthForm() {
+export default function AuthForm({ mode }: AuthProp) {
     const router = useRouter()
     const { setLogin } = useUserStore()
-    const { mode, setMode } = useAuthModeStore()
     const { title, description, feature } = authContent[mode]
 
     const [email, setEmail] = useState('')
@@ -72,7 +75,7 @@ export default function AuthForm() {
 
           if (data?.signup) {
             setPassword("")
-            setMode("login")
+            router.push(ROUTES.LOGIN)
           }
         }
       } catch (err) { // 3. Убираем any
@@ -153,7 +156,11 @@ export default function AuthForm() {
                   type="button"
                   onClick={() => {
                     setErrorMessage("")
-                    setMode(mode === "login" ? "reset" : "login")
+                    router.push(
+                      mode === "login"
+                        ? ROUTES.RESET
+                        : ROUTES.LOGIN
+                    )
                   }}
                   className="text-gray-500 cursor-pointer"
                 >

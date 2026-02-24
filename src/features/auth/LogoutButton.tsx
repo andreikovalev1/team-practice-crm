@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/app/configs/routesConfig"
 
 export default function LogoutButton() {
   const router = useRouter();
@@ -11,7 +12,7 @@ export default function LogoutButton() {
   const handleLogout = () => {
     logout();
     document.cookie = "auth_token=; path=/; max-age=0";
-    router.push("/auth");
+    router.push(ROUTES.LOGIN);
   };
 
   return (
