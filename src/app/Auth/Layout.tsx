@@ -1,12 +1,12 @@
 "use client"
 
 import AuthForm from "./AuthForm"
-import { useState } from "react"
+import { useAuthModeStore } from "@/store/useAuthModeStore"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 
 export default function Layout() {
-  const [mode, setMode] = useState<"login" | "register" | "reset">("login")
+  const { mode, setMode } = useAuthModeStore()
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -27,7 +27,7 @@ export default function Layout() {
       }
 
       <div className="flex-1 flex items-center justify-center">
-        <AuthForm mode={mode} setMode={setMode} />
+        <AuthForm />
       </div>
 
     </div>

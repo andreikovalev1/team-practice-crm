@@ -3,15 +3,10 @@ import SignIn from "@/features/auth/SignIn";
 import Register from "@/features/auth/Register";
 import ResetPass from "@/features/auth/ResetPass";
 import { authContent } from "@/features/auth/config";
+import { useAuthModeStore } from "@/store/useAuthModeStore"
 
-type AuthMode = "login" | "register" | "reset"
-
-type AuthProps = {
-  mode: AuthMode
-  setMode: (mode: AuthMode) => void
-}
-
-export default function AuthForm({ mode, setMode }: AuthProps) {
+export default function AuthForm() {
+    const { mode, setMode } = useAuthModeStore()
     const { title, description, feature } = authContent[mode]
 
     return (
