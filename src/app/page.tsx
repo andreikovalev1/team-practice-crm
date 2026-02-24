@@ -15,23 +15,19 @@ interface GetUsersResponse {
 }
 
 export default async function Home() {
-  // 1. Достаем токен
   const cookieStore = await cookies();
   const token = cookieStore.get("auth_token")?.value;
 
   let users: User[] = [];
   let authError = false;
 
-  // 2. Определяем URL бэкенда (как в твоем apollo-client.ts)
   const graphqlUrl = process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:3001/api/graphql';
 
   try {
-    // 3. Делаем родной Next.js fetch запрос!
     const response = await fetch(graphqlUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // Передаем заголовок точно так же, как ты сделал это в Playground
         "Authorization": token ? `Bearer ${token}` : "", 
       },
       body: JSON.stringify({
@@ -61,7 +57,6 @@ export default async function Home() {
     authError = true;
   }
 
-  // Если ошибка авторизации или нет токена
   if (authError || !token) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black font-sans">
@@ -80,7 +75,6 @@ export default async function Home() {
     );
   }
 
-  // Если всё отлично и данные есть
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black font-sans">
       <main className="flex w-full max-w-3xl flex-col items-center py-32 px-16 bg-white dark:bg-black shadow-sm rounded-xl">
