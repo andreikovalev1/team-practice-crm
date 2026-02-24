@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button"
 
 export default function Register() {
     return (
-        <Button variant="auth" className="h-11">
-            СОЗДАТЬ АККАУНТ
+        <Button variant="auth" className="h-11 uppercase">
+            Создать аккаунт
         </Button>
     );
 }

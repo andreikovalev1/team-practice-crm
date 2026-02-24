@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button"
 
 export default function SignIn() {
     return (
-        <Button variant="auth" className="h-11">
-            ВОЙТИ
+        <Button variant="auth" className="h-11 uppercase">
+            Войти
         </Button>
     );
 }

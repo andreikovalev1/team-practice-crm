@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button"
 
 export default function ResetPass() {
     return (
-        <Button variant="auth" className="h-11">
-            СБРОСИТЬ ПАРОЛЬ
+        <Button variant="auth" className="h-11 uppercase">
+            Сбросить пароль
         </Button>
     );
 }
