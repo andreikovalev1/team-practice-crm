@@ -4,14 +4,12 @@ import { useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import SignIn from "@/features/auth/SignIn";
-import Register from "@/features/auth/Register";
-import ResetPass from "@/features/auth/ResetPass";
 import { authContent } from "@/features/auth/config";
 import { motion, AnimatePresence } from "framer-motion";
 import { LOGIN_QUERY, REGISTER_MUTATION } from "@/features/auth/graphql"
 import { useUserStore } from "@/store/useUserStore";
 import { ROUTES } from "@/app/configs/routesConfig"
+import OvalButton from "@/components/button/OvalButton";
 
 interface AuthProp {
   mode: "login" | "register" | "reset"
@@ -35,7 +33,7 @@ interface RegisterData {
 export default function AuthForm({ mode }: AuthProp) {
     const router = useRouter()
     const { setLogin } = useUserStore()
-    const { title, description, feature } = authContent[mode]
+    const { title, description, feature, btnText } = authContent[mode]
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -145,9 +143,7 @@ export default function AuthForm({ mode }: AuthProp) {
               )}
               
               <div className="mb-5">
-                {mode === "login" && <SignIn />}
-                {mode === "register" && <Register />}
-                {mode === "reset" && <ResetPass />}
+                <OvalButton text={btnText} />
               </div>
 
                 <button
