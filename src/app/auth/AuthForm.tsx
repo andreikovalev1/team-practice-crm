@@ -12,7 +12,7 @@ import { ROUTES } from "@/app/configs/routesConfig"
 import OvalButton from "@/components/button/OvalButton";
 
 interface AuthProp {
-  mode: "login" | "register" | "reset"
+  mode: "login" | "register" | "reset" | "new_password"
 }
 
 // 1. Описываем структуру ответов от бэкенда для TypeScript
@@ -37,6 +37,7 @@ export default function AuthForm({ mode }: AuthProp) {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
 
     const [loginQuery] = useLazyQuery<LoginData>(LOGIN_QUERY)
@@ -122,16 +123,40 @@ export default function AuthForm({ mode }: AuthProp) {
                 </div>
               )}
 
-              <Input 
-                placeholder="Почта" 
-                type="email" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="rounded-none border border-gray-300 mb-5" 
-              />
+              {mode !== 'new_password' && (
+                <Input 
+                  placeholder="Почта" 
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="rounded-none border border-gray-300 mb-5" 
+                />
+              )}
+
+              {mode === "new_password" && (
+                <>
+                  <Input 
+                    type="password" 
+                    placeholder="Новый пароль" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="rounded-none border border-gray-300 mb-5" 
+                  />
+
+                  <Input 
+                    type="password" 
+                    placeholder="Повторите пароль" 
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    className="rounded-none border border-gray-300 mb-10" 
+                  />
+                </>
+              )}
               
-              {mode !== "reset" && (
+              {(mode === "login" || mode === "register") && (
                 <Input 
                   type="password" 
                   placeholder="Пароль" 
@@ -146,7 +171,7 @@ export default function AuthForm({ mode }: AuthProp) {
                 <OvalButton text={btnText} />
               </div>
 
-                <button
+                {mode !== "new_password" && (<button
                   type="button"
                   onClick={() => {
                     setErrorMessage("")
@@ -159,7 +184,7 @@ export default function AuthForm({ mode }: AuthProp) {
                   className="text-gray-500 cursor-pointer uppercase"
                 >
                   {feature}
-                </button>
+                </button>)}
 
               </motion.div>
             </AnimatePresence>

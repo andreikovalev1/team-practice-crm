@@ -10,11 +10,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const currentTab = pathname === ROUTES.LOGIN ? "login" : "register"
   const isReset = pathname === ROUTES.RESET
+  const isNewPassword = pathname === ROUTES.NEWPASSWORD
 
   return (
     <div className="min-h-screen flex flex-col">
 
-      {!isReset && (
+      {!isReset && !isNewPassword && (
         <div className="flex justify-center pt-6">
           <Tabs value={currentTab} onValueChange={(value) => {
               router.push(
