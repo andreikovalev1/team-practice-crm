@@ -25,12 +25,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             }}
           >
             <TabsList variant="line">
-              <TabsTrigger value="login">
-                ВОЙТИ
+              <TabsTrigger value="login" className="uppercase">
+                Войти
               </TabsTrigger>
 
-              <TabsTrigger value="register">
-                СОЗДАТЬ
+              <TabsTrigger value="register" className="uppercase">
+                Создать
               </TabsTrigger>
             </TabsList>
           </Tabs>

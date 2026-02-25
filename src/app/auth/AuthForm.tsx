@@ -160,7 +160,7 @@ export default function AuthForm({ mode }: AuthProp) {
                         : ROUTES.LOGIN
                     )
                   }}
-                  className="text-gray-500 cursor-pointer"
+                  className="text-gray-500 cursor-pointer uppercase"
                 >
                   {feature}
                 </button>
