@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { cookies } from "next/headers";
 import LogoutButton from "@/features/auth/LogoutButton";
-
+import { redirect } from "next/navigation";
 import { ROUTES } from "@/app/configs/routesConfig"
 
 interface User {
@@ -10,9 +9,7 @@ interface User {
 }
 
 interface GetUsersResponse {
-  data?: {
-    users: User[];
-  };
+  data?: { users: User[] };
   errors?: Array<{ message: string }>;
 }
 
@@ -20,9 +17,12 @@ export default async function Home() {
   const cookieStore = await cookies();
   const token = cookieStore.get("auth_token")?.value;
 
+  if(!token) {
+    redirect(ROUTES.LOGIN);
+  }
+
   let users: User[] = [];
   let authError = false;
-
   const graphqlUrl = process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:3001/api/graphql';
 
   try {
@@ -49,33 +49,16 @@ export default async function Home() {
 
     // Проверяем, вернул ли бэкенд ошибки (например, Unauthorized)
     if (result.errors) {
-      console.error("GraphQL Ошибки:", result.errors);
       authError = true;
     } else if (result.data) {
       users = result.data.users;
     }
-  } catch (err) {
-    console.error("Ошибка сети при SSR:", err);
+  } catch {
     authError = true;
   }
 
-  if (authError || !token) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black font-sans">
-        <div className="text-center flex flex-col items-center gap-4">
-          <p className="text-zinc-600 dark:text-zinc-300 text-lg">
-            Доступ закрыт. Для просмотра данных необходимо войти в систему.
-          </p>
-          <Link
-            href={ROUTES.LOGIN}
-            replace
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-          >
-            Перейти к авторизации
-          </Link>
-        </div>
-      </div>
-    );
+  if (authError) {
+    redirect(ROUTES.LOGIN)
   }
 
   return (

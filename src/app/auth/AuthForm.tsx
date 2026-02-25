@@ -41,7 +41,6 @@ export default function AuthForm({ mode }: AuthProp) {
     const [password, setPassword] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
 
-    // 2. Добавляем типы <LoginData> и <RegisterData> и убираем неиспользуемые loading
     const [loginQuery] = useLazyQuery<LoginData>(LOGIN_QUERY)
     const [registerMutation] = useMutation<RegisterData>(REGISTER_MUTATION)
 
@@ -59,8 +58,6 @@ export default function AuthForm({ mode }: AuthProp) {
 
           if (data?.login) {
             const { access_token, user } = data.login
-
-            console.log("ТОКЕН ПРИ ЛОГИНЕ:", access_token);
             
             setLogin(user.email)
             document.cookie = `auth_token=${access_token}; path=/; max-age=86400`
@@ -77,11 +74,12 @@ export default function AuthForm({ mode }: AuthProp) {
             setPassword("")
             router.push(ROUTES.LOGIN)
           }
+        } else if (mode === "reset") {
+          console.log("Отправка ссылки для сброса пароля на почту:", email);
         }
-      } catch (err) { // 3. Убираем any
+      } catch (err) {
         console.error("Ошибка формы:", err)
 
-        // Подсказываем TypeScript структуру нашей возможной ошибки
         const error = err as {
           graphQLErrors?: Array<{ message: string }>;
           networkError?: Error;
