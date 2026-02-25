@@ -6,6 +6,13 @@ import { ROUTES } from "@/app/configs/routesConfig"
 interface User {
   id: string;
   email: string;
+  department_name?: string;
+  position_name?: string;
+  profile?: {
+    avatar?: string;
+    first_name?: string;
+    last_name?: string;
+  };
 }
 
 interface GetUsersResponse {
@@ -32,12 +39,29 @@ export default async function Home() {
         "Content-Type": "application/json",
         "Authorization": token ? `Bearer ${token}` : "", 
       },
+      // body: JSON.stringify({
+      //   query: `
+      //     query GetUsers {
+      //       users {
+      //         id
+      //         email
+      //       }
+      //     }
+      //   `,
+      // }),
       body: JSON.stringify({
         query: `
           query GetUsers {
             users {
               id
               email
+              department_name
+              position_name
+              profile {
+                avatar
+                first_name
+                last_name
+              }
             }
           }
         `,
@@ -68,11 +92,47 @@ export default async function Home() {
           Пользователи CRM (SSR)
         </h1>
         
-        <div className="w-full space-y-4">
+        <div className="w-full space-y-6">
           {users.map((user) => (
-            <div key={user.id} className="p-4 border rounded-lg border-zinc-200 bg-zinc-50 dark:bg-zinc-900">
-              <p className="text-zinc-600 dark:text-zinc-300 font-medium">{user.email}</p>
-              <p className="text-xs text-zinc-400">ID: {user.id}</p>
+            <div
+              key={user.id}
+              className="p-6 border rounded-xl border-zinc-200 bg-zinc-50 dark:bg-zinc-900 shadow-sm"
+            >
+              {/* Avatar + Name */}
+              <div className="flex items-center gap-4 mb-3">
+                {user.profile?.avatar && (
+                  <img
+                    src={user.profile.avatar}
+                    alt="avatar"
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                )}
+
+                <div>
+                  <p className="text-lg font-semibold text-black dark:text-white">
+                    {user.profile?.first_name} {user.profile?.last_name}
+                  </p>
+
+                  <p className="text-sm text-zinc-500">{user.email}</p>
+                </div>
+              </div>
+
+              {/* Department + Position */}
+              <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                <p>
+                  Department:{" "}
+                  <span className="font-medium">
+                    {user.department_name || "—"}
+                  </span>
+                </p>
+
+                <p>
+                  Position:{" "}
+                  <span className="font-medium">
+                    {user.position_name || "—"}
+                  </span>
+                </p>
+              </div>
             </div>
           ))}
         </div>

@@ -3,6 +3,8 @@ import { Providers } from "@/app/Providers"
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+import Sidebar from "@/features/layout/SideBar";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
