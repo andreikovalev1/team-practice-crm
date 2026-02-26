@@ -2,20 +2,20 @@
 
 import { useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { authContent } from "@/features/auth/config";
 import { motion, AnimatePresence } from "framer-motion";
-import { LOGIN_QUERY, REGISTER_MUTATION } from "@/features/auth/graphql"
+import { LOGIN_QUERY, REGISTER_MUTATION, FORGOT_PASSWORD_MUTATION, RESET_PASSWORD_MUTATION } from "@/features/auth/graphql"
 import { useUserStore } from "@/store/useUserStore";
 import { ROUTES } from "@/app/configs/routesConfig"
+import toast from "react-hot-toast";
 import OvalButton from "@/components/button/OvalButton";
 
 interface AuthProp {
   mode: "login" | "register" | "reset" | "new_password"
 }
 
-// 1. Описываем структуру ответов от бэкенда для TypeScript
 interface LoginData {
   login: {
     access_token: string;
@@ -32,16 +32,19 @@ interface RegisterData {
 
 export default function AuthForm({ mode }: AuthProp) {
     const router = useRouter()
+    const searchParams = useSearchParams();
+    const token = searchParams.get("token")
     const { setLogin } = useUserStore()
     const { title, description, feature, btnText } = authContent[mode]
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
 
     const [loginQuery] = useLazyQuery<LoginData>(LOGIN_QUERY)
     const [registerMutation] = useMutation<RegisterData>(REGISTER_MUTATION)
+    const [forgotPasswordMutation] = useMutation(FORGOT_PASSWORD_MUTATION)
+    const [resetPasswordMutation] = useMutation(RESET_PASSWORD_MUTATION)
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault()
@@ -71,13 +74,37 @@ export default function AuthForm({ mode }: AuthProp) {
 
           if (data?.signup) {
             setPassword("")
+            toast.success("Регистрация прошла успешно! Теперь вы можете войти.");
             router.push(ROUTES.LOGIN)
           }
         } else if (mode === "reset") {
-          console.log("Отправка ссылки для сброса пароля на почту:", email);
+          const { error } = await forgotPasswordMutation({
+            variables: { auth: { email } },
+          })
+
+          if(error) throw error
+          setErrorMessage("")
+          setEmail("")
+          router.push(ROUTES.LOGIN)
+        } else if (mode === "new_password") {
+          if (!token) {
+            setErrorMessage("Токен восстановления не найден. Пожалуйста, перейдите по ссылке из письма.");
+            return;
+          }
+
+          const { error } = await resetPasswordMutation({
+            variables: { auth: { newPassword: password } },
+            context: {
+              headers: { Authorization: `Bearer ${token}` }
+            }
+          });
+
+          if (error) throw error;
+          toast.success("Пароль успешно изменен! Вы можете войти с новым паролем.");
+          router.push(ROUTES.LOGIN);
         }
+
       } catch (err) {
-        console.error("Ошибка формы:", err)
 
         const error = err as {
           graphQLErrors?: Array<{ message: string }>;
@@ -122,8 +149,8 @@ export default function AuthForm({ mode }: AuthProp) {
                   {errorMessage}
                 </div>
               )}
-
-              {mode !== 'new_password' && (
+              
+              {mode !== "new_password" && (
                 <Input 
                   placeholder="Почта" 
                   type="email" 
@@ -133,33 +160,11 @@ export default function AuthForm({ mode }: AuthProp) {
                   className="rounded-none border border-gray-300 mb-5" 
                 />
               )}
-
-              {mode === "new_password" && (
-                <>
-                  <Input 
-                    type="password" 
-                    placeholder="Новый пароль" 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="rounded-none border border-gray-300 mb-5" 
-                  />
-
-                  <Input 
-                    type="password" 
-                    placeholder="Повторите пароль" 
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    className="rounded-none border border-gray-300 mb-10" 
-                  />
-                </>
-              )}
               
-              {(mode === "login" || mode === "register") && (
+              {mode !== "reset" && (
                 <Input 
                   type="password" 
-                  placeholder="Пароль" 
+                  placeholder={mode === "new_password" ? "Новый пароль" : "Пароль"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -171,7 +176,7 @@ export default function AuthForm({ mode }: AuthProp) {
                 <OvalButton text={btnText} />
               </div>
 
-                {mode !== "new_password" && (<button
+                <button
                   type="button"
                   onClick={() => {
                     setErrorMessage("")
@@ -181,10 +186,10 @@ export default function AuthForm({ mode }: AuthProp) {
                         : ROUTES.LOGIN
                     )
                   }}
-                  className="text-gray-500 cursor-pointer uppercase"
+                  className="text-gray-500 cursor-pointer uppercase text-sm hover:text-gray-700"
                 >
                   {feature}
-                </button>)}
+                </button>
 
               </motion.div>
             </AnimatePresence>

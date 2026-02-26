@@ -66,12 +66,11 @@ export default async function Home() {
           }
         `,
       }),
-      cache: "no-store", // Говорим Next.js не кэшировать этот запрос (всегда свежие данные)
+      cache: "no-store",
     });
 
     const result: GetUsersResponse = await response.json();
 
-    // Проверяем, вернул ли бэкенд ошибки (например, Unauthorized)
     if (result.errors) {
       authError = true;
     } else if (result.data) {
@@ -136,7 +135,6 @@ export default async function Home() {
             </div>
           ))}
         </div>
-
         <LogoutButton />
       </main>
     </div>

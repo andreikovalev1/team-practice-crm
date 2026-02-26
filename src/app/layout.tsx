@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Providers } from "@/app/Providers"
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 import Sidebar from "@/features/layout/SideBar";
@@ -32,6 +33,7 @@ export default function RootLayout({
       >
         <Providers>
           {children}
+          <Toaster position="top-center" />
         </Providers>
       </body>
     </html>

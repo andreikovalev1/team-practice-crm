@@ -26,3 +26,17 @@ export const REGISTER_MUTATION = gql`
     }
   }
 `;
+
+// Запрос на отправку письма для сброса пароля
+export const FORGOT_PASSWORD_MUTATION = gql`
+  mutation ForgotPassword($auth: ForgotPasswordInput!) {
+    forgotPassword(auth: $auth)
+  }
+`;
+
+// Установка нового пароля
+export const RESET_PASSWORD_MUTATION = gql`
+    mutation ResetPassword($auth: ResetPasswordInput!) {
+    resetPassword(auth: $auth)
+    }
+`;
