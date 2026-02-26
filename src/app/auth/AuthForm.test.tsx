@@ -1,49 +1,241 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { MockedProvider as BaseMockedProvider } from "@apollo/client/testing/react";
+import { ReactNode, FC } from "react";
 import AuthForm from "./AuthForm";
-import { authContent } from "@/features/auth/config";
-import { useAuthModeStore } from "@/store/useAuthModeStore";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useUserStore } from "@/store/useUserStore";
+import toast from "react-hot-toast";
+import { ROUTES } from "@/app/configs/routesConfig";
+import { 
+  LOGIN_QUERY, 
+  REGISTER_MUTATION, 
+  FORGOT_PASSWORD_MUTATION, 
+  RESET_PASSWORD_MUTATION 
+} from "@/features/auth/graphql";
 
-describe("AuthForm Component (Zustand)", () => {
+interface MockedProviderProps {
+  mocks?: ReadonlyArray<unknown>;
+  addTypename?: boolean;
+  children: ReactNode;
+}
+
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+  useSearchParams: jest.fn(),
+}));
+
+jest.mock("@/store/useUserStore", () => ({
+  useUserStore: jest.fn(),
+}));
+
+jest.mock("react-hot-toast", () => ({
+  success: jest.fn(),
+  error: jest.fn(),
+}));
+
+const mockPush = jest.fn();
+const mockSetLogin = jest.fn();
+const MockedProvider = BaseMockedProvider as unknown as FC<MockedProviderProps>;
+
+const registerSuccessMock = {
+  request: {
+    query: REGISTER_MUTATION,
+    variables: { auth: { email: "new@mail.com", password: "password123" } },
+  },
+  result: {
+    data: {
+      signup: {
+        access_token: "fake-jwt-token",
+        user: { email: "new@mail.com" },
+      },
+    },
+  },
+};
+
+const forgotPasswordErrorMock = {
+  request: {
+    query: FORGOT_PASSWORD_MUTATION,
+    variables: { auth: { email: "broken@mail.com" } },
+  },
+  error: new Error("Failed to send email"),
+};
+
+const resetPasswordSuccessMock = {
+  request: {
+    query: RESET_PASSWORD_MUTATION,
+    variables: { auth: { newPassword: "new-password123" } },
+  },
+  result: {
+    data: {
+      resetPassword: true,
+    },
+  },
+};
+
+const loginSuccessMock = {
+  request: {
+    query: LOGIN_QUERY,
+    variables: { auth: { email: "test@mail.com", password: "password123" } },
+  },
+  result: {
+    data: {
+      login: {
+        access_token: "fake-jwt-token",
+        user: { email: "test@mail.com" },
+      },
+    },
+  },
+};
+
+describe("Компонент AuthForm", () => {
+  let cookieSetterSpy: jest.Mock;
+
   beforeEach(() => {
-    useAuthModeStore.setState({ mode: 'login' });
     jest.clearAllMocks();
+
+    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
+    (useSearchParams as jest.Mock).mockReturnValue({ get: () => "fake-token" });
+    (useUserStore as unknown as jest.Mock).mockReturnValue({ setLogin: mockSetLogin });
+
+    cookieSetterSpy = jest.fn();
+    Object.defineProperty(document, "cookie", {
+      set: cookieSetterSpy,
+      configurable: true,
+    });
   });
 
-  it("должен корректно отображать режим логина (login)", () => {
-    render(<AuthForm />);
-    expect(screen.getByText(authContent.login.title)).toBeInTheDocument();
-    expect(screen.getByText(authContent.login.description)).toBeInTheDocument();
+  it("должен правильно рендерить поля для режима LOGIN", () => {
+    render(
+      <MockedProvider mocks={[]} addTypename={false}>
+        <AuthForm mode="login" />
+      </MockedProvider>
+    );
+
     expect(screen.getByPlaceholderText("Почта")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Пароль")).toBeInTheDocument();
-    expect(screen.getByText(authContent.login.feature)).toBeInTheDocument();
   });
 
-  it("должен корректно отображать режим регистрации (register)", () => {
-    useAuthModeStore.setState({mode: 'register'});
-    render(<AuthForm />);
-    expect(screen.getByText(authContent.register.title)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Пароль")).toBeInTheDocument();
+  it("должен скрывать поле пароля в режиме RESET", () => {
+    render(
+      <MockedProvider mocks={[]} addTypename={false}>
+        <AuthForm mode="reset" />
+      </MockedProvider>
+    );
+
+    expect(screen.getByPlaceholderText("Почта")).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText("Пароль")).toBeNull();
   });
 
-  it("должен скрывать поле пароля в режиме сброса (reset)", () => {
-    useAuthModeStore.setState({mode: 'reset'});
-    render(<AuthForm />);
-    expect(screen.getByText(authContent.reset.title)).toBeInTheDocument();
-    expect(screen.queryByPlaceholderText("Пароль")).not.toBeInTheDocument(); // queryBy вернет null и корректно проверит отсутствие элемента, а getBy вернул бы ошибку
+  it("должен успешно авторизовать пользователя и сделать редирект", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MockedProvider mocks={[loginSuccessMock]} addTypename={false}>
+        <AuthForm mode="login" />
+      </MockedProvider>
+    );
+
+    const emailInput = screen.getByPlaceholderText("Почта");
+    const passwordInput = screen.getByPlaceholderText("Пароль");
+    const submitButton = screen.getByRole("button", { name: /войти/i });
+
+    await user.type(emailInput, "test@mail.com");
+    await user.type(passwordInput, "password123");
+
+    await user.click(submitButton);
+
+    await waitFor(() => {
+      expect(mockSetLogin).toHaveBeenCalledWith("test@mail.com");
+      expect(cookieSetterSpy).toHaveBeenCalledWith("auth_token=fake-jwt-token; path=/; max-age=86400");
+      expect(mockPush).toHaveBeenCalledWith("/");
+    });
   });
 
-  it("должен вызывать setMode('reset') при клике на 'ЗАБЫЛИ ПАРОЛЬ' в режиме login", () => {
-    render(<AuthForm />);
-    const forgotBtn = screen.getByText(authContent.login.feature);
-    fireEvent.click(forgotBtn);
-    expect(useAuthModeStore.getState().mode).toBe("reset");
+  it("должен успешно зарегистрировать пользователя и показать уведомление", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MockedProvider mocks={[registerSuccessMock]} addTypename={false}>
+        <AuthForm mode="register" />
+      </MockedProvider>
+    );
+
+    const emailInput = screen.getByPlaceholderText("Почта");
+    const passwordInput = screen.getByPlaceholderText("Пароль");
+    const submitButtons = screen.getAllByRole("button");
+    const submitButton = submitButtons[0];
+
+    await user.type(emailInput, "new@mail.com");
+    await user.type(passwordInput, "password123");
+    await user.click(submitButton);
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("Регистрация прошла успешно! Теперь вы можете войти.");
+      expect(mockPush).toHaveBeenCalledWith(ROUTES.LOGIN);
+    });
   });
 
-  it("должен вызывать setMode('login') при клике на доп. кнопку в режиме reset или register", () => {
-    useAuthModeStore.setState({mode: 'reset'})
-    render(<AuthForm />);
-    const cancelBtn = screen.getByText(authContent.reset.feature);
-    fireEvent.click(cancelBtn);
-    expect(useAuthModeStore.getState().mode).toBe("login");
+  it("должен поймать ошибку 'Failed to send email' при сбросе пароля", async () => {
+    const user = userEvent.setup();
+    render(
+      <MockedProvider mocks={[forgotPasswordErrorMock]} addTypename={false}>
+        <AuthForm mode="reset" />
+      </MockedProvider>
+    );
+
+    const emailInput = screen.getByPlaceholderText("Почта");
+    const submitButtons = screen.getAllByRole("button");
+    const submitButton = submitButtons[0];
+
+    await user.type(emailInput, "broken@mail.com");
+    await user.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Failed to send email/i)).toBeInTheDocument();
+    });
+  });
+
+  it("должен успешно отправить новый пароль и сделать редирект", async () => {
+    const user = userEvent.setup();
+    render(
+      <MockedProvider mocks={[resetPasswordSuccessMock]} addTypename={false}>
+        <AuthForm mode="new_password" />
+      </MockedProvider>
+    );
+
+    const newPasswordInput = screen.getByPlaceholderText("Новый пароль");
+    const submitButtons = screen.getAllByRole("button");
+    const submitButton = submitButtons[0];
+
+    await user.type(newPasswordInput, "new-password123");
+    await user.click(submitButton);
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("Пароль успешно изменен! Вы можете войти с новым паролем.");
+      expect(mockPush).toHaveBeenCalledWith(ROUTES.LOGIN);
+    });
+  });
+
+  it("должен показать ошибку, если нет токена в режиме NEW_PASSWORD", async () => {
+    const user = userEvent.setup();
+    (useSearchParams as jest.Mock).mockReturnValue({ get: () => null });
+
+    render(
+      <MockedProvider mocks={[]} addTypename={false}>
+        <AuthForm mode="new_password" />
+      </MockedProvider>
+    );
+
+    const newPasswordInput = screen.getByPlaceholderText("Новый пароль");
+    const submitButtons = screen.getAllByRole("button");
+    const submitButton = submitButtons[0];
+
+    await user.type(newPasswordInput, "new-password123");
+    await user.click(submitButton);
+
+    expect(
+      screen.getByText("Токен восстановления не найден. Пожалуйста, перейдите по ссылке из письма.")
+    ).toBeInTheDocument();
   });
 });

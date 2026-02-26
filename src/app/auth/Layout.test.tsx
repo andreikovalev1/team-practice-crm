@@ -1,42 +1,54 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import Layout from "@/app/auth/layout";
-import { useAuthModeStore } from "@/store/useAuthModeStore";
+import Layout from "./layout";
+import { usePathname, useRouter } from "next/navigation";
+import { ROUTES } from "@/app/configs/routesConfig";
 
-describe("Auth Layout Component (Zustand)", () => {
+jest.mock("next/navigation", () => ({
+  usePathname: jest.fn(),
+  useRouter: jest.fn(),
+}));
 
-    beforeEach(() => {
-        useAuthModeStore.setState({mode: 'login'})
-    })
-  
-  it("должен по умолчанию отображать форму входа (login)", () => {
-    render(<Layout />);
-    const loginTab = screen.getByRole("tab", { name: /ВОЙТИ/i });
-    expect(loginTab).toHaveAttribute("data-state", "active");
-    expect(screen.getByText(/С возвращением/i)).toBeInTheDocument();
+describe("Компонент Auth Layout", () => {
+  const mockPush = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
   });
 
-  it("должен переключаться на форму регистрации при клике на вкладку СОЗДАТЬ", async () => {
+  it("должен показывать табы и рендерить детей на странице ЛОГИНА", () => {
+    (usePathname as jest.Mock).mockReturnValue(ROUTES.LOGIN);
+    render(
+      <Layout>
+        <div data-testid="child-content">Контент формы</div>
+      </Layout>
+    );
+    expect(screen.getByRole("tab", { name: /войти/i })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /создать/i })).toBeInTheDocument();
+    expect(screen.getByTestId("child-content")).toBeInTheDocument();
+  });
+
+  it("должен СКРЫВАТЬ табы на странице СБРОСА ПАРОЛЯ", () => {
+    (usePathname as jest.Mock).mockReturnValue(ROUTES.RESET);
+    render(
+      <Layout>
+        <div data-testid="child-content">Контент формы сброса</div>
+      </Layout>
+    );
+    expect(screen.queryByRole("tab", { name: /войти/i })).toBeNull();
+    expect(screen.queryByRole("tab", { name: /создать/i })).toBeNull();
+    expect(screen.getByTestId("child-content")).toBeInTheDocument();
+  });
+
+  it("должен вызывать router.push при клике на таб", async () => {
     const user = userEvent.setup();
-    render(<Layout />);
-    const registerTab = screen.getByRole("tab", { name: /СОЗДАТЬ/i });
+    (usePathname as jest.Mock).mockReturnValue(ROUTES.LOGIN);
+    render(<Layout>Контент</Layout>);
+    const registerTab = screen.getByRole("tab", { name: /создать/i });
+    
     await user.click(registerTab);
-    expect(useAuthModeStore.getState().mode).toBe("register");
-    await waitFor(() => {
-        expect(registerTab).toHaveAttribute("data-state", "active");
-    });
-    const welcomeText = await screen.findByText(/Зарегистрируйтесь/i);
-    expect(welcomeText).toBeInTheDocument();
-  });
-
-  it("должен скрывать табы, если выбран режим сброса пароля (reset)", async () => {
-    const user = userEvent.setup();
-    render(<Layout />);
-    const forgotBtn = screen.getByText(/ЗАБЫЛИ ПАРОЛЬ/i);
-    await user.click(forgotBtn);
-    expect(useAuthModeStore.getState().mode).toBe("reset");
-    expect(screen.getByText(/Забыли пароль/i)).toBeInTheDocument();
-    const tabsList = screen.queryByRole("tablist");
-    expect(tabsList).not.toBeInTheDocument();
+    
+    expect(mockPush).toHaveBeenCalledWith(ROUTES.REGISTER);
   });
 });
