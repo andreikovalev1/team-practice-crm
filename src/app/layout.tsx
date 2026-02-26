@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
-import Sidebar from "@/features/layout/SideBar";
+import Sidebar from "@/features/layout/Sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

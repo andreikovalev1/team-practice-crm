@@ -85,11 +85,17 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black font-sans">
-      <main className="flex w-full max-w-3xl flex-col items-center py-32 px-16 bg-white dark:bg-black shadow-sm rounded-xl">
-        <h1 className="text-3xl font-bold mb-8 text-black dark:text-white">
-          Пользователи CRM (SSR)
-        </h1>
+    // Заменили <main> на обычный <div> и убрали жесткое центрирование
+    <div className="p-4 md:p-8 w-full">
+      <div className="w-full max-w-4xl mx-auto space-y-6">
+        
+        {/* Заголовок и кнопка выхода теперь на одном уровне */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <h1 className="text-3xl font-bold text-black dark:text-white">
+            Пользователи CRM (SSR)
+          </h1>
+          <LogoutButton />
+        </div>
         
         <div className="w-full space-y-6">
           {users.map((user) => (
@@ -135,8 +141,7 @@ export default async function Home() {
             </div>
           ))}
         </div>
-        <LogoutButton />
-      </main>
+      </div>
     </div>
   );
 }
