@@ -1,6 +1,10 @@
+"use client"
+
 import { MdArrowForwardIos } from "react-icons/md"
 import { Input } from "@/components/ui/input"
 import { IoIosSearch } from "react-icons/io"
+import { GoArrowUp } from "react-icons/go"
+import { useState } from "react";
 
 interface Employee {
   id: string;
@@ -19,6 +23,20 @@ interface EmployeeTableProps {
 }
 
 export default function EmployeeTable({ employees }: EmployeeTableProps) {
+  const [isSorted, setIsSorted] = useState(false)
+
+  const displayedEmployees = isSorted
+    ? [...employees].sort((a, b) => {
+        const deptA = a.department_name
+        const deptB = b.department_name
+
+        if (!deptA) return 1
+        if (!deptB) return -1
+
+        return deptA.localeCompare(deptB)
+      })
+    : employees
+
   return (
     <div className="p-6">
       <div
@@ -36,17 +54,25 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
           <thead>
             <tr className="text-left">
               <th></th>
-              <th className="px-4 py-3 font-normal">First Name</th>
-              <th className="px-4 py-3 font-normal hidden md:table-cell">Last Name</th>
-              <th className="px-4 py-3 font-normal hidden md:table-cell">Email</th>
-              <th className="px-4 py-3 font-normal">Department</th>
-              <th className="px-4 py-3 font-normal">Position</th>
+              <th className="px-4 py-3 font-medium">First Name</th>
+              <th className="px-4 py-3 font-medium hidden md:table-cell">Last Name</th>
+              <th className="px-4 py-3 font-medium hidden md:table-cell">Email</th>
+              <th onClick={() => {setIsSorted(prev => !prev)}} className="px-4 py-3 font-medium flex items-center cursor-pointer">
+                Department
+                <GoArrowUp
+                  className={`
+                    transition-all duration-200
+                    ${isSorted ? "text-black" : "text-gray-400"}
+                  `}
+                />
+              </th>
+              <th className="px-4 py-3 font-medium">Position</th>
               <th></th>
             </tr>
           </thead>
 
           <tbody>
-            {employees.map((employee) => (
+            {displayedEmployees.map((employee) => (
               <tr
                 key={employee.id}
                 className="border-t border-zinc-200 hover:bg-zinc-50 transition"
