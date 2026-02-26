@@ -1,4 +1,6 @@
-import { MdArrowForwardIos } from "react-icons/md";
+import { MdArrowForwardIos } from "react-icons/md"
+import { Input } from "@/components/ui/input"
+import { IoIosSearch } from "react-icons/io"
 
 interface Employee {
   id: string;
@@ -19,16 +21,24 @@ interface EmployeeTableProps {
 export default function EmployeeTable({ employees }: EmployeeTableProps) {
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">Место для поиска</h2>
+      <div
+        className="relative w-[320px] h-10 -top-1.25 rounded-[40px] border border-gray-300 bg-white flex items-center px-4"
+      >
+        <IoIosSearch className="text-zinc-400 mr-2" size={18} />
 
-      <div className="overflow-hidden">
+        <Input
+          className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-full w-full"
+        />
+      </div>
+
+      <div className="overflow-x-auto">
         <table className="min-w-full">
           <thead>
             <tr className="text-left">
               <th></th>
               <th className="px-4 py-3 font-normal">First Name</th>
-              <th className="px-4 py-3 font-normal">Last Name</th>
-              <th className="px-4 py-3 font-normal">Email</th>
+              <th className="px-4 py-3 font-normal hidden md:table-cell">Last Name</th>
+              <th className="px-4 py-3 font-normal hidden md:table-cell">Email</th>
               <th className="px-4 py-3 font-normal">Department</th>
               <th className="px-4 py-3 font-normal">Position</th>
               <th></th>
@@ -58,8 +68,8 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
                 </td>
 
                 <td className="px-4 py-4">{employee.profile?.first_name}</td>
-                <td className="px-4 py-4">{employee.profile?.last_name}</td>
-                <td className="px-4 py-4">{employee.email}</td>
+                <td className="px-4 py-4 hidden md:table-cell">{employee.profile?.last_name}</td>
+                <td className="px-4 py-4 hidden md:table-cell">{employee.email}</td>
                 <td className="px-4 py-4">{employee.department_name}</td>
                 <td className="px-4 py-4">{employee.position_name}</td>
                 <td className="px-4 py-4"><MdArrowForwardIos size={14} /></td>
