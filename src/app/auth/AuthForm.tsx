@@ -74,7 +74,10 @@ export default function AuthForm({ mode }: AuthProp) {
 
           if (data?.signup) {
             setPassword("")
-            toast.success("Регистрация прошла успешно! Теперь вы можете войти.");
+            toast.success("Регистрация прошла успешно! Теперь вы можете войти.", {
+              duration: 2000,
+              className: "animate-in fade-in zoom-in duration-500 all 0.4s ease",
+            });
             router.push(ROUTES.LOGIN)
           }
         } else if (mode === "reset") {
@@ -186,7 +189,7 @@ export default function AuthForm({ mode }: AuthProp) {
                         : ROUTES.LOGIN
                     )
                   }}
-                  className="text-gray-500 cursor-pointer uppercase text-sm hover:text-gray-700"
+                  className="text-gray-500 cursor-pointer uppercase hover:text-gray-700"
                 >
                   {feature}
                 </button>
