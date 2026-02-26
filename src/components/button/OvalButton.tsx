@@ -12,7 +12,7 @@ export default function OvalButton({ text }: bthText) {
             whileTap={{ scale: 0.95 }}
             className="w-full flex justify-center"
         >
-            <Button type="submit" variant="oval" className="h-11 uppercase w-full">
+            <Button type="submit" variant="oval" className="h-11 uppercase">
                 {text}
             </Button>
         </motion.div>
