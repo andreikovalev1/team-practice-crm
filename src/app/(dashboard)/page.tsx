@@ -38,6 +38,7 @@ export default async function Home() {
               email
               department_name
               position_name
+              created_at
               profile {
                 avatar
                 first_name

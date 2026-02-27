@@ -9,6 +9,7 @@ export const LOGIN_QUERY = gql`
         id
         email
         role
+        created_at
         profile {
           first_name
           last_name
