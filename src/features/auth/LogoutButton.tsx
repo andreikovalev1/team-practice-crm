@@ -17,7 +17,7 @@ export default function LogoutButton() {
 
   return (
     <Button onClick={handleLogout} variant="destructive" className="mt-8">
-      Выйти из аккаунта
+      Log Out
     </Button>
   );
 }

@@ -74,7 +74,7 @@ export default function AuthForm({ mode }: AuthProp) {
 
           if (data?.signup) {
             setPassword("")
-            toast.success("Регистрация прошла успешно! Теперь вы можете войти.", {
+            toast.success("Registration was successful! You can now log in.", {
               duration: 2000,
               className: "animate-in fade-in zoom-in duration-500 all 0.4s ease",
             });
@@ -91,7 +91,7 @@ export default function AuthForm({ mode }: AuthProp) {
           router.push(ROUTES.LOGIN)
         } else if (mode === "new_password") {
           if (!token) {
-            setErrorMessage("Токен восстановления не найден. Пожалуйста, перейдите по ссылке из письма.");
+            setErrorMessage("Recovery token not found. Please follow the link in the email.");
             return;
           }
 
@@ -103,7 +103,7 @@ export default function AuthForm({ mode }: AuthProp) {
           });
 
           if (error) throw error;
-          toast.success("Пароль успешно изменен! Вы можете войти с новым паролем.");
+          toast.success("Your password has been successfully changed! You can log in with your new password.");
           router.push(ROUTES.LOGIN);
         }
 
@@ -119,13 +119,13 @@ export default function AuthForm({ mode }: AuthProp) {
           setErrorMessage(error.graphQLErrors[0].message)
         } 
         else if (error?.networkError) {
-          setErrorMessage("Проблема с сетью. Проверьте подключение или бэкенд.")
+          setErrorMessage("Network issue. Check your connection or backend.")
         } 
         else if (error?.message) {
           setErrorMessage(error.message)
         } 
         else {
-          setErrorMessage("Произошла неизвестная ошибка. Попробуйте позже.")
+          setErrorMessage("An unknown error occurred. Please try again later.")
         }
       }
     }
@@ -155,7 +155,7 @@ export default function AuthForm({ mode }: AuthProp) {
               
               {mode !== "new_password" && (
                 <Input 
-                  placeholder="Почта" 
+                  placeholder="Email" 
                   type="email" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -167,7 +167,7 @@ export default function AuthForm({ mode }: AuthProp) {
               {mode !== "reset" && (
                 <Input 
                   type="password" 
-                  placeholder={mode === "new_password" ? "Новый пароль" : "Пароль"}
+                  placeholder={mode === "new_password" ? "New password" : "Password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required

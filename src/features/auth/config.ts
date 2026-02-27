@@ -11,26 +11,26 @@ type AuthContent = Record<AuthMode, Modes>
 
 export const authContent: AuthContent = {
   login: {
-    title: "С возвращением",
-    description: "Рады вас видеть! Войдите, чтобы продолжить",
-    feature: "Забыли пароль",
-    btnText: "Войти",
+    title: "Welcome back",
+    description: "Hello again! Log in to continue",
+    feature: "Forgot password",
+    btnText: "Log in",
   },
   register: {
-    title: "Зарегистрируйтесь",
-    description: "Добро пожаловать! Создайте аккаунт, чтобы продолжить",
-    feature: "У меня есть аккаунт",
-    btnText: "Создать аккаунт",
+    title: "Register now",
+    description: "Welcome! Sign up to continue",
+    feature: "I have an account",
+    btnText: "Create account",
   },
   reset: {
-    title: "Забыли пароль",
-    description: "Мы отправим вам письмо с инструкцией",
-    feature: "Отмена",
-    btnText: "Сбросить пароль",
+    title: "Forgot password",
+    description: "We will sent you an email with further instructions",
+    feature: "Cancel",
+    btnText: "Reset password",
   },
   new_password: {
-    title: "Новый пароль",
-    description: "Введите и запомните ваш новый пароль",
-    btnText: "Сохранить",
+    title: "New password",
+    description: "Enter and remember your new password",
+    btnText: "Save",
   }
 }
