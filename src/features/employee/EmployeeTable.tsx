@@ -5,21 +5,10 @@ import { Input } from "@/components/ui/input"
 import { IoIosSearch } from "react-icons/io"
 import { GoArrowUp } from "react-icons/go"
 import { useState } from "react";
-
-interface Employee {
-  id: string;
-  email: string;
-  department_name?: string;
-  position_name?: string;
-  profile?: {
-    avatar?: string;
-    first_name?: string;
-    last_name?: string;
-  };
-}
+import { User } from "@/types/user.types";
 
 interface EmployeeTableProps {
-  employees: Employee[];
+  employees: User[];
 }
 
 export default function EmployeeTable({ employees }: EmployeeTableProps) {

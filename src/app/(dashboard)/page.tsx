@@ -4,18 +4,7 @@ import { redirect } from "next/navigation";
 import { ROUTES } from "@/app/configs/routesConfig"
 
 import EmployeeTable from "@/features/employee/EmployeeTable";
-
-interface User {
-  id: string;
-  email: string;
-  department_name?: string;
-  position_name?: string;
-  profile?: {
-    avatar?: string;
-    first_name?: string;
-    last_name?: string;
-  };
-}
+import { User } from "@/types/user.types";
 
 interface GetUsersResponse {
   data?: { users: User[] };
