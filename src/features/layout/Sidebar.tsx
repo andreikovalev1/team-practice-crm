@@ -35,6 +35,7 @@ export default function Sidebar() {
   const firstName = user?.profile?.first_name || "User";
   const lastName = user?.profile?.last_name || "";
   const fullName = `${firstName} ${lastName}`.trim();
+  // const id = user?.id || "";
 
   const userInitial = firstName.charAt(0).toUpperCase();
 
@@ -87,7 +88,9 @@ export default function Sidebar() {
 
         <div className="mt-auto">
           {/* ПРОФИЛЬ ДЕСКТОП */}
-          <div className={cn(
+          <Link
+          href={user?.id ? ROUTES.PROFILE(user.id) : "#"}
+           className={cn(
             "flex items-center transition-all duration-300 ease-in-out", 
             isCollapsed ? "justify-center px-0 py-2" : "px-2 py-2"
           )}>
@@ -115,7 +118,7 @@ export default function Sidebar() {
                 </TooltipContent>
               )}
             </Tooltip>
-          </div>
+          </Link>
 
           <div className={cn(
             "flex items-center py-2 transition-all duration-300 ease-in-out", 
@@ -167,7 +170,9 @@ export default function Sidebar() {
         </div>
         
         {/* ПРОФИЛЬ МОБИЛКА */}
-        <div className="flex items-center gap-2 pl-3 shrink-0">
+        <Link 
+        href={user?.id ? ROUTES.PROFILE(user.id) : "#"}
+        className="flex items-center gap-2 pl-3 shrink-0 cursor-pointer">
           <div className="w-10 h-10 sm:w-10 sm:h-10 rounded-full bg-[#C8372D] flex items-center justify-center text-white text-lg font-medium shrink-0 overflow-hidden">
              {user?.profile?.avatar ? (
                 <img src={user.profile.avatar} alt={fullName} className="w-full h-full object-cover" />
@@ -186,7 +191,7 @@ export default function Sidebar() {
               <p>{fullName}</p>
             </TooltipContent>
           </Tooltip>
-        </div>
+        </Link>
       </nav>
     </TooltipProvider>
   );
