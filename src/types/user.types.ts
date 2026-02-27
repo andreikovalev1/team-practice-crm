@@ -10,4 +10,5 @@ export interface User {
   department_name?: string;
   position_name?: string;
   profile?: UserProfile;
+  created_at?: string;
 }
