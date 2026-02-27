@@ -4,4 +4,5 @@ export const ROUTES = {
     REGISTER: '/auth/register',
     RESET: '/auth/reset',
     NEWPASSWORD: '/auth/new_password',
+    PROFILE: '/profile'
 }

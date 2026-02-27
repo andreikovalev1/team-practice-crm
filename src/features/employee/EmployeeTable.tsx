@@ -45,6 +45,7 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
         <Input
           className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-full w-full"
           value={search}
+          placeholder="Search"
           onChange={(e) => {setSearch(e.target.value)}}
         />
       </div>
