@@ -13,18 +13,27 @@ interface EmployeeTableProps {
 
 export default function EmployeeTable({ employees }: EmployeeTableProps) {
   const [isSorted, setIsSorted] = useState(false)
+  const [search, setSearch] = useState("")
 
-  const displayedEmployees = isSorted
-    ? [...employees].sort((a, b) => {
-        const deptA = a.department_name
-        const deptB = b.department_name
+  const displayedEmployees = employees.
+  filter(employee => {
+    const firstName = employee.profile?.first_name?.toLowerCase() || ''
+    const lastName = employee.profile?.last_name?.toLowerCase() || ''
+    const fullName = `${firstName} ${lastName}`.trim()
+    const searchValue = search.toLowerCase().trim()
 
-        if (!deptA) return 1
-        if (!deptB) return -1
+    return fullName?.includes(searchValue)
+  }).sort((a, b) => {
+      if (!isSorted) return 0
 
-        return deptA.localeCompare(deptB)
-      })
-    : employees
+      const deptA = a.department_name
+      const deptB = b.department_name
+
+      if (!deptA) return 1
+      if (!deptB) return -1
+
+      return deptA.localeCompare(deptB)
+  })
 
   return (
     <div className="p-6">
@@ -35,6 +44,8 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
 
         <Input
           className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-full w-full"
+          value={search}
+          onChange={(e) => {setSearch(e.target.value)}}
         />
       </div>
 
