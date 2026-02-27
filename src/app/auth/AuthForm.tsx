@@ -8,6 +8,7 @@ import { authContent } from "@/features/auth/config";
 import { motion, AnimatePresence } from "framer-motion";
 import { LOGIN_QUERY, REGISTER_MUTATION, FORGOT_PASSWORD_MUTATION, RESET_PASSWORD_MUTATION } from "@/features/auth/graphql"
 import { useUserStore } from "@/store/useUserStore";
+import { User } from "@/types/user.types"
 import { ROUTES } from "@/app/configs/routesConfig"
 import toast from "react-hot-toast";
 import OvalButton from "@/components/button/OvalButton";
@@ -19,7 +20,7 @@ interface AuthProp {
 interface LoginData {
   login: {
     access_token: string;
-    user: { email: string };
+    user: User;
   };
 }
 
@@ -61,7 +62,7 @@ export default function AuthForm({ mode }: AuthProp) {
           if (data?.login) {
             const { access_token, user } = data.login
             
-            setLogin(user.email)
+            setLogin(user)
             document.cookie = `auth_token=${access_token}; path=/; max-age=86400`
             router.push("/") 
           }

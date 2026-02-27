@@ -9,6 +9,11 @@ export const LOGIN_QUERY = gql`
         id
         email
         role
+        profile {
+          first_name
+          last_name
+          avatar
+        }
       }
     }
   }

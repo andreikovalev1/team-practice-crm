@@ -47,7 +47,22 @@ const registerSuccessMock = {
     data: {
       signup: {
         access_token: "fake-jwt-token",
-        user: { email: "new@mail.com" },
+        user: { id: "2", email: "new@mail.com" },
+      },
+    },
+  },
+};
+
+const loginSuccessMock = {
+  request: {
+    query: LOGIN_QUERY,
+    variables: { auth: { email: "test@mail.com", password: "password123" } },
+  },
+  result: {
+    data: {
+      login: {
+        access_token: "fake-jwt-token",
+        user: { id: "1", email: "test@mail.com" },
       },
     },
   },
@@ -69,21 +84,6 @@ const resetPasswordSuccessMock = {
   result: {
     data: {
       resetPassword: true,
-    },
-  },
-};
-
-const loginSuccessMock = {
-  request: {
-    query: LOGIN_QUERY,
-    variables: { auth: { email: "test@mail.com", password: "password123" } },
-  },
-  result: {
-    data: {
-      login: {
-        access_token: "fake-jwt-token",
-        user: { email: "test@mail.com" },
-      },
     },
   },
 };
@@ -112,8 +112,8 @@ describe("Компонент AuthForm", () => {
       </MockedProvider>
     );
 
-    expect(screen.getByPlaceholderText("Почта")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Пароль")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Email")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
   });
 
   it("должен скрывать поле пароля в режиме RESET", () => {
@@ -123,8 +123,8 @@ describe("Компонент AuthForm", () => {
       </MockedProvider>
     );
 
-    expect(screen.getByPlaceholderText("Почта")).toBeInTheDocument();
-    expect(screen.queryByPlaceholderText("Пароль")).toBeNull();
+    expect(screen.getByPlaceholderText("Email")).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText("Password")).toBeNull();
   });
 
   it("должен успешно авторизовать пользователя и сделать редирект", async () => {
@@ -136,9 +136,9 @@ describe("Компонент AuthForm", () => {
       </MockedProvider>
     );
 
-    const emailInput = screen.getByPlaceholderText("Почта");
-    const passwordInput = screen.getByPlaceholderText("Пароль");
-    const submitButton = screen.getByRole("button", { name: /войти/i });
+    const emailInput = screen.getByPlaceholderText("Email");
+    const passwordInput = screen.getByPlaceholderText("Password");
+    const submitButton = screen.getByRole("button", { name: /log in/i });
 
     await user.type(emailInput, "test@mail.com");
     await user.type(passwordInput, "password123");
@@ -146,7 +146,7 @@ describe("Компонент AuthForm", () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(mockSetLogin).toHaveBeenCalledWith("test@mail.com");
+      expect(mockSetLogin).toHaveBeenCalledWith({ id: "1", email: "test@mail.com" });
       expect(cookieSetterSpy).toHaveBeenCalledWith("auth_token=fake-jwt-token; path=/; max-age=86400");
       expect(mockPush).toHaveBeenCalledWith("/");
     });
@@ -161,8 +161,8 @@ describe("Компонент AuthForm", () => {
       </MockedProvider>
     );
 
-    const emailInput = screen.getByPlaceholderText("Почта");
-    const passwordInput = screen.getByPlaceholderText("Пароль");
+    const emailInput = screen.getByPlaceholderText("Email");
+    const passwordInput = screen.getByPlaceholderText("Password");
     const submitButtons = screen.getAllByRole("button");
     const submitButton = submitButtons[0];
 
@@ -171,7 +171,7 @@ describe("Компонент AuthForm", () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith("Регистрация прошла успешно! Теперь вы можете войти.");
+      expect(toast.success).toHaveBeenCalledWith("Registration was successful! You can now log in.", expect.any(Object));
       expect(mockPush).toHaveBeenCalledWith(ROUTES.LOGIN);
     });
   });
@@ -184,7 +184,7 @@ describe("Компонент AuthForm", () => {
       </MockedProvider>
     );
 
-    const emailInput = screen.getByPlaceholderText("Почта");
+    const emailInput = screen.getByPlaceholderText("Email");
     const submitButtons = screen.getAllByRole("button");
     const submitButton = submitButtons[0];
 
@@ -204,7 +204,7 @@ describe("Компонент AuthForm", () => {
       </MockedProvider>
     );
 
-    const newPasswordInput = screen.getByPlaceholderText("Новый пароль");
+    const newPasswordInput = screen.getByPlaceholderText("New password");
     const submitButtons = screen.getAllByRole("button");
     const submitButton = submitButtons[0];
 
@@ -212,7 +212,7 @@ describe("Компонент AuthForm", () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith("Пароль успешно изменен! Вы можете войти с новым паролем.");
+      expect(toast.success).toHaveBeenCalledWith("Your password has been successfully changed! You can log in with your new password.");
       expect(mockPush).toHaveBeenCalledWith(ROUTES.LOGIN);
     });
   });
@@ -227,7 +227,7 @@ describe("Компонент AuthForm", () => {
       </MockedProvider>
     );
 
-    const newPasswordInput = screen.getByPlaceholderText("Новый пароль");
+    const newPasswordInput = screen.getByPlaceholderText("New password");
     const submitButtons = screen.getAllByRole("button");
     const submitButton = submitButtons[0];
 
@@ -235,7 +235,7 @@ describe("Компонент AuthForm", () => {
     await user.click(submitButton);
 
     expect(
-      screen.getByText("Токен восстановления не найден. Пожалуйста, перейдите по ссылке из письма.")
+      screen.getByText("Recovery token not found. Please follow the link in the email.")
     ).toBeInTheDocument();
   });
 });
