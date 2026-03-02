@@ -20,6 +20,7 @@ interface AuthProp {
 interface LoginData {
   login: {
     access_token: string;
+    refresh_token: string;
     user: User;
   };
 }
@@ -27,6 +28,7 @@ interface LoginData {
 interface RegisterData {
   signup: {
     access_token: string;
+    refresh_token: string;
     user: { email: string };
   };
 }
@@ -60,12 +62,19 @@ export default function AuthForm({ mode }: AuthProp) {
           if (error) throw error 
 
           if (data?.login) {
-            const { access_token, user } = data.login
-            
-            setLogin(user)
-            document.cookie = `auth_token=${access_token}; path=/; max-age=86400`
-            router.push("/") 
-          }
+          // Достаем оба токена из ответа
+          const { access_token, refresh_token, user } = data.login;
+          
+          setLogin(user);
+          
+          // Сохраняем access_token (например, на 1 час)
+          document.cookie = `auth_token=${access_token}; path=/; max-age=3600`;
+          
+          // Сохраняем refresh_token (например, на 30 дней)
+          document.cookie = `refresh_token=${refresh_token}; path=/; max-age=2592000`;
+          
+          router.push("/"); 
+        }
         } else if (mode === "register") {
           const { data, error } = await registerMutation({
             variables: { auth: { email, password } },

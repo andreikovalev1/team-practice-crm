@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -29,14 +29,17 @@ const NAV_ITEMS = [
 export default function Sidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const { user } = useUserStore();
 
   const firstName = user?.profile?.first_name || "User";
   const lastName = user?.profile?.last_name || "";
   const fullName = `${firstName} ${lastName}`.trim();
-  // const id = user?.id || "";
-
   const userInitial = firstName.charAt(0).toUpperCase();
 
   return (
@@ -89,35 +92,43 @@ export default function Sidebar() {
         <div className="mt-auto">
           {/* ПРОФИЛЬ ДЕСКТОП */}
           <Link
-          href={user?.id ? ROUTES.PROFILE(user.id) : "#"}
-           className={cn(
-            "flex items-center transition-all duration-300 ease-in-out", 
-            isCollapsed ? "justify-center px-0 py-2" : "px-2 py-2"
+            href={user?.id ? ROUTES.PROFILE(user.id) : "#"}
+            className={cn(
+             "flex items-center transition-all duration-300 ease-in-out", 
+             isCollapsed ? "justify-center px-0 py-2" : "px-2 py-2"
           )}>
-            <div className="w-10 h-10 rounded-full bg-[#C8372D] flex items-center justify-center text-white font-medium shrink-0 text-[18px] overflow-hidden">
-              {user?.profile?.avatar ? (
-                <img src={user.profile.avatar} alt={fullName} className="w-full h-full object-cover" />
-              ) : (
-                userInitial
-              )}
-            </div>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className={cn(
-                  "text-md font-medium text-black truncate whitespace-nowrap transition-all duration-300 ease-in-out cursor-default",
-                  isCollapsed ? "max-w-0 opacity-0 ml-0" : "max-w-[150px] opacity-100 ml-2"
-                )}>
-                  {fullName}
-                </span>
-              </TooltipTrigger>
-              
-              {!isCollapsed && (
-                <TooltipContent side="right" className="z-50 bg-black text-white px-3 py-1.5 text-sm rounded-md shadow-md">
-                  <p>{fullName}</p>
-                </TooltipContent>
-              )}
-            </Tooltip>
+            {!isMounted ? (
+              // Скелетон во время загрузки (убирает моргание)
+              <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse shrink-0" />
+            ) : (
+              // Реальные данные профиля
+              <>
+                <div className="w-10 h-10 rounded-full bg-[#C8372D] flex items-center justify-center text-white font-medium shrink-0 text-[18px] overflow-hidden">
+                  {user?.profile?.avatar ? (
+                    <img src={user.profile.avatar} alt={fullName} className="w-full h-full object-cover" />
+                  ) : (
+                    userInitial
+                  )}
+                </div>
+                
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className={cn(
+                      "text-md font-medium text-black truncate whitespace-nowrap transition-all duration-300 ease-in-out cursor-pointer", // cursor-pointer т.к. это ссылка
+                      isCollapsed ? "max-w-0 opacity-0 ml-0" : "max-w-[150px] opacity-100 ml-2"
+                    )}>
+                      {fullName}
+                    </span>
+                  </TooltipTrigger>
+                  
+                  {!isCollapsed && (
+                    <TooltipContent side="right" className="z-50 bg-black text-white px-3 py-1.5 text-sm rounded-md shadow-md">
+                      <p>{fullName}</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </>
+            )}
           </Link>
 
           <div className={cn(
@@ -171,26 +182,33 @@ export default function Sidebar() {
         
         {/* ПРОФИЛЬ МОБИЛКА */}
         <Link 
-        href={user?.id ? ROUTES.PROFILE(user.id) : "#"}
-        className="flex items-center gap-2 pl-3 shrink-0 cursor-pointer">
-          <div className="w-10 h-10 sm:w-10 sm:h-10 rounded-full bg-[#C8372D] flex items-center justify-center text-white text-lg font-medium shrink-0 overflow-hidden">
-             {user?.profile?.avatar ? (
-                <img src={user.profile.avatar} alt={fullName} className="w-full h-full object-cover" />
-              ) : (
-                userInitial
-              )}
-          </div>
-          
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="hidden sm:block text-sm font-medium text-[#2E2E2E] truncate max-w-[120px] cursor-default">
-                {fullName}
-              </span>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="z-50 bg-black text-white px-3 py-1.5 text-sm rounded-md shadow-md">
-              <p>{fullName}</p>
-            </TooltipContent>
-          </Tooltip>
+          href={user?.id ? ROUTES.PROFILE(user.id) : "#"}
+          className="flex items-center gap-2 pl-3 shrink-0 cursor-pointer"
+        >
+          {!isMounted ? (
+            <div className="w-10 h-10 sm:w-10 sm:h-10 rounded-full bg-gray-200 animate-pulse shrink-0" />
+          ) : (
+            <>
+              <div className="w-10 h-10 sm:w-10 sm:h-10 rounded-full bg-[#C8372D] flex items-center justify-center text-white text-lg font-medium shrink-0 overflow-hidden">
+                  {user?.profile?.avatar ? (
+                    <img src={user.profile.avatar} alt={fullName} className="w-full h-full object-cover" />
+                  ) : (
+                    userInitial
+                  )}
+              </div>
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="hidden sm:block text-sm font-medium text-[#2E2E2E] truncate max-w-[120px] cursor-pointer">
+                    {fullName}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="z-50 bg-black text-white px-3 py-1.5 text-sm rounded-md shadow-md">
+                  <p>{fullName}</p>
+                </TooltipContent>
+              </Tooltip>
+            </>
+          )}
         </Link>
       </nav>
     </TooltipProvider>
