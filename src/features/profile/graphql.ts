@@ -50,3 +50,21 @@ export const UPDATE_USER_MUTATION = gql`
     }
   }
 `;
+
+// Запрос пользователя по ID
+export const GET_USER_BY_ID_QUERY = gql`
+  query GetUserById($userId: ID!) {
+    user(userId: $userId) {
+      id
+      email
+      created_at
+      department_name
+      position_name
+      profile {
+        first_name
+        last_name
+        avatar
+      }
+    }
+  }
+`;

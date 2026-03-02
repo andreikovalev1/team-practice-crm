@@ -7,10 +7,6 @@ import Image from "next/image";
 import { ROUTES } from "@/app/configs/routesConfig";
 import { cn } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
-import EmployeesIcon from "@/components/icons/Employee.svg";
-import SkillsIcon from "@/components/icons/Skills.svg";
-import LanguagesIcon from "@/components/icons/Language.svg";
-import CVsIcon from "@/components/icons/CVs.svg";
 import { useUserStore } from "@/store/useUserStore";
 import {
   Tooltip,
@@ -18,13 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-const NAV_ITEMS = [
-  { name: "Employees", href: ROUTES.HOME, icon: EmployeesIcon },
-  { name: "Skills", href: "/skills", icon: SkillsIcon },
-  { name: "Languages", href: "/languages", icon: LanguagesIcon },
-  { name: "CVs", href: "/cvs", icon: CVsIcon },
-];
+import { NAV_ITEMS } from "@/features/layout/navItemsConfig";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -52,11 +42,16 @@ export default function Sidebar() {
       >
         <nav className="flex-1 py-11 space-y-[14px]">
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
+            const path =
+              typeof item.href === "function"
+                ? item.href(user?.id || "")
+                : item.href;
+
+            const isActive = pathname === path;
             return (
               <Link
                 key={item.name}
-                href={item.href}
+                href={path}
                 className={cn(
                   "flex items-center py-4 transition-all duration-300 ease-in-out rounded-r-full overflow-hidden", 
                   isCollapsed ? "justify-center px-0" : "px-4",
@@ -155,12 +150,17 @@ export default function Sidebar() {
       <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white flex justify-between items-center px-4 py-2 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
         <div className="flex gap-2 flex-1 items-center">
           {NAV_ITEMS.slice(0, 3).map((item) => {
-            const isActive = pathname === item.href;
+            const path =
+              typeof item.href === "function"
+                ? item.href(user?.id || "")
+                : item.href;
+
+            const isActive = pathname === path;
             
             return (
               <Link
                 key={item.name}
-                href={item.href}
+                href={path}
                 className={cn(
                   "flex-1 flex items-center justify-center gap-2 h-10 rounded-full text-sm transition-colors",
                   isActive

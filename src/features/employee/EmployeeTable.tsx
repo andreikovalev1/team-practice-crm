@@ -6,6 +6,8 @@ import { IoIosSearch } from "react-icons/io"
 import { GoArrowUp } from "react-icons/go"
 import { useState } from "react";
 import { User } from "@/types/user.types";
+import Link from "next/link";
+import { ROUTES } from "@/app/configs/routesConfig";
 
 interface EmployeeTableProps {
   employees: User[];
@@ -99,7 +101,7 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
                 <td className="px-4 py-4 hidden md:table-cell">{employee.email}</td>
                 <td className="px-4 py-4">{employee.department_name}</td>
                 <td className="px-4 py-4">{employee.position_name}</td>
-                <td className="px-4 py-4"><MdArrowForwardIos size={14} /></td>
+                <td className="px-4 py-4"><Link href={ROUTES.PROFILE(employee.id)}> <MdArrowForwardIos size={14} /> </Link></td>
               </tr>
             ))}
           </tbody>

@@ -11,6 +11,7 @@ import {
   UPDATE_PROFILE_MUTATION,
   UPLOAD_AVATAR_MUTATION,
   UPDATE_USER_MUTATION,
+  GET_USER_BY_ID_QUERY //Запрос для user по id
 } from "./graphql";
 import { User } from '@/types/user.types';
 
@@ -42,6 +43,21 @@ interface UpdateUserResponse {
     position_name: string;
   };
 }
+//Интерфейс для запроса для user по id
+interface GetUserByIdResponse {
+  user: {
+    id: string;
+    email: string;
+    created_at: string;
+    department_name: string;
+    position_name: string;
+    profile: {
+      first_name: string;
+      last_name: string;
+      avatar: string;
+    };
+  };
+}
 
 // =========================================================================
 // ЗАЩИТА HYDRATION ДЛЯ NEXT.JS (SSR/SSG)
@@ -71,6 +87,21 @@ export default function ProfileForm() {
   const { user } = useUserStore();
   const params = useParams(); 
 
+  //Чтоб различать свой и чужой профиль
+  const profileUserId = params?.userId as string | undefined;
+  const isOwnProfile =
+    !!user &&
+    (!profileUserId || profileUserId === user.id);
+
+    const { data: profileData, loading: profileLoading } =
+      useQuery<GetUserByIdResponse>(
+        GET_USER_BY_ID_QUERY,
+        {
+          variables: { userId: profileUserId },
+          skip: isOwnProfile || !profileUserId || !user,
+        }
+      );
+
   if (!isClient || !user) {
     return (
       <div className="w-full max-w-[900px] mx-auto py-8 px-4 flex flex-col items-center animate-pulse" data-testid="profile-skeleton">
@@ -89,13 +120,26 @@ export default function ProfileForm() {
 
   // AC-4: Проверяем, чей это профиль. 
   // Вытаскиваем ID из параметров маршрута (например, /users/123/profile)
-  const profileUserId = params?.userId as string | undefined;
+  // const profileUserId = params?.userId as string | undefined;
   
   // Если ID в URL есть и он НЕ совпадает с ID текущего пользователя - включаем Read-Only
   // P.S. Если нужно дать права админу, можно расширить: && user.role !== 'Admin'
-  const isReadOnly = Boolean(profileUserId && profileUserId !== user.id);
+  // const isReadOnly = Boolean(profileUserId && profileUserId !== user.id);
 
-  return <ProfileFormContent key={user.email || 'form'} user={user} isReadOnly={isReadOnly} />;
+  // return <ProfileFormContent key={user.email || 'form'} user={user} isReadOnly={isReadOnly} />;
+    const profileUser = isOwnProfile ? user : profileData?.user;
+
+    if (!profileUser) {
+      return <div>Loading profile...</div>;
+    }
+
+    return (
+      <ProfileFormContent
+        key={profileUser.id}
+        user={profileUser}
+        isReadOnly={!isOwnProfile}
+      />
+    );
 }
 
 // =========================================================================

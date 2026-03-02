@@ -5,6 +5,6 @@ export const ROUTES = {
     RESET: '/auth/reset',
     NEWPASSWORD: '/auth/new_password',
     PROFILE: (userId: string) => `/users/${userId}/profile`,
-    SKILLS: '/skills',
-    LANGUAGES: '/languages',
+    SKILLS: (userId: string) => `/users/${userId}/skills`,
+    LANGUAGES: (userId: string) => `/users/${userId}/languages`,
 }
