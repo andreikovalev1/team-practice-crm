@@ -5,11 +5,14 @@ export const LOGIN_QUERY = gql`
   query Login($auth: AuthInput!) {
     login(auth: $auth) {
       access_token
+      refresh_token
       user {
         id
         email
         role
         created_at
+        department_name
+        position_name
         profile {
           first_name
           last_name
