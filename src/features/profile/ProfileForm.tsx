@@ -15,6 +15,8 @@ import {
 } from "./graphql";
 import { User } from "@/types/user.types";
 import toast from "react-hot-toast";
+import FloatingInput from "@/components/FloatingInput";
+import FloatingSelect from "@/components/FloatingSelect";
 
 interface Department {
   id: string;
@@ -118,18 +120,10 @@ function ProfileFormContent({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { setLogin } = useUserStore();
 
-  const [firstName, setFirstName] = useState(
-    user.profile?.first_name || ""
-  );
-  const [lastName, setLastName] = useState(
-    user.profile?.last_name || ""
-  );
-  const [department, setDepartment] = useState(
-    user.department_name || ""
-  );
-  const [position, setPosition] = useState(
-    user.position_name || ""
-  );
+  const [firstName, setFirstName] = useState(user.profile?.first_name || "");
+  const [lastName, setLastName] = useState(user.profile?.last_name || "");
+  const [department, setDepartment] = useState(user.department_name || "");
+  const [position, setPosition] = useState(user.position_name || "");
 
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     user.profile?.avatar || null
@@ -137,13 +131,13 @@ function ProfileFormContent({
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { data: deptData } = useQuery<{
-    departments: Department[];
-  }>(GET_DEPARTMENTS_QUERY);
+  const { data: deptData } = useQuery<{ departments: Department[] }>(
+    GET_DEPARTMENTS_QUERY
+  );
 
-  const { data: posData } = useQuery<{
-    positions: Position[];
-  }>(GET_POSITIONS_QUERY);
+  const { data: posData } = useQuery<{ positions: Position[] }>(
+    GET_POSITIONS_QUERY
+  );
 
   const [updateProfile] =
     useMutation<UpdateProfileResponse>(UPDATE_PROFILE_MUTATION);
@@ -163,6 +157,7 @@ function ProfileFormContent({
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (isReadOnly) return;
+
     const file = e.target.files?.[0];
     if (file) {
       setAvatarFile(file);
@@ -208,15 +203,13 @@ function ProfileFormContent({
         },
       });
 
-      const selectedDeptId =
-        deptData?.departments.find(
-          (d) => d.name === department
-        )?.id;
+      const selectedDeptId = deptData?.departments.find(
+        (d) => d.name === department
+      )?.id;
 
-      const selectedPosId =
-        posData?.positions.find(
-          (p) => p.name === position
-        )?.id;
+      const selectedPosId = posData?.positions.find(
+        (p) => p.name === position
+      )?.id;
 
       let updatedDepartmentName = user.department_name;
       let updatedPositionName = user.position_name;
@@ -249,11 +242,9 @@ function ProfileFormContent({
         profile: {
           ...user.profile,
           first_name:
-            profileRes.data?.updateProfile.first_name ??
-            firstName,
+            profileRes.data?.updateProfile.first_name ?? firstName,
           last_name:
-            profileRes.data?.updateProfile.last_name ??
-            lastName,
+            profileRes.data?.updateProfile.last_name ?? lastName,
           avatar: finalAvatarUrl,
         },
       });
@@ -272,8 +263,13 @@ function ProfileFormContent({
     }
   };
 
+  const formattedDate = user.created_at
+    ? new Date(Number(user.created_at)).toDateString()
+    : "";
+
   return (
     <div className="w-full max-w-[900px] mx-auto py-8 px-4">
+      {/* Avatar */}
       <div className="flex items-center gap-6 mb-8">
         <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200">
           {avatarPreview ? (
@@ -289,9 +285,7 @@ function ProfileFormContent({
           <>
             <button
               type="button"
-              onClick={() =>
-                fileInputRef.current?.click()
-              }
+              onClick={() => fileInputRef.current?.click()}
               className="flex items-center gap-2 text-gray-900 hover:text-red-700"
             >
               <Upload size={18} />
@@ -307,15 +301,61 @@ function ProfileFormContent({
         )}
       </div>
 
+      {/* Info */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold">
+          {firstName} {lastName}
+        </h2>
+        <p className="text-gray-500">{user.email}</p>
+        <p className="text-gray-400 text-sm">
+          Member since {formattedDate}
+        </p>
+      </div>
+
+      {/* Form */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FloatingInput
+          label="First Name"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          disabled={isReadOnly}
+        />
+
+        <FloatingInput
+          label="Last Name"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          disabled={isReadOnly}
+        />
+
+        <FloatingSelect
+          label="Department"
+          value={department}
+          onChange={(e) => setDepartment(e.target.value)}
+          options={deptData?.departments || []}
+          disabled={isReadOnly}
+        />
+
+        <FloatingSelect
+          label="Position"
+          value={position}
+          onChange={(e) => setPosition(e.target.value)}
+          options={posData?.positions || []}
+          disabled={isReadOnly}
+        />
+      </div>
+
       {!isReadOnly && (
-        <button
-          type="button"
-          onClick={handleUpdate}
-          disabled={!isDirty || isSubmitting}
-          className="bg-red-700 text-white px-6 py-2 rounded-full disabled:bg-gray-300"
-        >
-          {isSubmitting ? "Updating..." : "Update"}
-        </button>
+        <div className="mt-8">
+          <button
+            type="button"
+            onClick={handleUpdate}
+            disabled={!isDirty || isSubmitting}
+            className="bg-red-700 text-white px-6 py-2 rounded-full disabled:bg-gray-300"
+          >
+            {isSubmitting ? "Updating..." : "Update"}
+          </button>
+        </div>
       )}
     </div>
   );
