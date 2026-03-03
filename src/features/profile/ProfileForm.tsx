@@ -2,48 +2,54 @@
 
 import { useRef, useState, useSyncExternalStore } from "react";
 import { Upload, Trash2 } from "lucide-react";
-// import { useParams } from "next/navigation";
-import { useQuery } from "@apollo/client/react";
-// import { useUserStore } from "@/store/useUserStore";
-import { GET_USER_BY_ID_QUERY } from "./graphql";
+// import { useQuery } from "@apollo/client/react";
+// import { GET_USER_BY_ID_QUERY } from "./graphql";
 import { User } from "@/types/user.types";
 import FloatingInput from "@/components/FloatingInput";
 import FloatingSelect from "@/components/FloatingSelect";
 import { useProfileFormLogic } from "./useProfileForm";
-import { GetUserByIdResponse } from "./types";
+// import { GetUserByIdResponse } from "./types";
 import Image from "next/image";
 import toast from "react-hot-toast";
+// import { useIsOwnProfile } from "@/features/profile/useIsOwnProfile";
 
-import { useIsOwnProfile } from "@/features/profile/useIsOwnProfile";
+import { useProfileUser } from "./useProfileUser";
 
-const emptySubscribe = () => () => {};
-const getClientSnapshot = () => true;
-const getServerSnapshot = () => false;
+// const emptySubscribe = () => () => {};
+// const getClientSnapshot = () => true;
+// const getServerSnapshot = () => false;
 
 export default function ProfileForm() {
-  const isClient = useSyncExternalStore(emptySubscribe, getClientSnapshot, getServerSnapshot);
-  // const { user } = useUserStore();
-  // const params = useParams();
-  // const profileUserId = params?.userId as string | undefined;
+  // const isClient = useSyncExternalStore(emptySubscribe, getClientSnapshot, getServerSnapshot);
+  // const { user, profileUserId, isOwnProfile } = useIsOwnProfile();
 
-  // const isOwnProfile = !!user && (!profileUserId || profileUserId === user.id);
+  // const { data: profileData } = useQuery<GetUserByIdResponse>(
+  //   GET_USER_BY_ID_QUERY,
+  //   {
+  //     variables: { userId: profileUserId },
+  //     skip: isOwnProfile || !profileUserId || !user,
+  //   }
+  // );
 
-  const { user, profileUserId, isOwnProfile } = useIsOwnProfile();
+  // if (!isClient || !user) return <div className="p-10 text-center">Loading...</div>;
 
-  const { data: profileData } = useQuery<GetUserByIdResponse>(
-    GET_USER_BY_ID_QUERY,
-    {
-      variables: { userId: profileUserId },
-      skip: isOwnProfile || !profileUserId || !user,
-    }
+  // const profileUser = isOwnProfile ? user : profileData?.user;
+  // if (!profileUser) return <div className="p-10 text-center">Loading profile...</div>;
+
+  // return <ProfileFormContent key={profileUser.id} user={profileUser} isReadOnly={!isOwnProfile} />;
+  const { isClient, profileUser, isOwnProfile, loading } = useProfileUser();
+
+  if (!isClient || loading) {
+    return <div className="p-10 text-center">Loading...</div>;
+  }
+
+  if (!profileUser) {
+    return <div className="p-10 text-center">Loading profile...</div>;
+  }
+
+  return (
+    <ProfileFormContent key={profileUser.id} user={profileUser} isReadOnly={!isOwnProfile} />
   );
-
-  if (!isClient || !user) return <div className="p-10 text-center">Loading...</div>;
-
-  const profileUser = isOwnProfile ? user : profileData?.user;
-  if (!profileUser) return <div className="p-10 text-center">Loading profile...</div>;
-
-  return <ProfileFormContent key={profileUser.id} user={profileUser} isReadOnly={!isOwnProfile} />;
 }
 
 function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: boolean }) {
