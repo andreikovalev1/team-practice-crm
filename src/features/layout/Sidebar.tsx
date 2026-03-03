@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { ROUTES } from "@/app/configs/routesConfig";
 import { cn } from "@/lib/utils";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, LogOut, User as UserIcon } from "lucide-react";
 import { useUserStore } from "@/store/useUserStore";
 import {
   Tooltip,
@@ -14,10 +14,18 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { NAV_ITEMS } from "@/features/layout/navItemsConfig";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -25,12 +33,17 @@ export default function Sidebar() {
     setIsMounted(true);
   }, []);
 
-  const { user } = useUserStore();
+  const { user, logout } = useUserStore();
 
   const firstName = user?.profile?.first_name || "User";
   const lastName = user?.profile?.last_name || "";
   const fullName = `${firstName} ${lastName}`.trim();
   const userInitial = firstName.charAt(0).toUpperCase();
+
+  const handleLogout = () => {
+    if (logout) logout();
+    router.push('/auth/login');
+  };
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -85,56 +98,85 @@ export default function Sidebar() {
         </nav>
 
         <div className="mt-auto">
-          {/* ПРОФИЛЬ ДЕСКТОП */}
-          <Link
-            href={user?.id ? ROUTES.PROFILE(user.id) : "#"}
-            className={cn(
-             "flex items-center transition-all duration-300 ease-in-out", 
-             isCollapsed ? "justify-center px-0 py-2" : "px-2 py-2"
-          )}>
-            {!isMounted ? (
-              // Скелетон во время загрузки (убирает моргание)
-              <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse shrink-0" />
-            ) : (
-              // Реальные данные профиля
-              <>
-                <div className="w-10 h-10 rounded-full bg-[#C8372D] flex items-center justify-center text-white font-medium shrink-0 text-[18px] overflow-hidden">
+          {/* ПРОФИЛЬ ДЕСКТОП С DROPDOWN */}
+          <DropdownMenu>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DropdownMenuTrigger asChild>
+                  <button className={cn(
+                    "flex items-center w-full focus:outline-none transition-all duration-300 ease-in-out hover:bg-gray-50", 
+                    isCollapsed ? "justify-center px-0 py-2" : "px-2 py-2 text-left"
+                  )}>
+                    {!isMounted ? (
+                      <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse shrink-0" />
+                    ) : (
+                      <>
+                        <div className="relative w-10 h-10 rounded-full bg-[#C8372D] flex items-center justify-center text-white font-medium shrink-0 text-[18px] overflow-hidden">
+                          {user?.profile?.avatar ? (
+                            <Image 
+                              src={user.profile.avatar} 
+                              alt={fullName} 
+                              fill 
+                              className="object-cover"
+                              unoptimized
+                            />
+                          ) : (
+                            userInitial
+                          )}
+                        </div>
+                        
+                        <span className={cn(
+                          "text-md font-medium text-black truncate whitespace-nowrap transition-all duration-300 ease-in-out",
+                          isCollapsed ? "max-w-0 opacity-0 ml-0" : "max-w-[150px] opacity-100 ml-2"
+                        )}>
+                          {fullName}
+                        </span>
+                      </>
+                    )}
+                  </button>
+                </DropdownMenuTrigger>
+              </TooltipTrigger>
+              
+              {!isCollapsed && isMounted && (
+                <TooltipContent side="right" className="z-50 bg-black text-white px-3 py-1.5 text-sm rounded-md shadow-md">
+                  <p>{fullName}</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+
+            {/* КОНТЕНТ ДЕСКТОПНОГО МЕНЮ */}
+            <DropdownMenuContent side="right" align="end" className="w-56 mb-2 ml-2 rounded-xl">
+              <div className="flex items-center gap-2 p-2">
+                <div className="relative w-8 h-8 rounded-full bg-[#C8372D] flex items-center justify-center text-white font-medium shrink-0 overflow-hidden">
                   {user?.profile?.avatar ? (
-                    <Image 
-                      src={user.profile.avatar} 
-                      alt={fullName} 
-                      fill 
-                      className="object-cover"
-                      unoptimized
-                    />
+                    <Image src={user.profile.avatar} alt={fullName} fill className="object-cover" unoptimized />
                   ) : (
-                    userInitial
+                    <span className="text-xs">{userInitial}</span>
                   )}
                 </div>
-                
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className={cn(
-                      "text-md font-medium text-black truncate whitespace-nowrap transition-all duration-300 ease-in-out cursor-pointer", // cursor-pointer т.к. это ссылка
-                      isCollapsed ? "max-w-0 opacity-0 ml-0" : "max-w-[150px] opacity-100 ml-2"
-                    )}>
-                      {fullName}
-                    </span>
-                  </TooltipTrigger>
-                  
-                  {!isCollapsed && (
-                    <TooltipContent side="right" className="z-50 bg-black text-white px-3 py-1.5 text-sm rounded-md shadow-md">
-                      <p>{fullName}</p>
-                    </TooltipContent>
-                  )}
-                </Tooltip>
-              </>
-            )}
-          </Link>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none">{fullName}</p>
+                  <p className="text-xs leading-none text-gray-500">{user?.email}</p>
+                </div>
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild className="cursor-pointer py-2.5">
+                <Link href={user?.id ? ROUTES.PROFILE(user.id) : "#"} className="w-full">
+                  <UserIcon className="mr-2 h-4 w-4" />
+                  <span>My Profile</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 py-2.5">
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <div className={cn(
             "flex items-center py-2 transition-all duration-300 ease-in-out", 
-            isCollapsed ? "justify-center px-0" : "px-2"
+            isCollapsed ? "pl-5" : "pl-2"
           )}>
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
@@ -186,42 +228,66 @@ export default function Sidebar() {
           })}
         </div>
         
-        {/* ПРОФИЛЬ МОБИЛКА */}
-        <Link 
-          href={user?.id ? ROUTES.PROFILE(user.id) : "#"}
-          className="flex items-center gap-2 pl-3 shrink-0 cursor-pointer"
-        >
-          {!isMounted ? (
-            <div className="w-10 h-10 sm:w-10 sm:h-10 rounded-full bg-gray-200 animate-pulse shrink-0" />
-          ) : (
-            <>
-              <div className="w-10 h-10 sm:w-10 sm:h-10 rounded-full bg-[#C8372D] flex items-center justify-center text-white text-lg font-medium shrink-0 overflow-hidden">
-                  {user?.profile?.avatar ? (
-                    <Image 
-                      src={user.profile.avatar} 
-                      alt={fullName} 
-                      fill 
-                      className="object-cover"
-                      unoptimized
-                    />
-                  ) : (
-                    userInitial
-                  )}
-              </div>
-              
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="hidden sm:block text-sm font-medium text-[#2E2E2E] truncate max-w-[120px] cursor-pointer">
+        {/* ПРОФИЛЬ МОБИЛКА С DROPDOWN */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-2 pl-3 shrink-0 focus:outline-none cursor-pointer">
+              {!isMounted ? (
+                <div className="w-10 h-10 sm:w-10 sm:h-10 rounded-full bg-gray-200 animate-pulse shrink-0" />
+              ) : (
+                <>
+                  <div className="relative w-10 h-10 sm:w-10 sm:h-10 rounded-full bg-[#C8372D] flex items-center justify-center text-white text-lg font-medium shrink-0 overflow-hidden">
+                      {user?.profile?.avatar ? (
+                        <Image 
+                          src={user.profile.avatar} 
+                          alt={fullName} 
+                          fill 
+                          className="object-cover"
+                          unoptimized
+                        />
+                      ) : (
+                        userInitial
+                      )}
+                  </div>
+                  
+                  <span className="hidden sm:block text-sm font-medium text-[#2E2E2E] truncate max-w-[120px]">
                     {fullName}
                   </span>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="z-50 bg-black text-white px-3 py-1.5 text-sm rounded-md shadow-md">
-                  <p>{fullName}</p>
-                </TooltipContent>
-              </Tooltip>
-            </>
-          )}
-        </Link>
+                </>
+              )}
+            </button>
+          </DropdownMenuTrigger>
+
+          {/* КОНТЕНТ МОБИЛЬНОГО МЕНЮ */}
+          <DropdownMenuContent side="top" align="end" className="w-56 mb-2 mr-2 rounded-xl shadow-lg">
+            <div className="flex items-center gap-2 p-2">
+              <div className="relative w-8 h-8 rounded-full bg-[#C8372D] flex items-center justify-center text-white font-medium shrink-0 overflow-hidden">
+                {user?.profile?.avatar ? (
+                  <Image src={user.profile.avatar} alt={fullName} fill className="object-cover" unoptimized />
+                ) : (
+                  <span className="text-xs">{userInitial}</span>
+                )}
+              </div>
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">{fullName}</p>
+                <p className="text-xs leading-none text-gray-500">{user?.email}</p>
+              </div>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild className="cursor-pointer py-2.5">
+              <Link href={user?.id ? ROUTES.PROFILE(user.id) : "#"} className="w-full">
+                <UserIcon className="mr-2 h-4 w-4" />
+                <span>My Profile</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 py-2.5">
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Log out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
       </nav>
     </TooltipProvider>
   );
