@@ -2,9 +2,9 @@
 
 import { useRef, useState, useSyncExternalStore } from "react";
 import { Upload, Trash2 } from "lucide-react";
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 import { useQuery } from "@apollo/client/react";
-import { useUserStore } from "@/store/useUserStore";
+// import { useUserStore } from "@/store/useUserStore";
 import { GET_USER_BY_ID_QUERY } from "./graphql";
 import { User } from "@/types/user.types";
 import FloatingInput from "@/components/FloatingInput";
@@ -14,17 +14,21 @@ import { GetUserByIdResponse } from "./types";
 import Image from "next/image";
 import toast from "react-hot-toast";
 
+import { useIsOwnProfile } from "@/features/profile/useIsOwnProfile";
+
 const emptySubscribe = () => () => {};
 const getClientSnapshot = () => true;
 const getServerSnapshot = () => false;
 
 export default function ProfileForm() {
   const isClient = useSyncExternalStore(emptySubscribe, getClientSnapshot, getServerSnapshot);
-  const { user } = useUserStore();
-  const params = useParams();
-  const profileUserId = params?.userId as string | undefined;
+  // const { user } = useUserStore();
+  // const params = useParams();
+  // const profileUserId = params?.userId as string | undefined;
 
-  const isOwnProfile = !!user && (!profileUserId || profileUserId === user.id);
+  // const isOwnProfile = !!user && (!profileUserId || profileUserId === user.id);
+
+  const { user, profileUserId, isOwnProfile } = useIsOwnProfile();
 
   const { data: profileData } = useQuery<GetUserByIdResponse>(
     GET_USER_BY_ID_QUERY,
