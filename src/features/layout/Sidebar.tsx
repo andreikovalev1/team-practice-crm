@@ -100,7 +100,13 @@ export default function Sidebar() {
               <>
                 <div className="w-10 h-10 rounded-full bg-[#C8372D] flex items-center justify-center text-white font-medium shrink-0 text-[18px] overflow-hidden">
                   {user?.profile?.avatar ? (
-                    <img src={user.profile.avatar} alt={fullName} className="w-full h-full object-cover" />
+                    <Image 
+                      src={user.profile.avatar} 
+                      alt={fullName} 
+                      fill 
+                      className="object-cover"
+                      unoptimized
+                    />
                   ) : (
                     userInitial
                   )}
@@ -191,7 +197,13 @@ export default function Sidebar() {
             <>
               <div className="w-10 h-10 sm:w-10 sm:h-10 rounded-full bg-[#C8372D] flex items-center justify-center text-white text-lg font-medium shrink-0 overflow-hidden">
                   {user?.profile?.avatar ? (
-                    <img src={user.profile.avatar} alt={fullName} className="w-full h-full object-cover" />
+                    <Image 
+                      src={user.profile.avatar} 
+                      alt={fullName} 
+                      fill 
+                      className="object-cover"
+                      unoptimized
+                    />
                   ) : (
                     userInitial
                   )}

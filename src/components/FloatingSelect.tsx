@@ -38,7 +38,7 @@ export default function FloatingSelect({
         ▼
       </div>
 
-      <label className="absolute left-3 -top-2.5 bg-[#F8F8F8] px-1 text-xs text-gray-500 pointer-events-none">
+      <label className="absolute left-3 -top-2 px-1 text-xs text-gray-500 pointer-events-none">
         {label}
       </label>
     </div>

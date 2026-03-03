@@ -8,6 +8,7 @@ import { useState } from "react";
 import { User } from "@/types/user.types";
 import Link from "next/link";
 import { ROUTES } from "@/app/configs/routesConfig";
+import Image from "next/image";
 
 interface EmployeeTableProps {
   employees: User[];
@@ -81,19 +82,24 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
                 className="border-t border-zinc-200 hover:bg-zinc-50 transition"
               >
                 <td className="px-4 py-4">
-                  {employee.profile?.avatar ? (
-                    <img
-                      src={employee.profile.avatar}
-                      alt="avatar"
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-sm font-medium text-white">
-                      {employee.profile?.first_name
-                        ? employee.profile.first_name.charAt(0).toUpperCase()
-                        : employee.email.charAt(0).toUpperCase()}
-                    </div>
-                  )}
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gray-300 flex items-center justify-center">
+                    {employee.profile?.avatar ? (
+                      <Image
+                        src={employee.profile.avatar}
+                        alt={`${employee.profile?.first_name || 'User'} avatar`}
+                        fill
+                        sizes="40px"
+                        className="object-cover"
+                        unoptimized
+                      />
+                    ) : (
+                      <span className="text-sm font-medium text-white uppercase select-none">
+                        {employee.profile?.first_name
+                          ? employee.profile.first_name.charAt(0)
+                          : employee.email.charAt(0)}
+                      </span>
+                    )}
+                  </div>
                 </td>
 
                 <td className="px-4 py-4">{employee.profile?.first_name}</td>
