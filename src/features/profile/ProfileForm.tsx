@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useSyncExternalStore } from "react";
-import { Upload } from "lucide-react";
+import { useRef, useState, useSyncExternalStore } from "react";
+import { Upload, Trash2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useQuery } from "@apollo/client/react";
 import { useUserStore } from "@/store/useUserStore";
@@ -12,6 +12,7 @@ import FloatingSelect from "@/components/FloatingSelect";
 import { useProfileFormLogic } from "./useProfileForm";
 import { GetUserByIdResponse } from "./types";
 import Image from "next/image";
+import toast from "react-hot-toast";
 
 const emptySubscribe = () => () => {};
 const getClientSnapshot = () => true;
@@ -44,6 +45,38 @@ export default function ProfileForm() {
 function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: boolean }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const logic = useProfileFormLogic(user, isReadOnly);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleFile = (file: File) => {
+    if (file.size > 500 * 1024) {
+        toast.error("The file is too large. Max size is 500KB");
+        return;
+    }
+    logic.setAvatarFile(file);
+    logic.setAvatarPreview(URL.createObjectURL(file));
+  }
+
+  const onDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (!isReadOnly) setIsDragging(true);
+  };
+
+  const onDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (isReadOnly) return;
+
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      handleFile(file);
+    } else if (file) {
+      toast.error("Пожалуйста, загрузите изображение (PNG, JPG или GIF)");
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isReadOnly) return;
@@ -60,20 +93,65 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
     <div className="w-full max-w-[900px] mx-auto py-8 px-6 flex flex-col items-center">
       {/* Аватар */}
       <div className="flex items-center gap-6 mb-8">
-        <div className="relative w-24 h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+        {/* Контейнер аватара, теперь с group для ховера */}
+        <div
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDrop={onDrop}
+            className={`relative w-24 h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center group transition-all border-2
+            ${!isReadOnly ? "cursor-pointer hover:border-[#C8372D]" : "border-transparent"}
+            ${isDragging ? "border-[#C8372D] scale-105 bg-red-50" : "bg-gray-200 border-transparent"}
+          `}
+        >
             {logic.avatarPreview ? (
-                <Image 
-                src={logic.avatarPreview} 
-                alt="Avatar" 
-                fill
-                className="object-cover" 
-                priority
-                unoptimized
-                />
+                <>
+                    <Image 
+                    src={logic.avatarPreview} 
+                    alt="Avatar" 
+                    fill
+                    className="object-cover transition-all duration-300 group-hover:blur-sm" // Добавлен блюр при ховере
+                    priority
+                    unoptimized
+                    />
+                    {/* Кнопка удаления поверх картинки, появляется при ховере */}
+                    {!isReadOnly && (
+                        <div 
+                          className="absolute inset-0 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity bg-black/20 z-10"
+                          onClick={(e) => {
+                              e.stopPropagation(); // Важно: предотвращаем клик по инпуту загрузки
+                              logic.setAvatarPreview(null);
+                              logic.setAvatarFile(null);
+                          }}
+                        >
+                            <Trash2 size={24} className="text-white hover:text-red-500 drop-shadow-md transition-colors" />
+                        </div>
+                    )}
+                </>
             ) : (
-                <span className="text-2xl font-medium text-gray-500 uppercase select-none">
-                {logic.firstName?.charAt(0) || user.email?.charAt(0)}
-                </span>
+               <>
+                    <span className={`text-2xl font-medium text-gray-500 uppercase select-none transition-opacity duration-300 ${!isReadOnly && 'group-hover:opacity-0'}`}>
+                        {logic.firstName?.charAt(0) || user.email?.charAt(0)}
+                    </span>
+                    
+                    {!isReadOnly && (
+                        <div 
+                          className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          <Upload size={20} className="text-gray-600" />
+                        </div>
+                    )}
+                </>
+            )}
+
+            {/* Затемнение при наведении (подсказка загрузки), если аватара НЕТ */}
+            {!isReadOnly && !logic.avatarPreview && (
+                <div 
+                  className="absolute inset-0 bg-black/5 opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity"
+                  onClick={() => fileInputRef.current?.click()} // Вызов инпута только если нет картинки
+                >
+                  <Upload size={20} className="text-gray-600" />
+                </div>
             )}
         </div>
 
@@ -87,7 +165,7 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
               <Upload size={18} /> Upload avatar
             </button>
             <span className="text-gray-400 text-xs mt-1">png, jpg or gif no more than 0.5MB</span>
-            <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
+            <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
           </div>
         )}
       </div>
