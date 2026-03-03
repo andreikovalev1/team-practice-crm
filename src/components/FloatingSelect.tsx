@@ -23,7 +23,7 @@ export default function FloatingSelect({
     <div className="relative w-full">
       <select
         {...props}
-        className={`peer w-full border border-gray-300 rounded-md bg-transparent px-3 py-2.5 text-sm text-gray-900 focus:border-gray-500 focus:outline-none focus:ring-0 appearance-none transition-colors ${className}`}
+        className={`peer w-full border border-gray-300 bg-transparent px-3 py-3 text-sm text-gray-900 focus:border-gray-500 focus:outline-none focus:ring-0 appearance-none transition-colors ${className}`}
       >
         <option value="">Select {label}</option>
 

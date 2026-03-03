@@ -268,95 +268,101 @@ function ProfileFormContent({
     : "";
 
   return (
-    <div className="w-full max-w-[900px] mx-auto py-8 px-4">
-      {/* Avatar */}
-      <div className="flex items-center gap-6 mb-8">
+  <div className="w-full max-w-[900px] mx-auto py-8 px-6 flex flex-col items-center">
+        {/* 1. Блок Аватара: центрируем через flex в родителе */}
+        <div className="flex items-center gap-6 mb-8">
         <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200">
-          {avatarPreview ? (
+            {avatarPreview ? (
             <img
-              src={avatarPreview}
-              alt="Avatar"
-              className="w-full h-full object-cover"
+                src={avatarPreview}
+                alt="Avatar"
+                className="w-full h-full object-cover"
             />
-          ) : null}
+            ) : null}
         </div>
 
         {!isReadOnly && (
-          <>
+            <div className="flex flex-col items-start">
             <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 text-gray-900 hover:text-red-700"
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center gap-2 text-gray-900 font-medium hover:text-red-700 transition-colors"
             >
-              <Upload size={18} />
-              Upload avatar
+                <Upload size={18} />
+                Upload avatar
             </button>
+            <span className="text-gray-400 text-xs mt-1">png, jpg or gif no more than 0.5MB</span>
             <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
             />
-          </>
+            </div>
         )}
-      </div>
-
-      {/* Info */}
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold">
-          {firstName} {lastName}
-        </h2>
-        <p className="text-gray-500">{user.email}</p>
-        <p className="text-gray-400 text-sm">
-          Member since {formattedDate}
-        </p>
-      </div>
-
-      {/* Form */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <FloatingInput
-          label="First Name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          disabled={isReadOnly}
-        />
-
-        <FloatingInput
-          label="Last Name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          disabled={isReadOnly}
-        />
-
-        <FloatingSelect
-          label="Department"
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-          options={deptData?.departments || []}
-          disabled={isReadOnly}
-        />
-
-        <FloatingSelect
-          label="Position"
-          value={position}
-          onChange={(e) => setPosition(e.target.value)}
-          options={posData?.positions || []}
-          disabled={isReadOnly}
-        />
-      </div>
-
-      {!isReadOnly && (
-        <div className="mt-8">
-          <button
-            type="button"
-            onClick={handleUpdate}
-            disabled={!isDirty || isSubmitting}
-            className="bg-red-700 text-white px-6 py-2 rounded-full disabled:bg-gray-300"
-          >
-            {isSubmitting ? "Updating..." : "Update"}
-          </button>
         </div>
-      )}
+
+        {/* 2. Объединенный текстовый блок с общими стилями центрирования */}
+        <div className="mb-10 text-center">
+        <h2 className="text-xl md:text-2xl font-medium text-gray-900 mb-1">
+            {firstName} {lastName}
+        </h2>
+        <p className="text-gray-500 text-sm mb-1">{user.email}</p>
+        <p className="text-gray-400 text-xs">
+            A member since {formattedDate}
+        </p>
+        </div>
+
+        {/* 3. Контейнер формы: w-full нужен, чтобы грид не сжимался к центру */}
+        <div className="w-full max-w-[700px] grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-9">
+        <FloatingInput
+            label="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            disabled={isReadOnly}
+        />
+
+        <FloatingInput
+            label="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            disabled={isReadOnly}
+        />
+
+        <FloatingSelect
+            label="Department"
+            value={department}
+            onChange={(e) => setDepartment(e.target.value)}
+            options={deptData?.departments || []}
+            disabled={isReadOnly}
+        />
+
+        <FloatingSelect
+            label="Position"
+            value={position}
+            onChange={(e) => setPosition(e.target.value)}
+            options={posData?.positions || []}
+            disabled={isReadOnly}
+        />
+
+        {!isReadOnly && (
+            <div className="md:col-start-2">
+            <button
+                type="button"
+                onClick={handleUpdate}
+                disabled={!isDirty || isSubmitting}
+                className={`w-full font-medium py-3 rounded-full uppercase text-sm tracking-wide transition-all shadow-sm
+                    ${isDirty && !isSubmitting 
+                        ? "bg-[#C8372D] text-white hover:bg-red-800 active:scale-[0.98]" 
+                        : "bg-[#E0E0E0] text-gray-400 cursor-not-allowed"
+                    }
+                `}
+            >
+                {isSubmitting ? "Updating..." : "Update"}
+            </button>
+            </div>
+        )}
+        </div>
     </div>
-  );
+    );
 }
