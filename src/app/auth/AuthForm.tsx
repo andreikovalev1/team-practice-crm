@@ -13,6 +13,8 @@ import { ROUTES } from "@/app/configs/routesConfig"
 import toast from "react-hot-toast";
 import OvalButton from "@/components/button/OvalButton";
 
+import FloatingInput from "@/components/FloatingInput";
+
 interface AuthProp {
   mode: "login" | "register" | "reset" | "new_password"
 }
@@ -164,25 +166,27 @@ export default function AuthForm({ mode }: AuthProp) {
               )}
               
               {mode !== "new_password" && (
-                <Input 
-                  placeholder="Email" 
-                  type="email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="rounded-none border border-gray-300 mb-5" 
-                />
+                <div className="mb-5 w-140">
+                  <FloatingInput 
+                    label="Email" 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
               )}
               
               {mode !== "reset" && (
-                <Input 
-                  type="password" 
-                  placeholder={mode === "new_password" ? "New password" : "Password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="rounded-none border border-gray-300 mb-10" 
-                />
+                <div className="mb-10 w-140">
+                  <FloatingInput 
+                    type="password" 
+                    label={mode === "new_password" ? "New password" : "Password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
               )}
               
               <div className="mb-5">
