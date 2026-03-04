@@ -2,41 +2,16 @@
 
 import { useRef, useState, useSyncExternalStore } from "react";
 import { Upload, Trash2 } from "lucide-react";
-// import { useQuery } from "@apollo/client/react";
-// import { GET_USER_BY_ID_QUERY } from "./graphql";
 import { User } from "@/types/user.types";
 import FloatingInput from "@/components/FloatingInput";
 import FloatingSelect from "@/components/FloatingSelect";
 import { useProfileFormLogic } from "./useProfileForm";
-// import { GetUserByIdResponse } from "./types";
 import Image from "next/image";
 import toast from "react-hot-toast";
-// import { useIsOwnProfile } from "@/features/profile/useIsOwnProfile";
-
 import { useProfileUser } from "./useProfileUser";
 
-// const emptySubscribe = () => () => {};
-// const getClientSnapshot = () => true;
-// const getServerSnapshot = () => false;
-
 export default function ProfileForm() {
-  // const isClient = useSyncExternalStore(emptySubscribe, getClientSnapshot, getServerSnapshot);
-  // const { user, profileUserId, isOwnProfile } = useIsOwnProfile();
 
-  // const { data: profileData } = useQuery<GetUserByIdResponse>(
-  //   GET_USER_BY_ID_QUERY,
-  //   {
-  //     variables: { userId: profileUserId },
-  //     skip: isOwnProfile || !profileUserId || !user,
-  //   }
-  // );
-
-  // if (!isClient || !user) return <div className="p-10 text-center">Loading...</div>;
-
-  // const profileUser = isOwnProfile ? user : profileData?.user;
-  // if (!profileUser) return <div className="p-10 text-center">Loading profile...</div>;
-
-  // return <ProfileFormContent key={profileUser.id} user={profileUser} isReadOnly={!isOwnProfile} />;
   const { isClient, profileUser, isOwnProfile, loading } = useProfileUser();
 
   if (!isClient || loading) {
