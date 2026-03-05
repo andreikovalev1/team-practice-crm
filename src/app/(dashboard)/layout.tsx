@@ -59,7 +59,7 @@ export default function DashboardLayout({
       <Sidebar />
       <main className="flex-1 w-full overflow-y-auto">
 
-        <div className="px-8 pt-6 pb-4">
+        <div className="px-6 pt-4 pb-4">
           <div className="flex items-center gap-2 text-sm text-gray-500">
             {breadcrumbs.map((crumb, index) => {
               const isProfileName = crumb.label === fullName

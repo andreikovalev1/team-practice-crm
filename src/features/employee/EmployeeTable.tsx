@@ -39,7 +39,7 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
   })
 
   return (
-    <div className="p-6">
+    <div className="px-6">
       <div
         className="relative w-[320px] h-10 -top-1.25 rounded-[40px] border border-gray-300 bg-white flex items-center px-4"
       >

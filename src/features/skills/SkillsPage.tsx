@@ -46,7 +46,7 @@ export function SkillsPage() {
   };
 
   return (
-    <div className="w-full max-w-[900px] mx-auto py-8">
+    <div className="w-full max-w-[900px] mx-auto mb-8 px-6 py-8">
       {userSkillsCount > 0 ? (
         <SkillsList
             groupedSkills={groupedSkills}
@@ -63,7 +63,7 @@ export function SkillsPage() {
       )}
 
       {!isReadOnly && (
-        <div className="flex items-center justify-end gap-6 mt-16 pt-8">
+        <div className="flex items-center justify-end gap-6 mt-16 pt-6">
           
           {/* Кнопка Delete Selected (появляется только если выбрали чекбоксы) */}
           {isRemoveMode && selectedSkills.length > 0 && (
@@ -84,7 +84,7 @@ export function SkillsPage() {
                 setSelectedSkills([]);
             }}
             disabled={isRemoveMode}
-            className="flex items-center gap-2 text-gray-500 hover:text-gray-800 font-medium transition-colors text-sm tracking-wide uppercase disabled:opacity-30"
+            className="flex items-center gap-2 py-2 text-gray-500 hover:text-gray-800 font-medium transition-colors text-sm tracking-wide uppercase disabled:opacity-30"
           >
             <Plus size={18} />
             Add skill
@@ -93,7 +93,7 @@ export function SkillsPage() {
           {/* Кнопка REMOVE SKILLS */}
           {userSkillsCount > 0 && (
             <button 
-                className={`flex items-center gap-2 font-medium transition-colors text-sm tracking-wide uppercase ${isRemoveMode ? 'text-gray-600 hover:text-gray-900' : 'text-[#C8372D] hover:text-red-800'}`}
+                className={`flex items-center gap-2 py-2 font-medium transition-colors text-sm tracking-wide uppercase ${isRemoveMode ? 'text-gray-600 hover:text-gray-900' : 'text-[#C8372D] hover:text-red-800'}`}
                 onClick={() => {
                   setIsRemoveMode(!isRemoveMode);
                   setSelectedSkills([]); // Очищаем выбор при отмене

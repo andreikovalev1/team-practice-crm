@@ -22,11 +22,19 @@ const getMasteryLevel = (mastery: string): number => {
 };
 
 const getMasteryColor = (level: number) => {
-  if (level >= 5) return "bg-red-500";
+  if (level >= 5) return "bg-red-600";
   if (level === 4) return "bg-yellow-500";
-  if (level === 3) return "bg-green-500";
+  if (level === 3) return "bg-green-700";
   if (level === 2) return "bg-blue-500";
   return "bg-gray-500";
+};
+
+const getMasteryTrackColor = (level: number) => {
+  if (level >= 5) return "bg-red-300";
+  if (level === 4) return "bg-yellow-300/50";
+  if (level === 3) return "bg-green-700/30";
+  if (level === 2) return "bg-blue-300";
+  return "bg-gray-300";
 };
 
 export function SkillsItem({
@@ -39,6 +47,7 @@ export function SkillsItem({
 }: SkillsItemProps) {
   const masteryLevel = getMasteryLevel(skill.mastery);
   const colorClass = getMasteryColor(masteryLevel);
+  const trackColorClass = getMasteryTrackColor(masteryLevel);
 
   return (
     <div
@@ -52,7 +61,7 @@ export function SkillsItem({
         }
       }}
     >
-      {/* 🔲 ЧЕКБОКС */}
+      {/* ЧЕКБОКС */}
       {isRemoveMode && (
         <input
           type="checkbox"
@@ -63,9 +72,10 @@ export function SkillsItem({
         />
       )}
 
-      {/* 📊 ПОЛОСКА */}
+      {/* ПОЛОСКА */}
       <div className="relative flex items-center shrink-0 w-24 py-2">
-        <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden relative">
+        {/* ЗАМЕНИЛИ bg-gray-200 на динамический trackColorClass */}
+        <div className={cn("w-full h-1 overflow-hidden relative", trackColorClass)}>
           <div
             className={cn(
               "absolute top-0 left-0 h-full transition-all duration-300",
@@ -77,7 +87,7 @@ export function SkillsItem({
 
         {/* зоны клика работают ТОЛЬКО если не removeMode */}
         {!isReadOnly && !isRemoveMode && (
-          <div className="absolute inset-0 flex z-10">
+          <div className="absolute inset-0 flex">
             {levels.map((level) => (
               <div
                 key={level}
@@ -96,7 +106,7 @@ export function SkillsItem({
         )}
       </div>
 
-      <span className="text-gray-700 text-sm font-medium truncate select-none">
+      <span className="text-gray-500 text-md font-medium truncate select-none">
         {skill.name}
       </span>
     </div>
