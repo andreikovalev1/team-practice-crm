@@ -49,7 +49,7 @@ export default function Sidebar() {
     <TooltipProvider delayDuration={300}>
       <aside 
         className={cn(
-          "hidden md:flex flex-col h-screen bg-white transition-all top-0 sticky duration-300 ease-in-out z-50",
+          "hidden md:flex flex-col h-screen bg-white transition-all top-0 sticky duration-300 ease-in-out",
           isCollapsed ? "w-[80px]" : "w-[200px]"
         )}
       >

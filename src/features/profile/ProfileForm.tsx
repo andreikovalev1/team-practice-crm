@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useSyncExternalStore } from "react";
+import { useRef, useState } from "react";
 import { Upload, Trash2 } from "lucide-react";
 import { User } from "@/types/user.types";
 import FloatingInput from "@/components/FloatingInput";
@@ -94,7 +94,7 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
                     src={logic.avatarPreview} 
                     alt="Avatar" 
                     fill
-                    className="object-cover transition-all duration-300 group-hover:blur-sm" // Добавлен блюр при ховере
+                    className="object-cover transition-all duration-300 group-hover:blur-sm"
                     priority
                     unoptimized
                     />

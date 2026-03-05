@@ -78,7 +78,7 @@ export function SkillsItem({
         {/* зоны клика работают ТОЛЬКО если не removeMode */}
         {!isReadOnly && !isRemoveMode && (
           <div className="absolute inset-0 flex z-10">
-            {levels.map((level, index) => (
+            {levels.map((level) => (
               <div
                 key={level}
                 className="flex-1 h-full cursor-pointer"
