@@ -75,15 +75,15 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
   const formattedDate = user.created_at ? new Date(Number(user.created_at)).toDateString() : "";
 
   return (
-    <div className="w-full max-w-[900px] mx-auto py-8 px-6 flex flex-col items-center">
+    <div className="w-full px-4 md:px-8 py-8 flex flex-col items-center">
       {/* Аватар */}
-      <div className="flex items-center gap-6 mb-8">
+      <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
         {/* Контейнер аватара, теперь с group для ховера */}
         <div
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
             onDrop={onDrop}
-            className={`relative w-24 h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center group transition-all border-2
+            className={`flex-shrink-0 relative w-24 h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center group transition-all border-2
             ${!isReadOnly ? "cursor-pointer hover:border-[#C8372D]" : "border-transparent"}
             ${isDragging ? "border-[#C8372D] scale-105 bg-red-50" : "bg-gray-200 border-transparent"}
           `}
@@ -165,7 +165,7 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
       </div>
 
       {/* Форма */}
-      <div className="w-full max-w-[700px] grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-9">
+      <div className="w-full md:max-w-[700px] grid grid-cols-1 gap-y-6 md:grid-cols-2 md:gap-x-6 md:gap-y-9">  
         <FloatingInput
           label="First Name"
           value={logic.firstName}
