@@ -77,7 +77,6 @@ export function useSkillsLogic(userId: string | undefined) {
     const loadingToast = toast.loading("Removing skill...");
     try {
       await deleteSkillMutation({
-        // Важно: если в типах delete(name: [String]), то передаем массив [skillName]
         variables: { skill: { userId, name: skillNames } } 
       });
       toast.success("Skill removed!", { id: loadingToast });
@@ -100,16 +99,22 @@ export function useSkillsLogic(userId: string | undefined) {
     }
   };
 
-  // --- ГРУППИРОВКА ---
   const groupedSkills = useMemo(() => {
     return userSkills.reduce((acc, skill) => {
-      const categoryObj = categoriesList.find(c => c.id === skill.categoryId);
-      const categoryLabel = categoryObj?.name || "Other";
+      const globalSkillMatch = allGlobalSkills.find(g => g.name === skill.name);
+      const categoryLabel = globalSkillMatch?.category_name || "Other";
+      
       if (!acc[categoryLabel]) acc[categoryLabel] = [];
-      acc[categoryLabel].push(skill);
+      const categoryObj = categoriesList.find(c => c.name === categoryLabel);
+      const fixedSkill = {
+         ...skill,
+         categoryId: skill.categoryId || categoryObj?.id || ""
+      };
+
+      acc[categoryLabel].push(fixedSkill);
       return acc;
     }, {} as Record<string, ProfileSkillMastery[]>);
-  }, [userSkills, categoriesList]);
+  }, [userSkills, allGlobalSkills, categoriesList]);
 
   const availableSkills = useMemo(() => {
     const userSkillNames = new Set(userSkills.map(s => s.name));

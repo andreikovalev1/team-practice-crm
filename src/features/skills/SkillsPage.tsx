@@ -63,20 +63,26 @@ export function SkillsPage() {
       )}
 
       {!isReadOnly && (
-        <div className="flex items-center justify-end gap-6 mt-16 pt-6">
+        <div className="flex items-center justify-end gap-2 mt-16 pt-6 h-10">
           
-          {/* Кнопка Delete Selected (появляется только если выбрали чекбоксы) */}
+          {/* Кнопка Delete Selected (Solid Danger с эффектом "лифта") */}
           {isRemoveMode && selectedSkills.length > 0 && (
             <button 
               onClick={handleDeleteSelected}
               disabled={isDeleting}
-              className="px-4 py-2 bg-[#C8372D] text-white rounded-lg text-sm font-medium hover:bg-red-800 transition-colors uppercase"
+              className="mr-2 sm:mr-4 px-3 sm:px-5 py-2 bg-[#C8372D] text-white rounded-lg text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:bg-[#A82B22] hover:shadow-md hover:-translate-y-0.5 active:scale-95 active:translate-y-0 disabled:opacity-50 disabled:hover:transform-none disabled:hover:shadow-none whitespace-nowrap"
             >
-              {isDeleting ? "Deleting..." : `Delete Selected (${selectedSkills.length})`}
+                {isDeleting ? (
+                "Deleting..."
+                ) : (
+                <>
+                    Delete <span className="hidden sm:inline">Selected </span>({selectedSkills.length})
+                </>
+                )}
             </button>
-          )}
+            )}
 
-          {/* Кнопка ADD SKILL */}
+          {/* Кнопка ADD SKILL (Ghost Neutral с серым фоном при наведении) */}
           <button 
             onClick={() => {
                 setIsAddModalOpen(true);
@@ -84,19 +90,23 @@ export function SkillsPage() {
                 setSelectedSkills([]);
             }}
             disabled={isRemoveMode}
-            className="flex items-center gap-2 py-2 text-gray-500 hover:text-gray-800 font-medium transition-colors text-sm tracking-wide uppercase disabled:opacity-30"
-          >
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-500 font-medium text-sm tracking-wide uppercase transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 active:scale-95 disabled:opacity-30 disabled:hover:bg-transparent disabled:active:scale-100 whitespace-nowrap"
+            >
             <Plus size={18} />
-            Add skill
-          </button>
+                Add<span className="hidden sm:inline"> skill</span>
+            </button>
           
-          {/* Кнопка REMOVE SKILLS */}
+          {/* Кнопка REMOVE SKILLS / CANCEL (Ghost Danger с красным фоном) */}
           {userSkillsCount > 0 && (
             <button 
-                className={`flex items-center gap-2 py-2 font-medium transition-colors text-sm tracking-wide uppercase ${isRemoveMode ? 'text-gray-600 hover:text-gray-900' : 'text-[#C8372D] hover:text-red-800'}`}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm tracking-wide uppercase transition-all duration-200 active:scale-95 ${
+                  isRemoveMode 
+                    ? 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' 
+                    : 'text-[#C8372D] hover:bg-red-50 hover:text-red-800'
+                }`}
                 onClick={() => {
                   setIsRemoveMode(!isRemoveMode);
-                  setSelectedSkills([]); // Очищаем выбор при отмене
+                  setSelectedSkills([]);
                 }}
             >
                 {isRemoveMode ? <X size={18} /> : <Trash2 size={18} />}

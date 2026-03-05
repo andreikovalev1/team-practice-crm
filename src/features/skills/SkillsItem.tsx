@@ -73,9 +73,8 @@ export function SkillsItem({
       )}
 
       {/* ПОЛОСКА */}
-      <div className="relative flex items-center shrink-0 w-24 py-2">
-        {/* ЗАМЕНИЛИ bg-gray-200 на динамический trackColorClass */}
-        <div className={cn("w-full h-1 overflow-hidden relative", trackColorClass)}>
+      <div className="relative flex items-center shrink-0 w-24 h-4">
+        <div className={cn("w-full h-[4px] min-h-[4px] shrink-0 overflow-hidden relative", trackColorClass)}>
           <div
             className={cn(
               "absolute top-0 left-0 h-full transition-all duration-300",

@@ -76,9 +76,7 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
 
   return (
     <div className="w-full px-4 md:px-8 py-8 flex flex-col items-center">
-      {/* Аватар */}
       <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
-        {/* Контейнер аватара, теперь с group для ховера */}
         <div
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
@@ -98,12 +96,12 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
                     priority
                     unoptimized
                     />
-                    {/* Кнопка удаления поверх картинки, появляется при ховере */}
+
                     {!isReadOnly && (
                         <div 
                           className="absolute inset-0 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity bg-black/20 z-10"
                           onClick={(e) => {
-                              e.stopPropagation(); // Важно: предотвращаем клик по инпуту загрузки
+                              e.stopPropagation();
                               logic.setAvatarPreview(null);
                               logic.setAvatarFile(null);
                           }}
@@ -129,11 +127,10 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
                 </>
             )}
 
-            {/* Затемнение при наведении (подсказка загрузки), если аватара НЕТ */}
             {!isReadOnly && !logic.avatarPreview && (
                 <div 
                   className="absolute inset-0 bg-black/5 opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity"
-                  onClick={() => fileInputRef.current?.click()} // Вызов инпута только если нет картинки
+                  onClick={() => fileInputRef.current?.click()}
                 >
                   <Upload size={20} className="text-gray-600" />
                 </div>
@@ -141,7 +138,7 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
         </div>
 
         {!isReadOnly && (
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col items-center">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
@@ -155,7 +152,6 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
         )}
       </div>
 
-      {/* Инфо */}
       <div className="mb-10 text-center">
         <h2 className="text-xl md:text-2xl font-medium text-gray-900 mb-1">
           {logic.firstName} {logic.lastName}
@@ -164,7 +160,6 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
         <p className="text-gray-400 text-xs">A member since {formattedDate}</p>
       </div>
 
-      {/* Форма */}
       <div className="w-full md:max-w-[700px] grid grid-cols-1 gap-y-6 md:grid-cols-2 md:gap-x-6 md:gap-y-9">  
         <FloatingInput
           label="First Name"
@@ -181,14 +176,14 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
         <FloatingSelect
           label="Department"
           value={logic.department}
-          onChange={(e) => logic.setDepartment(e.target.value)}
+          onChange={(value) => logic.setDepartment(value)}
           options={logic.deptData?.departments || []}
           disabled={isReadOnly}
         />
         <FloatingSelect
           label="Position"
           value={logic.position}
-          onChange={(e) => logic.setPosition(e.target.value)}
+          onChange={(value) => logic.setPosition(value)}
           options={logic.posData?.positions || []}
           disabled={isReadOnly}
         />
@@ -201,7 +196,7 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
               disabled={!logic.isDirty || logic.isSubmitting}
               className={`w-full font-medium py-3 rounded-full uppercase text-sm tracking-wide transition-all shadow-sm
                 ${logic.isDirty && !logic.isSubmitting 
-                  ? "bg-[#C8372D] text-white hover:bg-red-800 active:scale-[0.98]" 
+                  ? "bg-[#C8372D] text-white hover:bg-red-800 hover:scale-101 active:scale-[0.98]" 
                   : "bg-[#E0E0E0] text-gray-400 cursor-not-allowed"
                 }`}
             >

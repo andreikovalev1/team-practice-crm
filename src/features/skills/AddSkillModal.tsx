@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GlobalSkill } from "./types";
+import { X } from "lucide-react";
+import OvalButton from "@/components/button/OvalButton"; 
+import FloatingSelect from "@/components/FloatingSelect"; 
 
 interface AddSkillModalProps {
   isOpen: boolean;
@@ -20,90 +23,110 @@ const MASTERY_LEVELS = [
 ];
 
 export function AddSkillModal({ isOpen, onClose, availableSkills, onAdd, isAdding }: AddSkillModalProps) {
-  const [selectedSkillId, setSelectedSkillId] = useState("");
-  const [mastery, setMastery] = useState("Novice");
+
+  const [selectedSkillName, setSelectedSkillName] = useState("");
+  const [mastery, setMastery] = useState(""); 
+
+    useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"; // Запрещаем скролл
+    } else {
+      document.body.style.overflow = "unset";  // Возвращаем как было
+    }
+
+    // Очистка при размонтировании компонента
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedSkillId) return;
+    if (!selectedSkillName || !mastery) return;
 
-    // Находим полный объект скилла, чтобы достать его name и categoryId
-    const skill = availableSkills.find(s => s.id === selectedSkillId);
+    // Ищем скилл по имени, которое вернул инпут
+    const skill = availableSkills.find(s => s.name === selectedSkillName);
     if (!skill) return;
 
     try {
       await onAdd(skill.name, skill.category_name || "", mastery);
-      // Очищаем форму и закрываем модалку после успеха
-      setSelectedSkillId("");
-      setMastery("Novice");
+      // Очищаем форму и закрываем
+      setSelectedSkillName("");
+      setMastery("");
       onClose();
-    } catch{
-      // Ошибка уже обработана тостом в хуке
+    } catch {
+      // Ошибка обрабатывается снаружи
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 animate-in fade-in zoom-in duration-200">
-        <h2 className="text-xl font-medium text-gray-900 mb-6">Add New Skill</h2>
-        
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Выбор навыка */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Select Skill</label>
-            <select
-              required
-              value={selectedSkillId}
-              onChange={(e) => setSelectedSkillId(e.target.value)}
-              disabled={isAdding}
-              className="w-full border border-gray-300 rounded-lg p-2.5 outline-none focus:border-[#C8372D] transition-colors bg-white"
-            >
-              <option value="" disabled>-- Choose a skill --</option>
-              {availableSkills.map((skill) => (
-                <option key={skill.id} value={skill.id}>
-                  {skill.name}
-                </option>
-              ))}
-            </select>
-          </div>
+  // Преобразуем данные под интерфейс Option { id, name } твоего FloatingSelect
+  const skillOptions = availableSkills.map(skill => ({
+    id: skill.id,
+    name: skill.name
+  }));
 
-          {/* Выбор уровня */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Mastery Level</label>
-            <select
-              value={mastery}
-              onChange={(e) => setMastery(e.target.value)}
-              disabled={isAdding}
-              className="w-full border border-gray-300 rounded-lg p-2.5 outline-none focus:border-[#C8372D] transition-colors bg-white"
-            >
-              {MASTERY_LEVELS.map((level) => (
-                <option key={level.value} value={level.value}>
-                  {level.label}
-                </option>
-              ))}
-            </select>
-          </div>
+  const masteryOptions = MASTERY_LEVELS.map(level => ({
+    id: level.value,
+    name: level.label
+  }));
+
+  return (
+    <div className="fixed inset-0 z-5 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      <div className="bg-white rounded-sm shadow-2xl w-full max-w-lg p-6 relative animate-in fade-in zoom-in-95 duration-200">
+        
+        {/* Шапка с крестиком */}
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg font-semibold text-gray-900">Add skill</h2>
+          <button 
+            type="button"
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-700 transition-colors p-1 rounded-full hover:bg-gray-100"
+          >
+            <X size={20} strokeWidth={2.5} />
+          </button>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          
+          {/* Твой кастомный компонент выбора скилла */}
+          <FloatingSelect
+            label="Skill"
+            options={skillOptions}
+            value={selectedSkillName}
+            onChange={(value) => setSelectedSkillName(value)}
+            disabled={isAdding}
+            required
+            className="rounded-md"
+          />
+
+          {/* Твой кастомный компонент выбора уровня */}
+          <FloatingSelect
+            label="Skill mastery"
+            options={masteryOptions}
+            value={mastery}
+            onChange={(value) => setMastery(value)}
+            disabled={isAdding}
+            required
+            className="rounded-md"
+          />
 
           {/* Кнопки */}
-          <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={isAdding}
-              className="px-4 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={!selectedSkillId || isAdding}
-              className="px-4 py-2 bg-[#C8372D] text-white font-medium rounded-lg hover:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {isAdding ? "Adding..." : "Add Skill"}
-            </button>
+          <div className="flex items-center gap-3 pt-4">
+            <OvalButton 
+                text="Cancel" 
+                type="button" 
+                variant="ovalOutline" 
+                onClick={onClose}
+                className="w-full"
+            />
+            
+            <div className="w-full">
+               <OvalButton text={isAdding ? "Adding..." : "Confirm"} />
+            </div>
           </div>
+
         </form>
       </div>
     </div>

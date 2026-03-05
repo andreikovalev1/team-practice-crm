@@ -1,56 +1,103 @@
 "use client";
 
-import React from "react";
-import { RxTriangleDown } from "react-icons/rx"
+import React, { useState, useRef, useEffect } from "react";
+import { RxTriangleDown } from "react-icons/rx";
 
 interface Option {
   id: string;
   name: string;
 }
 
-interface FloatingSelectProps
-  extends React.SelectHTMLAttributes<HTMLSelectElement> {
+interface FloatingSelectProps {
   label: string;
   options: Option[];
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+  required?: boolean;
+  className?: string;
 }
 
 export default function FloatingSelect({
   label,
   options,
+  value,
+  onChange,
+  disabled,
   className = "",
-  ...props
 }: FloatingSelectProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Закрываем меню при клике вне компонента
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelect = (optionValue: string) => {
+    onChange(optionValue);
+    setIsOpen(false);
+  };
+
   return (
-    <div className="relative w-full">
-      <select
-        {...props}
-        className={`peer w-full border border-gray-300 bg-transparent px-3 py-3 text-sm text-gray-900 focus:border-red-700 focus:outline-none focus:ring-0 appearance-none transition-colors ${className}`}
+    <div ref={wrapperRef} className={`relative w-full ${className}`}>
+      {/* Главное поле (Кнопка) */}
+      <div
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        className={`
+          relative w-full border bg-white px-3 py-3 text-sm transition-all duration-200 cursor-pointer flex items-center justify-between
+          ${disabled ? "opacity-50 cursor-not-allowed border-gray-300" : "hover:border-gray-400 hover:shadow-sm"}
+          ${isOpen ? "border-[#C8372D] ring-1 ring-[#C8372D]" : "border-gray-300"}
+        `}
       >
-        <option value="">Select {label}</option>
+        <span className={`truncate ${value ? "text-gray-900" : "text-transparent"}`}>
+          {value || "Placeholder"}
+        </span>
 
-        {options.map((opt) => (
-          <option key={opt.id} value={opt.name}>
-            {opt.name}
-          </option>
-        ))}
-      </select>
-
-      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-        <RxTriangleDown size={23}/>
+        <RxTriangleDown
+          size={23}
+          className={`text-gray-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+        />
       </div>
 
+      {/* Плавающий Лейбл */}
       <label
-        className="
-          absolute left-3 -top-2
-          bg-white
-          px-1
-          text-xs text-gray-500
-          peer-focus:text-red-700
-          pointer-events-none
-        "
+        className={`
+          absolute left-3 bg-white px-1 transition-all duration-200 pointer-events-none z-5
+          ${isOpen || value ? "-top-3 text-gray-500 text-sm" : "top-3.5 text-base text-gray-500"}
+          ${isOpen && "text-[#C8372D]"} 
+        `}
       >
         {label}
       </label>
+
+      {/* Кастомное выпадающее меню */}
+      {isOpen && (
+        <div className="absolute z-10 w-full mt-2 bg-white border border-gray-100 rounded-lg shadow-xl max-h-56 overflow-y-auto animate-in fade-in zoom-in-95 duration-100">
+          {options.length > 0 ? (
+            options.map((opt) => (
+              <div
+                key={opt.id}
+                onClick={() => handleSelect(opt.name)}
+                className={`
+                  px-4 py-2.5 text-sm cursor-pointer transition-colors
+                  ${value === opt.name ? "bg-red-50 text-[#C8372D] font-medium" : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"}
+                `}
+              >
+                {opt.name}
+              </div>
+            ))
+          ) : (
+            <div className="px-4 py-3 text-sm text-gray-400">No options available</div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
