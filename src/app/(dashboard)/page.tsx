@@ -69,7 +69,6 @@ export default async function Home() {
   return (
     <main>
       <EmployeeTable employees={users}/>
-      <LogoutButton />
     </main>
   );
 }

@@ -1,14 +1,14 @@
 "use client"
 
 import { MdArrowForwardIos } from "react-icons/md"
-import { Input } from "@/components/ui/input"
-import { IoIosSearch } from "react-icons/io"
 import { GoArrowUp } from "react-icons/go"
 import { useState } from "react";
 import { User } from "@/types/user.types";
 import Link from "next/link";
 import { ROUTES } from "@/app/configs/routesConfig";
 import Image from "next/image";
+
+import SearchInput from "@/components/search/SearchInput"
 
 interface EmployeeTableProps {
   employees: User[];
@@ -40,17 +40,8 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
 
   return (
     <div className="px-6">
-      <div
-        className="relative w-[320px] h-10 -top-1.25 rounded-[40px] border border-gray-300 bg-white flex items-center px-4"
-      >
-        <IoIosSearch className="text-zinc-400 mr-2" size={18} />
-
-        <Input
-          className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-full w-full"
-          value={search}
-          placeholder="Search"
-          onChange={(e) => {setSearch(e.target.value)}}
-        />
+      <div className="sticky top-0 z-30 bg-white py-4">
+        <SearchInput value={search} onChange={setSearch} />
       </div>
 
       <div className="overflow-x-auto">

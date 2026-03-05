@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Input } from "@/components/ui/input";
 import { authContent } from "@/features/auth/config";
 import { motion, AnimatePresence } from "framer-motion";
 import { LOGIN_QUERY, REGISTER_MUTATION, FORGOT_PASSWORD_MUTATION, RESET_PASSWORD_MUTATION } from "@/features/auth/graphql"
@@ -166,7 +165,7 @@ export default function AuthForm({ mode }: AuthProp) {
               )}
               
               {mode !== "new_password" && (
-                <div className="mb-5 w-140">
+                <div className="mb-5 w-full max-w-140">
                   <FloatingInput 
                     label="Email" 
                     type="email" 
@@ -178,7 +177,7 @@ export default function AuthForm({ mode }: AuthProp) {
               )}
               
               {mode !== "reset" && (
-                <div className="mb-10 w-140">
+                <div className="mb-10 w-full max-w-140">
                   <FloatingInput 
                     type="password" 
                     label={mode === "new_password" ? "New password" : "Password"}

@@ -57,7 +57,13 @@ export default function DashboardLayout({
   return (
     <div className="flex min-h-screen bg-white dark:bg-black pb-16 md:pb-0">
       <Sidebar />
-      <main className="flex-1 w-full overflow-y-auto">
+      {/* С этим не sticky вообще не работает */}
+      {/* <main className="flex-1 w-full overflow-y-auto"> */}
+
+      {/* С этим работает но криво именно на экранах декстоп, 
+      если экран становится меньше, таблица почему перестаёт быть
+      прогартываемой и снизу экрана появляется полоса прокрутки (сайт не влазит во весь экран)...*/}
+      <main className="flex-1 w-full"> 
 
         <div className="px-6 pt-4 pb-4">
           <div className="flex items-center gap-2 text-sm text-gray-500">
