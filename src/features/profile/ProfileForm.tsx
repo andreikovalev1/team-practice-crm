@@ -33,9 +33,15 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
   const [isDragging, setIsDragging] = useState(false);
 
   const handleFile = (file: File) => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Supported file formats are png, jpg, jpeg and gif");
+      return;
+    }
+
     if (file.size > 500 * 1024) {
-        toast.error("The file is too large. Max size is 500KB");
-        return;
+      toast.error("The file is too large. Max size is 500KB");
+      return;
     }
     logic.setAvatarFile(file);
     logic.setAvatarPreview(URL.createObjectURL(file));
@@ -56,10 +62,8 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
     if (isReadOnly) return;
 
     const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file) {
       handleFile(file);
-    } else if (file) {
-      toast.error("Пожалуйста, загрузите изображение (PNG, JPG или GIF)");
     }
   };
 
@@ -67,8 +71,10 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
     if (isReadOnly) return;
     const file = e.target.files?.[0];
     if (file) {
-      logic.setAvatarFile(file);
-      logic.setAvatarPreview(URL.createObjectURL(file));
+      handleFile(file);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 

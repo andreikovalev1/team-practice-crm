@@ -15,7 +15,7 @@ interface SkillsListProps {
 export function SkillsList({ 
   groupedSkills, 
   isReadOnly, 
-  isRemoveMode, 
+  isRemoveMode,
   selectedSkills = [], 
   onToggleSelect,
   onUpdateMastery
@@ -28,7 +28,7 @@ export function SkillsList({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8">
             {skills.map((skill, index) => (
               <SkillsItem 
-                key={`${skill.name}-${index}`} 
+                key={`${skill.name}-${index}`}
                 skill={skill} 
                 isReadOnly={isReadOnly}
                 isRemoveMode={isRemoveMode}
