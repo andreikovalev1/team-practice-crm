@@ -29,12 +29,11 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAdd, isAddin
 
     useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden"; // Запрещаем скролл
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "unset";  // Возвращаем как было
+      document.body.style.overflow = "unset";
     }
 
-    // Очистка при размонтировании компонента
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -46,22 +45,18 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAdd, isAddin
     e.preventDefault();
     if (!selectedSkillName || !mastery) return;
 
-    // Ищем скилл по имени, которое вернул инпут
     const skill = availableSkills.find(s => s.name === selectedSkillName);
     if (!skill) return;
 
     try {
       await onAdd(skill.name, skill.category_name || "", mastery);
-      // Очищаем форму и закрываем
       setSelectedSkillName("");
       setMastery("");
       onClose();
     } catch {
-      // Ошибка обрабатывается снаружи
     }
   };
 
-  // Преобразуем данные под интерфейс Option { id, name } твоего FloatingSelect
   const skillOptions = availableSkills.map(skill => ({
     id: skill.id,
     name: skill.name
@@ -75,8 +70,6 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAdd, isAddin
   return (
     <div className="fixed inset-0 z-5 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-sm shadow-2xl w-full max-w-lg p-6 relative animate-in fade-in zoom-in-95 duration-200">
-        
-        {/* Шапка с крестиком */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-semibold text-gray-900">Add skill</h2>
           <button 
@@ -89,8 +82,7 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAdd, isAddin
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-6">
-          
-          {/* Твой кастомный компонент выбора скилла */}
+        
           <FloatingSelect
             label="Skill"
             options={skillOptions}
@@ -101,7 +93,6 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAdd, isAddin
             className="rounded-md"
           />
 
-          {/* Твой кастомный компонент выбора уровня */}
           <FloatingSelect
             label="Skill mastery"
             options={masteryOptions}
@@ -112,7 +103,6 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAdd, isAddin
             className="rounded-md"
           />
 
-          {/* Кнопки */}
           <div className="flex items-center gap-3 pt-4">
             <OvalButton 
                 text="Cancel" 
