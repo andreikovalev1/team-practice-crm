@@ -7,8 +7,7 @@ import { User } from "@/types/user.types";
 import Link from "next/link";
 import { ROUTES } from "@/app/configs/routesConfig";
 import Image from "next/image";
-
-import SearchInput from "@/components/search/SearchInput"
+import { useSearchStore } from "@/store/useSearchStore"
 
 interface EmployeeTableProps {
   employees: User[];
@@ -16,7 +15,8 @@ interface EmployeeTableProps {
 
 export default function EmployeeTable({ employees }: EmployeeTableProps) {
   const [isSorted, setIsSorted] = useState(false)
-  const [search, setSearch] = useState("")
+  const search = useSearchStore((state) => state.search)
+
 
   const displayedEmployees = employees.
   filter(employee => {
@@ -40,10 +40,6 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
 
   return (
     <div className="px-6">
-      <div className="sticky top-0 z-30 bg-white py-4">
-        <SearchInput value={search} onChange={setSearch} />
-      </div>
-
       <div className="overflow-x-auto">
         <table className="min-w-full">
           <thead>
