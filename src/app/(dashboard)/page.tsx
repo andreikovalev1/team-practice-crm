@@ -1,5 +1,4 @@
 import { cookies } from "next/headers";
-import LogoutButton from "@/features/auth/LogoutButton";
 import { redirect } from "next/navigation";
 import { ROUTES } from "@/app/configs/routesConfig"
 
