@@ -23,7 +23,7 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
     const firstName = employee.profile?.first_name?.toLowerCase() || ''
     const lastName = employee.profile?.last_name?.toLowerCase() || ''
     const fullName = `${firstName} ${lastName}`.trim()
-    const searchValue = search.toLowerCase().trim()
+    const searchValue = String(search ?? "").toLowerCase().trim()
 
     return fullName?.includes(searchValue)
   }).sort((a, b) => {
