@@ -79,6 +79,25 @@ describe("SkillsPage Компонент", () => {
     expect(screen.getByText("Add skill")).toBeInTheDocument();
   });
 
+  it("открывает модалку обновления (Update skill) при клике на навык", () => {
+    jest.spyOn(LogicHook, "useSkillsLogic").mockReturnValue({
+      loading: false,
+      groupedSkills: { "Frontend": [{ name: "React", categoryId: "1", mastery: "Expert" }] },
+      userSkillsCount: 1,
+      availableSkills: [],
+      addSkill: mockAddSkill,
+      removeSkills: mockRemoveSkills,
+      updateMastery: mockUpdateMastery,
+      isAdding: false,
+      isDeleting: false,
+    });
+
+    render(<SkillsPage />);
+    const skillItem = screen.getByText("React");
+    fireEvent.click(skillItem);
+    expect(screen.getByText("Update skill")).toBeInTheDocument();
+  });
+
   it("скрывает кнопки в режиме read-only", () => {
     jest.spyOn(ProfileHook, "useIsOwnProfile").mockReturnValue({
       user: mockAuthorizedUser,

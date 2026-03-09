@@ -58,21 +58,19 @@ describe("SkillsItem компонент", () => {
     expect(mockOnToggle).toHaveBeenCalledWith("React");
   });
 
-  it("Вызывает метод onUpdateMastery при щелчке по уровню мастерства (не в режиме только для чтения).", () => {
-    const mockOnUpdate = jest.fn();
-    
-    const { container } = render(
+  it("Вызывает метод onEditClick при щелчке по скиллу (не в режиме удаления и не read-only)", () => {
+    const mockOnEdit = jest.fn();
+    render(
       <SkillsItem 
         skill={mockSkill} 
         isReadOnly={false} 
-        onUpdateMastery={mockOnUpdate} 
+        onEditClick={mockOnEdit} 
       />
     );
 
-    const clickZones = container.querySelectorAll(".cursor-pointer.flex-1");
-    expect(clickZones.length).toBe(5);
-    fireEvent.click(clickZones[0]);
-    expect(mockOnUpdate).toHaveBeenCalledTimes(1);
-    expect(mockOnUpdate).toHaveBeenCalledWith("React", "cat-1", "Novice");
+    const item = screen.getByText("React");
+    fireEvent.click(item);
+    expect(mockOnEdit).toHaveBeenCalledTimes(1);
+    expect(mockOnEdit).toHaveBeenCalledWith(mockSkill); 
   });
 });

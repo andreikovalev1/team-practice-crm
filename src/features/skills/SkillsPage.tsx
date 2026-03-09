@@ -6,6 +6,8 @@ import { useIsOwnProfile } from "@/features/profile/useIsOwnProfile";
 import { useSkillsLogic } from "./useSkillsLogic";
 import { SkillsList } from "./SkillsList";
 import { AddSkillModal } from "./AddSkillModal";
+import { UpdateSkillModal } from "./UpdateSkillModal";
+import { ProfileSkillMastery } from "./types";
 
 export function SkillsPage() {
   const { profileUserId, isOwnProfile } = useIsOwnProfile();
@@ -16,6 +18,7 @@ export function SkillsPage() {
   
   // Массив для чекбоксов
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [skillToUpdate, setSkillToUpdate] = useState<ProfileSkillMastery | null>(null);
 
   const { 
     loading, 
@@ -54,7 +57,7 @@ export function SkillsPage() {
             isRemoveMode={isRemoveMode}
             selectedSkills={selectedSkills}
             onToggleSelect={handleToggleSelect}
-            onUpdateMastery={updateMastery}
+            onEditClick={setSkillToUpdate}
         />
       ) : (
         <div className="text-center py-10 text-gray-500 border-2 border-dashed rounded-lg">
@@ -123,6 +126,15 @@ export function SkillsPage() {
         onAdd={addSkill}
         isAdding={isAdding}
       />
+
+      <UpdateSkillModal
+        key={skillToUpdate?.name || "empty"} 
+        isOpen={!!skillToUpdate}
+        onClose={() => setSkillToUpdate(null)}
+        skill={skillToUpdate}
+        onUpdate={updateMastery}
+      />
+
     </div>
   );
 }

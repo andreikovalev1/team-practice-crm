@@ -84,7 +84,6 @@ describe("Хук useSkillsLogic", () => {
         {children}
       </MockedProvider>
     );
-
     const { result } = renderHook(() => useSkillsLogic(mockUserId), { wrapper });
     expect(result.current.loading).toBe(true);
 

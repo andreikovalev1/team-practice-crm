@@ -9,7 +9,7 @@ interface SkillsListProps {
   isRemoveMode?: boolean;
   selectedSkills?: string[];
   onToggleSelect?: (name: string) => void;
-  onUpdateMastery?: (name: string, categoryId: string, mastery: string) => void;
+  onEditClick?: (skill: ProfileSkillMastery) => void;
 }
 
 export function SkillsList({ 
@@ -18,7 +18,7 @@ export function SkillsList({
   isRemoveMode,
   selectedSkills = [], 
   onToggleSelect,
-  onUpdateMastery
+  onEditClick,
 }: SkillsListProps) {
   return (
     <div className="space-y-10">
@@ -34,7 +34,7 @@ export function SkillsList({
                 isRemoveMode={isRemoveMode}
                 isSelected={selectedSkills.includes(skill.name)}
                 onToggleSelect={onToggleSelect}
-                onUpdateMastery={onUpdateMastery}
+                onEditClick={onEditClick}
               />
             ))}
           </div>

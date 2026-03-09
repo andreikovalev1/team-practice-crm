@@ -9,7 +9,7 @@ interface SkillsItemProps {
   isRemoveMode?: boolean;
   isSelected?: boolean;
   onToggleSelect?: (name: string) => void;
-  onUpdateMastery?: (name: string, categoryId: string, mastery: string) => void;
+  onEditClick?: (skill: ProfileSkillMastery) => void; 
 }
 
 const levels = ["Novice", "Advanced", "Competent", "Proficient", "Expert"];
@@ -43,7 +43,7 @@ export function SkillsItem({
   isRemoveMode,
   isSelected,
   onToggleSelect,
-  onUpdateMastery,
+  onEditClick,
 }: SkillsItemProps) {
   const masteryLevel = getMasteryLevel(skill.mastery);
   const colorClass = getMasteryColor(masteryLevel);
@@ -53,11 +53,15 @@ export function SkillsItem({
     <div
       className={cn(
         "flex items-center gap-4 p-2 rounded-md transition-colors",
-        isRemoveMode && "hover:bg-red-50 cursor-pointer"
+        // Добавляем эффект наведения, если можно редактировать или удалять
+        isRemoveMode ? "hover:bg-red-50 cursor-pointer" : !isReadOnly && "hover:bg-gray-50 cursor-pointer"
       )}
       onClick={() => {
         if (isRemoveMode) {
           onToggleSelect?.(skill.name);
+        } else if (!isReadOnly) {
+          // Открываем модалку редактирования
+          onEditClick?.(skill);
         }
       }}
     >
@@ -72,40 +76,20 @@ export function SkillsItem({
         />
       )}
 
-      {/* ПОЛОСКА */}
-      <div className="relative flex items-center shrink-0 w-24 h-4">
-        <div className={cn("w-full h-[4px] min-h-[4px] shrink-0 overflow-hidden relative", trackColorClass)}>
+      {/* ПОЛОСКА (теперь она глупая и просто рисует цвет) */}
+      <div className="flex-none w-24">
+        <div className={cn("w-full h-[4px] overflow-hidden relative", trackColorClass)}>
           <div
             className={cn(
-              "absolute top-0 left-0 h-full transition-all duration-300",
+              "absolute top-0 left-0 bottom-0 transition-all duration-300",
               colorClass
             )}
             style={{ width: `${(masteryLevel / 5) * 100}%` }}
           />
         </div>
-
-        {/* зоны клика работают ТОЛЬКО если не removeMode */}
-        {!isReadOnly && !isRemoveMode && (
-          <div className="absolute inset-0 flex">
-            {levels.map((level) => (
-              <div
-                key={level}
-                className="flex-1 h-full cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onUpdateMastery?.(
-                    skill.name,
-                    skill.categoryId,
-                    level
-                  );
-                }}
-              />
-            ))}
-          </div>
-        )}
       </div>
 
-      <span className="text-gray-500 text-md font-medium truncate select-none">
+      <span className="text-gray-500 text-md font-medium truncate flex-1 min-w-0 select-none">
         {skill.name}
       </span>
     </div>
