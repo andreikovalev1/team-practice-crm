@@ -34,7 +34,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       {!isOwnProfile && (
         <Tabs value={currentTab} onValueChange={handleChangeTab}>
-          <div>
+          <div className="px-4">
             <TabsList variant="line">
               <TabsTrigger value="profile" className="uppercase">
                 Profile

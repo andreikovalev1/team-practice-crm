@@ -45,7 +45,7 @@ export function SkillsPage() {
     if (selectedSkills.length === 0) return;
     await removeSkills(selectedSkills);
     setIsRemoveMode(false);
-    setSelectedSkills([]); // Очищаем после удаления
+    setSelectedSkills([]);
   };
 
   return (
@@ -73,7 +73,7 @@ export function SkillsPage() {
             <button 
               onClick={handleDeleteSelected}
               disabled={isDeleting}
-              className="mr-2 sm:mr-4 px-3 sm:px-5 py-2 bg-[#C8372D] text-white rounded-lg text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:bg-[#A82B22] hover:shadow-md hover:-translate-y-0.5 active:scale-95 active:translate-y-0 disabled:opacity-50 disabled:hover:transform-none disabled:hover:shadow-none whitespace-nowrap"
+              className="sm:mr-4 px-3 sm:px-5 py-2 bg-[#C8372D] text-white rounded-lg text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:bg-[#A82B22] hover:shadow-md hover:-translate-y-0.5 active:scale-95 active:translate-y-0 disabled:opacity-50 disabled:hover:transform-none disabled:hover:shadow-none whitespace-nowrap"
             >
                 {isDeleting ? (
                 "Deleting..."
@@ -99,7 +99,7 @@ export function SkillsPage() {
                 Add<span className="hidden sm:inline"> skill</span>
             </button>
           
-          {/* Кнопка REMOVE SKILLS / CANCEL (Ghost Danger с красным фоном) */}
+          {/* Кнопка REMOVE SKILLS / CANCEL */}
           {userSkillsCount > 0 && (
             <button 
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm tracking-wide uppercase transition-all duration-200 active:scale-95 ${
@@ -113,7 +113,13 @@ export function SkillsPage() {
                 }}
             >
                 {isRemoveMode ? <X size={18} /> : <Trash2 size={18} />}
-                {isRemoveMode ? "Cancel" : "Remove skills"}
+                 {isRemoveMode ? (
+                "Cancel"
+              ) : (
+                <>
+                  Remove<span className="hidden sm:inline"> skills</span>
+                </>
+              )}
             </button>
           )}
         </div>

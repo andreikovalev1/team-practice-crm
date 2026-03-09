@@ -54,7 +54,7 @@ export function SkillsItem({
       className={cn(
         "flex items-center gap-4 p-2 rounded-md transition-colors",
         // Добавляем эффект наведения, если можно редактировать или удалять
-        isRemoveMode ? "hover:bg-red-50 cursor-pointer" : !isReadOnly && "hover:bg-gray-50 cursor-pointer"
+        isRemoveMode ? "hover:bg-red-50 cursor-pointer" : !isReadOnly && "hover:bg-gray-100 cursor-pointer"
       )}
       onClick={() => {
         if (isRemoveMode) {
