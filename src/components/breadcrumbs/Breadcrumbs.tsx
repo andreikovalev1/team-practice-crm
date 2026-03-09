@@ -23,28 +23,29 @@ export default function Breadcrumbs() {
       const firstName = profileUser?.profile?.first_name || ""
       const lastName = profileUser?.profile?.last_name || ""
       const fullName = `${firstName} ${lastName}`.trim()
-    
+
+      const rootLabel =
+        pathname.includes("skills")
+          ? "Skills"
+          : pathname.includes("languages")
+          ? "Languages"
+          : pathname.includes("cvs")
+          ? "CVs"
+          : "Employees"
+
+      const isSubPage = pathname.includes("skills")
+       || pathname.includes("languages")
+       || pathname.includes("cvs")
+
       const breadcrumbs = [
         {
-          label: "Employees",
+          label: rootLabel,
         },
       ]
-    
-      if (profileUserId && fullName) {
+
+      if (!isSubPage && profileUserId && fullName) {
         breadcrumbs.push({
           label: fullName,
-        })
-      }
-    
-      if (pathname.includes("skills")) {
-        breadcrumbs.push({
-          label: "Skills",
-        })
-      }
-    
-      if (pathname.includes("languages")) {
-        breadcrumbs.push({
-          label: "Languages",
         })
       }
 
