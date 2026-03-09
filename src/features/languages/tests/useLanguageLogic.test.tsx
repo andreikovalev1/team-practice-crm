@@ -2,14 +2,14 @@ import { renderHook, waitFor, act } from "@testing-library/react";
 import { MockLink } from "@apollo/client/testing";
 import { MockedProvider } from "@apollo/client/testing/react";
 import toast from "react-hot-toast";
-import { useLanguagesLogic } from "./useLanguagesLogic";
+import { useLanguagesLogic } from "../useLanguagesLogic";
 import {
   GET_PROFILE_LANGUAGES_QUERY,
   GET_GLOBAL_LANGUAGES_QUERY,
   ADD_PROFILE_LANGUAGE_MUTATION,
   UPDATE_PROFILE_LANGUAGE_MUTATION,
   DELETE_PROFILE_LANGUAGE_MUTATION,
-} from "./graphql";
+} from "../graphql";
 
 jest.mock("react-hot-toast", () => ({
   loading: jest.fn(() => "loading-toast-id"),

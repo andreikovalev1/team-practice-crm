@@ -1,11 +1,11 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { LanguagesPage } from "./LanguagesPage";
+import { LanguagesPage } from "../LanguagesPage";
 import { User } from "@/types/user.types";
 import * as ProfileHook from "@/features/profile/useIsOwnProfile";
-import * as LogicHook from "./useLanguagesLogic";
+import * as LogicHook from "../useLanguagesLogic";
 
 jest.mock("@/features/profile/useIsOwnProfile");
-jest.mock("./useLanguagesLogic");
+jest.mock("../useLanguagesLogic");
 
 const mockAuthorizedUser: User = {
   id: "user-123",

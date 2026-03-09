@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { SkillsItem } from "./SkillsItem";
-import { ProfileSkillMastery } from "./types";
+import { SkillsItem } from "../SkillsItem";
+import { ProfileSkillMastery } from "../types";
 
 const mockSkill: ProfileSkillMastery = {
   name: "React",

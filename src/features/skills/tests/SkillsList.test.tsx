@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import { SkillsList } from "./SkillsList";
-import { ProfileSkillMastery } from "./types";
+import { SkillsList } from "../SkillsList";
+import { ProfileSkillMastery } from "../types";
 
 describe("SkillsList Компонент", () => {
   const mockGroupedSkills: Record<string, ProfileSkillMastery[]> = {

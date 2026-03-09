@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import { LanguagesList } from "./LanguagesList";
-import { ProfileLanguage } from "./types";
+import { LanguagesList } from "../LanguagesList";
+import { ProfileLanguage } from "../types";
 
 describe("Компонент LanguagesList", () => {
   const mockLanguages: ProfileLanguage[] = [

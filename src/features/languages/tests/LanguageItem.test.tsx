@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { LanguageItem } from "./LanguageItem";
-import { ProfileLanguage } from "./types";
+import { LanguageItem } from "../LanguageItem";
+import { ProfileLanguage } from "../types";
 
 const mockLanguage: ProfileLanguage = {
   name: "English",
@@ -59,7 +59,6 @@ describe("Компонент LanguageItem", () => {
       />
     );
     
-    // Кликаем по самому контейнеру
     const container = screen.getByText("English").closest("div");
     fireEvent.click(container!);
     

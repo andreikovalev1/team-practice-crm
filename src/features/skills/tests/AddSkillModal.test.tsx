@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { AddSkillModal } from "./AddSkillModal";
-import { GlobalSkill } from "./types";
+import { AddSkillModal } from "../AddSkillModal";
+import { GlobalSkill } from "../types";
 import { ReactNode } from "react";
 
 interface MockFloatingSelectProps {

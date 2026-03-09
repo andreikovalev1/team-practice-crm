@@ -2,13 +2,13 @@ import { renderHook, waitFor, act } from "@testing-library/react";
 import { MockedProvider as BaseMockedProvider } from "@apollo/client/testing/react";
 import { ReactNode, FC } from "react";
 import toast from "react-hot-toast";
-import { useSkillsLogic } from "./useSkillsLogic";
+import { useSkillsLogic } from "../useSkillsLogic";
 import { 
   GET_PROFILE_SKILLS_QUERY, 
   GET_GLOBAL_SKILLS_QUERY, 
   GET_SKILL_CATEGORIES_QUERY,
   ADD_PROFILE_SKILL_MUTATION
-} from "./graphql";
+} from "../graphql";
 
 interface MockedProviderProps {
   mocks?: ReadonlyArray<unknown>;

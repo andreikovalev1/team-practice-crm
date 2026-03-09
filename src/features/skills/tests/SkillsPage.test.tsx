@@ -1,11 +1,11 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { SkillsPage } from "./SkillsPage";
+import { SkillsPage } from "../SkillsPage";
 import { User } from "@/types/user.types";
 import * as ProfileHook from "@/features/profile/useIsOwnProfile";
-import * as LogicHook from "./useSkillsLogic";
+import * as LogicHook from "../useSkillsLogic";
 
 jest.mock("@/features/profile/useIsOwnProfile");
-jest.mock("./useSkillsLogic");
+jest.mock("../useSkillsLogic");
 const mockAuthorizedUser: User = {
   id: "user-123",
   email: "test@test.com",
