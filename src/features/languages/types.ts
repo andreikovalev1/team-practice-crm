@@ -21,14 +21,12 @@ export interface GetGlobalLanguagesResponse {
   languages: GlobalLanguage[];
 }
 
-// --- ТИПЫ ДЛЯ МУТАЦИЙ (INPUTS И RESPONSES) ---
-
-// 1. Add
 export interface AddProfileLanguageInput {
   userId: string;
   name: string;
   proficiency: string;
 }
+
 export interface AddLanguageResponse {
   addProfileLanguage: {
     id: string;
@@ -36,12 +34,12 @@ export interface AddLanguageResponse {
   };
 }
 
-// 2. Update
 export interface UpdateProfileLanguageInput {
   userId: string;
   name: string;
   proficiency: string;
 }
+
 export interface UpdateLanguageResponse {
   updateProfileLanguage: {
     id: string;
@@ -49,11 +47,11 @@ export interface UpdateLanguageResponse {
   };
 }
 
-// 3. Delete
 export interface DeleteProfileLanguageInput {
   userId: string;
-  name: string[]; // Массив строк для удаления нескольких языков
+  name: string[];
 }
+
 export interface DeleteLanguageResponse {
   deleteProfileLanguage: {
     id: string;

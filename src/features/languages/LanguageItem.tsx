@@ -45,7 +45,7 @@ export function LanguageItem({
         }
       }}
     >
-      {/* ЧЕКБОКС (появляется только в режиме удаления) */}
+      {/* ЧЕКБОКС */}
       {isRemoveMode && (
         <input
           type="checkbox"
@@ -56,7 +56,7 @@ export function LanguageItem({
         />
       )}
 
-      {/* УРОВЕНЬ ВЛАДЕНИЯ (B2, Native и т.д.) */}
+      {/* УРОВЕНЬ ВЛАДЕНИЯ */}
       <span className={cn("font-medium w-12 shrink-0 select-none text-sm", colorClass)}>
         {language.proficiency}
       </span>

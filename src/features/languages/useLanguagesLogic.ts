@@ -25,7 +25,7 @@ const EMPTY_LANGUAGES: ProfileLanguage[] = [];
 const GLOBAL_LANGUAGES: GlobalLanguage[] = [];
 
 export function useLanguagesLogic(userId: string | undefined) {
-  // --- ЗАПРОСЫ ---
+  // ЗАПРОСЫ
   const { data: profileData, loading: profileLoading } = useQuery<GetProfileLanguagesResponse>(
     GET_PROFILE_LANGUAGES_QUERY,
     { variables: { userId }, skip: !userId }
@@ -38,7 +38,7 @@ export function useLanguagesLogic(userId: string | undefined) {
   const userLanguages = profileData?.profile.languages || EMPTY_LANGUAGES;
   const allGlobalLanguages = globalLanguagesData?.languages || GLOBAL_LANGUAGES;
 
-  // --- МУТАЦИИ (Без refetchQueries!) ---
+  // МУТАЦИИ
   const [addLanguageMutation, { loading: isAdding }] = useMutation<
     AddLanguageResponse,
     { language: AddProfileLanguageInput }
@@ -54,7 +54,7 @@ export function useLanguagesLogic(userId: string | undefined) {
     { language: UpdateProfileLanguageInput }
   >(UPDATE_PROFILE_LANGUAGE_MUTATION);
 
-  // --- ФУНКЦИИ ДЛЯ UI ---
+  // ФУНКЦИИ ДЛЯ UI
   const handleAddLanguage = async (name: string, proficiency: string) => {
     if (!userId) return;
     const loadingToast = toast.loading("Adding language...");

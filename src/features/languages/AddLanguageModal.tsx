@@ -35,7 +35,6 @@ export function AddLanguageModal({
       setProficiency("");
       onClose();
     } catch {
-      // Ошибка уже обрабатывается в тостах хука
     }
   };
 

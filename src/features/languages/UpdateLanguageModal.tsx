@@ -33,7 +33,6 @@ export function UpdateLanguageModal({
       await onUpdate(language.name, proficiency);
       onClose();
     } catch {
-      // Ошибка уже в хуке
     }
   };
 
