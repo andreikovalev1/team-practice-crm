@@ -13,7 +13,7 @@ interface GetUsersResponse {
 export default async function Home() {
   const cookieStore = await cookies();
   const token = cookieStore.get("auth_token")?.value;
-
+  
   if(!token) {
     redirect(ROUTES.LOGIN);
   }
