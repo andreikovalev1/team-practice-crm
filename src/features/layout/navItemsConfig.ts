@@ -6,7 +6,7 @@ import CVsIcon from "@/components/icons/CVs.svg";
 
 export const NAV_ITEMS = [
   { name: "Employees", href: ROUTES.HOME, icon: EmployeesIcon },
-  { name: "Skills", href: (id: string) => ROUTES.SKILLS(id), icon: SkillsIcon },
-  { name: "Languages", href: (id: string) => ROUTES.LANGUAGES(id), icon: LanguagesIcon },
-  { name: "CVs", href: "/cvs", icon: CVsIcon },
+  { name: "Skills", href: ROUTES.SKILLS, icon: SkillsIcon },
+  { name: "Languages", href: ROUTES.LANGUAGES, icon: LanguagesIcon },
+  { name: "CVs", href: ROUTES.CVS, icon: CVsIcon },
 ];

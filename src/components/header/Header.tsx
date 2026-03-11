@@ -10,7 +10,11 @@ export default function Header() {
   const setSearch = useSearchStore((state) => state.setSearch)
   const pathname = usePathname()
 
-  const showSearch = pathname === "/" || pathname.includes('/') && pathname.includes('cvs')
+  const showSearch =
+  pathname === "/" ||
+  (pathname.includes('/') && pathname.includes('cvs')) ||
+  (pathname.includes('/') && pathname.includes('skills')) ||
+  (pathname.includes('/') && pathname.includes('languages'));
 
   return (
     <header className="sticky top-0 z-4 bg-white px-6 pt-4 pb-4 flex flex-col gap-4">
