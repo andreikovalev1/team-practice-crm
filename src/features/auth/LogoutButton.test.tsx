@@ -30,13 +30,13 @@ describe("Компонент LogoutButton", () => {
 
   it("должен корректно рендерить кнопку", () => {
     render(<LogoutButton />);
-    const button = screen.getByRole("button", { name: /выйти из аккаунта/i });
+    const button = screen.getByRole("button", { name: /log out/i });
     expect(button).toBeInTheDocument();
   });
 
   it("должен вызывать logout, очищать куки и делать редирект при клике", () => {
     render(<LogoutButton />);
-    const button = screen.getByRole("button", { name: /выйти из аккаунта/i });
+    const button = screen.getByRole("button", { name: /log out/i });
     fireEvent.click(button);
     expect(mockLogout).toHaveBeenCalledTimes(1);
     expect(cookieSetterSpy).toHaveBeenCalledWith("auth_token=; path=/; max-age=0");

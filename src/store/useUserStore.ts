@@ -1,15 +1,25 @@
 import { create } from 'zustand'
+import { User } from '@/types/user.types'
+import { persist } from 'zustand/middleware'
 
 interface UserState {
-  username: string
+  user: User | null;
   isLoggedIn: boolean
-  setLogin: (name: string) => void
+  setLogin: (userData: User) => void
   logout: () => void
 }
 
-export const useUserStore = create<UserState>((set) => ({
-  username: '',
-  isLoggedIn: false,
-  setLogin: (name) => set({ username: name, isLoggedIn: true }),
-  logout: () => set({ username: '', isLoggedIn: false }),
-}))
+export const useUserStore = create<UserState>()(
+  persist(
+    (set) => ({
+      user: null,
+      isLoggedIn: false,
+      
+      setLogin: (userData) => set({ user: userData, isLoggedIn: true }),
+      logout: () => set({ user: null, isLoggedIn: false }),
+    }),
+    {
+      name: 'auth-storage', 
+    }
+  )
+)

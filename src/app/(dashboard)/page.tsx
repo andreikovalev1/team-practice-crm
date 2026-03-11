@@ -1,12 +1,9 @@
 import { cookies } from "next/headers";
-import LogoutButton from "@/features/auth/LogoutButton";
 import { redirect } from "next/navigation";
 import { ROUTES } from "@/app/configs/routesConfig"
 
-interface User {
-  id: string;
-  email: string;
-}
+import EmployeeTable from "@/features/employee/EmployeeTable";
+import { User } from "@/types/user.types";
 
 interface GetUsersResponse {
   data?: { users: User[] };
@@ -38,6 +35,14 @@ export default async function Home() {
             users {
               id
               email
+              department_name
+              position_name
+              created_at
+              profile {
+                avatar
+                first_name
+                last_name
+              }
             }
           }
         `,
@@ -61,22 +66,8 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black font-sans">
-      <main className="flex w-full max-w-3xl flex-col items-center py-32 px-16 bg-white dark:bg-black shadow-sm rounded-xl">
-        <h1 className="text-3xl font-bold mb-8 text-black dark:text-white">
-          Пользователи CRM (SSR)
-        </h1>
-        
-        <div className="w-full space-y-4">
-          {users.map((user) => (
-            <div key={user.id} className="p-4 border rounded-lg border-zinc-200 bg-zinc-50 dark:bg-zinc-900">
-              <p className="text-zinc-600 dark:text-zinc-300 font-medium">{user.email}</p>
-              <p className="text-xs text-zinc-400">ID: {user.id}</p>
-            </div>
-          ))}
-        </div>
-        <LogoutButton />
-      </main>
-    </div>
+    <main>
+      <EmployeeTable employees={users}/>
+    </main>
   );
 }

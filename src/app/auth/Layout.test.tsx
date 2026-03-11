@@ -11,7 +11,6 @@ jest.mock("next/navigation", () => ({
 
 describe("Компонент Auth Layout", () => {
   const mockPush = jest.fn();
-
   beforeEach(() => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
@@ -24,8 +23,8 @@ describe("Компонент Auth Layout", () => {
         <div data-testid="child-content">Контент формы</div>
       </Layout>
     );
-    expect(screen.getByRole("tab", { name: /войти/i })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: /создать/i })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /log in/i })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /sign up/i })).toBeInTheDocument(); 
     expect(screen.getByTestId("child-content")).toBeInTheDocument();
   });
 
@@ -36,8 +35,8 @@ describe("Компонент Auth Layout", () => {
         <div data-testid="child-content">Контент формы сброса</div>
       </Layout>
     );
-    expect(screen.queryByRole("tab", { name: /войти/i })).toBeNull();
-    expect(screen.queryByRole("tab", { name: /создать/i })).toBeNull();
+    expect(screen.queryByRole("tab", { name: /log in/i })).toBeNull();
+    expect(screen.queryByRole("tab", { name: /sign up/i })).toBeNull();
     expect(screen.getByTestId("child-content")).toBeInTheDocument();
   });
 
@@ -45,10 +44,8 @@ describe("Компонент Auth Layout", () => {
     const user = userEvent.setup();
     (usePathname as jest.Mock).mockReturnValue(ROUTES.LOGIN);
     render(<Layout>Контент</Layout>);
-    const registerTab = screen.getByRole("tab", { name: /создать/i });
-    
+    const registerTab = screen.getByRole("tab", { name: /sign up/i });
     await user.click(registerTab);
-    
     expect(mockPush).toHaveBeenCalledWith(ROUTES.REGISTER);
   });
 });
