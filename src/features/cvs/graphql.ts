@@ -1,4 +1,15 @@
-import { gql } from "@apollo/client";
+import { gql } from "@apollo/client/core";
+
+export const GET_GLOBAL_CVS_QUERY = gql`
+  query GetGlobalCvs {
+    cvs {
+      id
+      name
+      description
+      education
+    }
+  }
+`;
 
 // Запрашиваем пользователя и массив его резюме для таблицы
 export const GET_USER_CVS_QUERY = gql`

@@ -1,3 +1,14 @@
+export interface GlobalCVs {
+  id: string;
+  name: string;
+  description: string;
+  education?: string;
+}
+
+export interface GetGlobalCVsResponse {
+  cvs: GlobalCVs[];
+}
+
 // --- БАЗОВЫЕ ТИПЫ ---
 export interface Cv {
   id: string;
