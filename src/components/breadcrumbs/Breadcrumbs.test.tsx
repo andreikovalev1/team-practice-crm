@@ -61,7 +61,7 @@ describe("Breadcrumbs", () => {
     expect(screen.getByText("Valeria Kovalenko")).toBeInTheDocument()
   })
 
-  it("добавляет Skills если путь содержит skills", () => {
+  it("рендерит skills вместо Employess", () => {
     usePathname.mockReturnValue("/users/1/skills")
 
     useIsOwnProfile.mockReturnValue({
@@ -80,8 +80,56 @@ describe("Breadcrumbs", () => {
     })
 
     render(<Breadcrumbs />)
-    expect(screen.getByText("Employees")).toBeInTheDocument()
-    expect(screen.getByText("Valeria Kovalenko")).toBeInTheDocument()
     expect(screen.getByText("Skills")).toBeInTheDocument()
+    expect(screen.queryByText("Employees")).not.toBeInTheDocument()
+    expect(screen.queryByText("Valeria Kovalenko")).not.toBeInTheDocument()
+  })
+
+  it("рендерит Languages вместо Employess", () => {
+    usePathname.mockReturnValue("/users/1/languages")
+
+    useIsOwnProfile.mockReturnValue({
+      user: {
+        profile: {
+          first_name: "Valeria",
+          last_name: "Kovalenko",
+        },
+      },
+      profileUserId: "1",
+      isOwnProfile: true,
+    })
+
+    useQuery.mockReturnValue({
+      data: null,
+    })
+
+    render(<Breadcrumbs />)
+    expect(screen.getByText("Languages")).toBeInTheDocument()
+    expect(screen.queryByText("Employees")).not.toBeInTheDocument()
+    expect(screen.queryByText("Valeria Kovalenko")).not.toBeInTheDocument()
+  })
+
+  it("рендерит CVs вместо Employess", () => {
+    usePathname.mockReturnValue("/cvs")
+
+    useIsOwnProfile.mockReturnValue({
+      user: {
+        profile: {
+          first_name: "Valeria",
+          last_name: "Kovalenko",
+        },
+      },
+      profileUserId: "1",
+      isOwnProfile: true,
+    })
+
+    useQuery.mockReturnValue({
+      data: null,
+    })
+
+    render(<Breadcrumbs />)
+    expect(screen.getByText("CVs")).toBeInTheDocument()
+    expect(screen.queryByText("Employees")).not.toBeInTheDocument()
+    expect(screen.queryByText("Valeria Kovalenko")).not.toBeInTheDocument()
   })
 })
