@@ -20,9 +20,6 @@ export default function OvalButton({
             whileTap={disabled ? {} : { scale: 0.95 }}
             className="w-full flex justify-center"
         >
-<<<<<<< HEAD
-            <Button type="submit" variant="oval" className="h-11 uppercase">
-=======
             <Button 
                 disabled={disabled} 
                 variant={variant} 
@@ -30,7 +27,6 @@ export default function OvalButton({
                 className={`h-11 uppercase ${className || ''}`}
                 {...props} 
             >
->>>>>>> feature/language-page
                 {text}
             </Button>
         </motion.div>
