@@ -3,14 +3,16 @@
 import { useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Input } from "@/components/ui/input";
 import { authContent } from "@/features/auth/config";
 import { motion, AnimatePresence } from "framer-motion";
 import { LOGIN_QUERY, REGISTER_MUTATION, FORGOT_PASSWORD_MUTATION, RESET_PASSWORD_MUTATION } from "@/features/auth/graphql"
 import { useUserStore } from "@/store/useUserStore";
+import { User } from "@/types/user.types"
 import { ROUTES } from "@/app/configs/routesConfig"
 import toast from "react-hot-toast";
 import OvalButton from "@/components/button/OvalButton";
+
+import FloatingInput from "@/components/FloatingInput";
 
 interface AuthProp {
   mode: "login" | "register" | "reset" | "new_password"
@@ -19,13 +21,15 @@ interface AuthProp {
 interface LoginData {
   login: {
     access_token: string;
-    user: { email: string };
+    refresh_token: string;
+    user: User;
   };
 }
 
 interface RegisterData {
   signup: {
     access_token: string;
+    refresh_token: string;
     user: { email: string };
   };
 }
@@ -59,12 +63,19 @@ export default function AuthForm({ mode }: AuthProp) {
           if (error) throw error 
 
           if (data?.login) {
-            const { access_token, user } = data.login
-            
-            setLogin(user.email)
-            document.cookie = `auth_token=${access_token}; path=/; max-age=86400`
-            router.push("/") 
-          }
+          // Достаем оба токена из ответа
+          const { access_token, refresh_token, user } = data.login;
+          
+          setLogin(user);
+          
+          // Сохраняем access_token (например, на 1 час)
+          document.cookie = `auth_token=${access_token}; path=/; max-age=3600`;
+          
+          // Сохраняем refresh_token (например, на 30 дней)
+          document.cookie = `refresh_token=${refresh_token}; path=/; max-age=2592000`;
+          
+          router.push("/"); 
+        }
         } else if (mode === "register") {
           const { data, error } = await registerMutation({
             variables: { auth: { email, password } },
@@ -74,7 +85,7 @@ export default function AuthForm({ mode }: AuthProp) {
 
           if (data?.signup) {
             setPassword("")
-            toast.success("Регистрация прошла успешно! Теперь вы можете войти.", {
+            toast.success("Registration was successful! You can now log in.", {
               duration: 2000,
               className: "animate-in fade-in zoom-in duration-500 all 0.4s ease",
             });
@@ -91,7 +102,7 @@ export default function AuthForm({ mode }: AuthProp) {
           router.push(ROUTES.LOGIN)
         } else if (mode === "new_password") {
           if (!token) {
-            setErrorMessage("Токен восстановления не найден. Пожалуйста, перейдите по ссылке из письма.");
+            setErrorMessage("Recovery token not found. Please follow the link in the email.");
             return;
           }
 
@@ -103,7 +114,7 @@ export default function AuthForm({ mode }: AuthProp) {
           });
 
           if (error) throw error;
-          toast.success("Пароль успешно изменен! Вы можете войти с новым паролем.");
+          toast.success("Your password has been successfully changed! You can log in with your new password.");
           router.push(ROUTES.LOGIN);
         }
 
@@ -119,13 +130,13 @@ export default function AuthForm({ mode }: AuthProp) {
           setErrorMessage(error.graphQLErrors[0].message)
         } 
         else if (error?.networkError) {
-          setErrorMessage("Проблема с сетью. Проверьте подключение или бэкенд.")
+          setErrorMessage("Network issue. Check your connection or backend.")
         } 
         else if (error?.message) {
           setErrorMessage(error.message)
         } 
         else {
-          setErrorMessage("Произошла неизвестная ошибка. Попробуйте позже.")
+          setErrorMessage("An unknown error occurred. Please try again later.")
         }
       }
     }
@@ -154,25 +165,27 @@ export default function AuthForm({ mode }: AuthProp) {
               )}
               
               {mode !== "new_password" && (
-                <Input 
-                  placeholder="Почта" 
-                  type="email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="rounded-none border border-gray-300 mb-5" 
-                />
+                <div className="mb-5 w-full max-w-140">
+                  <FloatingInput 
+                    label="Email" 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
               )}
               
               {mode !== "reset" && (
-                <Input 
-                  type="password" 
-                  placeholder={mode === "new_password" ? "Новый пароль" : "Пароль"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="rounded-none border border-gray-300 mb-10" 
-                />
+                <div className="mb-10 w-full max-w-140">
+                  <FloatingInput 
+                    type="password" 
+                    label={mode === "new_password" ? "New password" : "Password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
               )}
               
               <div className="mb-5">
