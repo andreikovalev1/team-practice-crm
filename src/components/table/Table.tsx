@@ -15,7 +15,7 @@ export default function Table<T extends { id: string }>({ data, columns }: Table
 
     const isAdmin = useAdmin();
     const pathname = usePathname()
-    const details = (pathname.includes('/') && pathname.includes('cvs'))
+    const showLastColumn  = isAdmin || (pathname.includes('/') && pathname.includes('cvs'));
 
     if (!data || data.length === 0) return <div className="px-6">No data</div>
 
@@ -69,7 +69,7 @@ export default function Table<T extends { id: string }>({ data, columns }: Table
                                 </th>
                             ))}
 
-                            <th className={`${details ? 'cursor-pointer' : 'hidden'}`}></th>
+                            <th className={`${showLastColumn  ? 'cursor-pointer' : 'hidden'}`}></th>
                         </tr>
                     </thead>
 
@@ -88,11 +88,11 @@ export default function Table<T extends { id: string }>({ data, columns }: Table
                                     </td>
                                 ))}
 
-                                <td className={`px-4 py-4 ${details ? 'cursor-pointer' : 'hidden'}`}>
+                                <td className={`px-4 py-4 ${showLastColumn ? 'cursor-pointer' : 'hidden'}`}>
                                     {isAdmin ? (
                                         <div>Menu</div>
                                     ) : (
-                                        details && (
+                                        pathname.includes('cvs') && (
                                             <Link href='#' className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-black transition-colors">
                                                 <MdArrowForwardIos size={14} />
                                             </Link>
