@@ -7,8 +7,8 @@ import { useSearchStore } from "@/store/useSearchStore"
 import { usePathname } from "next/navigation"
 import { useAdmin } from "@/lib/useAdmin" 
 import CreateUserModal from "@/features/employee/CreateUserModal"
-import UpdateModal from "@/features/employee/UpdateModal"
-import { useUserStore } from "@/store/useUserStore"
+import CreateLanguageModal from "@/features/languages/CreateLanguageModal"
+import CreateSkillModal from "@/features/skills/CreateSkillModal"
 
 export default function Header() {
   const search = useSearchStore((state) => state.search)
@@ -16,14 +16,19 @@ export default function Header() {
   const pathname = usePathname()
   const isAdmin = useAdmin();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const { user } = useUserStore();
 
    const showSearch =
     pathname === "/" ||
     (pathname.includes('/') && pathname.includes('cvs')) ||
     (pathname.includes('/') && pathname.includes('skills')) ||
     (pathname.includes('/') && pathname.includes('languages'));
+
+   const getCreateButtonText = () => {
+    if (pathname.includes('languages')) return "Create language";
+    if (pathname.includes('skills')) return "Create skill";
+    if (pathname.includes('cvs')) return "Create CV";
+    return "Create user";
+  };
 
   return (
     <>
@@ -42,27 +47,34 @@ export default function Header() {
                 onClick={() => setIsCreateModalOpen(true)} 
                 className="flex items-center gap-2 px-5 py-2 text-[#c53030] rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium text-sm uppercase"
               >
-                <span className="text-xl leading-none mb-1">+</span> Create user
+                <span className="text-xl leading-none mb-1">+</span>
+                {getCreateButtonText()}
               </button>
             )}
           </div>
         )}
       </header>
 
-      {isCreateModalOpen && (
+      {isCreateModalOpen && pathname === '/' && (
         <CreateUserModal 
           isOpen={isCreateModalOpen} 
           onClose={() => setIsCreateModalOpen(false)}
         />
       )}
 
-      {isUpdateModalOpen && user && (
-        <UpdateModal 
-          isOpen={isUpdateModalOpen} 
-          onClose={() => setIsUpdateModalOpen(false)} 
-          user={user}
+      {isCreateModalOpen && pathname.includes('languages') && (
+        <CreateLanguageModal 
+          isOpen={isCreateModalOpen} 
+          onClose={() => setIsCreateModalOpen(false)}
         />
       )}
+
+      {isCreateModalOpen && pathname.includes('skills') && (
+        <CreateSkillModal 
+          isOpen={isCreateModalOpen} 
+          onClose={() => setIsCreateModalOpen(false)}
+        />
+      )} 
     </>
   )
 }

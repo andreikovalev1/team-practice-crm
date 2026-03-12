@@ -15,7 +15,7 @@ const columns: ColumnType<GlobalLanguage>[] = [
     { key: "iso2", label: "Iso2" },
 ] as const
 
-export default function languagesPage() {
+export default function LanguagesPage() {
     const search = useSearchStore((state) => state.search)
 
     const { data: globalLanguagesData, loading } = useQuery<GetGlobalLanguagesResponse>(

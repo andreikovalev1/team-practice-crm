@@ -23,6 +23,16 @@ export const GET_GLOBAL_SKILLS_QUERY = gql`
   }
 `;
 
+export const CREATE_SKILL_MUTATION = gql`
+  mutation CreateSkill ($skill: CreateSkillInput!) {
+    createSkill (skill: $skill) {
+      id
+      name
+      category_name
+    }
+  }
+`;
+
 export const ADD_PROFILE_SKILL_MUTATION = gql`
   mutation AddProfileSkill($skill: AddProfileSkillInput!) {
     addProfileSkill(skill: $skill) {
