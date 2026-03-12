@@ -1,12 +1,21 @@
 "use client"
 
 import { GoArrowUp } from "react-icons/go"
-import { CiMenuKebab } from "react-icons/ci"
 import { TableProps } from "./types"
 import { useState } from "react";
+import { useAdmin } from "@/lib/useAdmin";
+import { ROUTES } from "@/app/configs/routesConfig";
+import { MdArrowForwardIos } from "react-icons/md"
+import Link from "next/link";
+import { usePathname } from "next/navigation"
+
 
 export default function Table<T extends { id: string }>({ data, columns }: TableProps<T>) {
     const [sortField, setSortField] = useState<string | null>(null)
+
+    const isAdmin = useAdmin();
+    const pathname = usePathname()
+    const details = (pathname.includes('/') && pathname.includes('cvs'))
 
     if (!data || data.length === 0) return <div className="px-6">No data</div>
 
@@ -60,7 +69,7 @@ export default function Table<T extends { id: string }>({ data, columns }: Table
                                 </th>
                             ))}
 
-                            <th></th>
+                            <th className={`${details ? 'cursor-pointer' : 'hidden'}`}></th>
                         </tr>
                     </thead>
 
@@ -79,8 +88,16 @@ export default function Table<T extends { id: string }>({ data, columns }: Table
                                     </td>
                                 ))}
 
-                                <td className="px-4 py-4">
-                                    <CiMenuKebab />
+                                <td className={`px-4 py-4 ${details ? 'cursor-pointer' : 'hidden'}`}>
+                                    {isAdmin ? (
+                                        <div>Menu</div>
+                                    ) : (
+                                        details && (
+                                            <Link href='#' className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-black transition-colors">
+                                                <MdArrowForwardIos size={14} />
+                                            </Link>
+                                        )
+                                    )}
                                 </td>
                             </tr>
                         ))}
