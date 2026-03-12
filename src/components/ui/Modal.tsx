@@ -28,8 +28,6 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
             <X size={20} strokeWidth={2.5} />
           </button>
         </div>
-        
-        {/* Вся начинка модалки вставляется сюда */}
         {children}
       </div>
     </div>

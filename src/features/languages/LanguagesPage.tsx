@@ -10,7 +10,7 @@ import { UpdateLanguageModal } from "./UpdateLanguageModal";
 import { ProfileLanguage } from "./types";
 
 export function LanguagesPage() {
-  const { profileUserId, isOwnProfile } = useIsOwnProfile(); // добавить user в деструктуризацию при добавлении админки
+  const { profileUserId, isOwnProfile } = useIsOwnProfile();
 //   const isAdmin = user?.role === "admin";
   const isReadOnly = !isOwnProfile; // будет добавлено, когда добавится админка: && !isAdmin
 

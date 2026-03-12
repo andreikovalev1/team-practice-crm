@@ -4,6 +4,8 @@ export interface UserProfile {
   last_name?: string;
 }
 
+export type UserRole = "Employee" | "Admin";
+
 export interface User {
   id: string;
   email: string;
@@ -11,4 +13,6 @@ export interface User {
   position_name?: string;
   profile?: UserProfile;
   created_at?: string;
+  role: UserRole;
+  cvs?: { id: string }[];
 }

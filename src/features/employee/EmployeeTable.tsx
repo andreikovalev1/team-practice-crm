@@ -8,6 +8,8 @@ import Link from "next/link";
 import { ROUTES } from "@/app/configs/routesConfig";
 import Image from "next/image";
 import { useSearchStore } from "@/store/useSearchStore"
+import AdminActionMenu  from "./AdminActionMenu"
+import { useAdmin } from "@/lib/useAdmin";
 
 interface EmployeeTableProps {
   employees: User[];
@@ -16,6 +18,7 @@ interface EmployeeTableProps {
 export default function EmployeeTable({ employees }: EmployeeTableProps) {
   const [isSorted, setIsSorted] = useState(false)
   const search = useSearchStore((state) => state.search)
+  const isAdmin = useAdmin();
 
 
   const displayedEmployees = employees.
@@ -94,7 +97,18 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
                 <td className="px-4 py-4 hidden md:table-cell">{employee.email}</td>
                 <td className="px-4 py-4">{employee.department_name}</td>
                 <td className="px-4 py-4">{employee.position_name}</td>
-                <td className="px-4 py-4"><Link href={ROUTES.PROFILE(employee.id)}> <MdArrowForwardIos size={14} /> </Link></td>
+                <td className="px-4 py-4 text-right">
+                {isAdmin ? (
+                  <AdminActionMenu employee={employee} />
+                ) : (
+                  <Link 
+                    href={ROUTES.PROFILE(employee.id)}
+                    className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-black transition-colors"
+                  >
+                    <MdArrowForwardIos size={14} />
+                  </Link>
+                )}
+              </td>
               </tr>
             ))}
           </tbody>

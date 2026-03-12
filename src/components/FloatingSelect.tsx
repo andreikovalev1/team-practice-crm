@@ -86,7 +86,7 @@ export default function FloatingSelect({
                 key={opt.id}
                 onClick={() => handleSelect(opt.name)}
                 className={`
-                  px-4 py-2.5 text-sm cursor-pointer transition-colors
+                  px-4 py-2.5 text-sm cursor-pointer transition-colors text-left
                   ${value === opt.name ? "bg-red-50 text-[#C8372D] font-medium" : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"}
                 `}
               >
