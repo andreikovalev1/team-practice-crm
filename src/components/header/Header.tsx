@@ -9,6 +9,7 @@ import { useAdmin } from "@/lib/useAdmin"
 import CreateUserModal from "@/features/employee/CreateUserModal"
 import UpdateModal from "@/features/employee/UpdateModal"
 import { useUserStore } from "@/store/useUserStore"
+import { ROUTES } from "@/app/configs/routesConfig"
 
 export default function Header() {
   const search = useSearchStore((state) => state.search)
@@ -19,11 +20,14 @@ export default function Header() {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const { user } = useUserStore();
 
-   const showSearch =
-    pathname === "/" ||
-    (pathname.includes('/') && pathname.includes('cvs')) ||
-    (pathname.includes('/') && pathname.includes('skills')) ||
-    (pathname.includes('/') && pathname.includes('languages'));
+  const showSearch = pathname === ROUTES.HOME ||
+    pathname === ROUTES.SKILLS ||
+    pathname === ROUTES.LANGUAGES ||
+    pathname === ROUTES.CVS
+
+  const createBtnText = pathname === ROUTES.HOME ? 'Create user' : 
+    pathname === ROUTES.SKILLS ? 'Create skill' :
+    pathname === ROUTES.LANGUAGES ? 'Create language' : 'Create cv'
 
   return (
     <>
@@ -42,7 +46,7 @@ export default function Header() {
                 onClick={() => setIsCreateModalOpen(true)} 
                 className="flex items-center gap-2 px-5 py-2 text-[#c53030] rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium text-sm uppercase"
               >
-                <span className="text-xl leading-none mb-1">+</span> Create user
+                <span className="text-xl leading-none mb-1">+</span> {createBtnText}
               </button>
             )}
           </div>
