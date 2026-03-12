@@ -1,8 +1,11 @@
+import type { User } from "@/types/user.types";
+
 export interface GlobalCVs {
   id: string;
   name: string;
   description: string;
   education?: string;
+  user?: User;
 }
 
 export interface GetGlobalCVsResponse {

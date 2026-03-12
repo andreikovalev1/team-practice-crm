@@ -6,10 +6,14 @@ export const GET_GLOBAL_CVS_QUERY = gql`
       id
       name
       description
-      education
+      user {
+        id
+        email
+      }
     }
   }
 `;
+
 
 // Запрашиваем пользователя и массив его резюме для таблицы
 export const GET_USER_CVS_QUERY = gql`

@@ -12,7 +12,7 @@ const GLOBAL_CVS: GlobalCVs[] = []
 const columns: ColumnType<GlobalCVs>[] = [
     { key: "name", label: "Name", sortable: true },
     { key: "description", label: "Description", sortable: true },
-    { key: "education", label: "Education", sortable: true },
+    { key: "user", label: "Employee", sortable: true, nestedItem: (cv) => cv.user?.email || "" },
 ] as const
 
 export default function CvsPage() {

@@ -19,7 +19,11 @@ export default function Header() {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const { user } = useUserStore();
 
-  const showSearch = pathname === "/" || pathname.includes('cvs');
+   const showSearch =
+    pathname === "/" ||
+    (pathname.includes('/') && pathname.includes('cvs')) ||
+    (pathname.includes('/') && pathname.includes('skills')) ||
+    (pathname.includes('/') && pathname.includes('languages'));
 
   return (
     <>

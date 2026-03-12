@@ -21,8 +21,11 @@ export default function Table<T extends { id: string }>({ data, columns }: Table
     const sortedData = [...data].sort((a, b) => {
         if (!sortField) return 0
 
-        const valueA = a[sortField as keyof T]
-        const valueB = b[sortField as keyof T]
+        const column = columns.find(col => String(col.key) === sortField)
+        if (!column) return 0
+
+        const valueA = column.nestedItem ? column.nestedItem(a) : a[sortField as keyof T]
+        const valueB = column.nestedItem ? column.nestedItem(b) : b[sortField as keyof T]
 
         if (!valueA && valueB) return 1
         if (valueA && !valueB) return -1
@@ -72,7 +75,7 @@ export default function Table<T extends { id: string }>({ data, columns }: Table
                                         key={`${item.id}-${String(col.key)}`}
                                         className="px-4 py-4 max-w-xs truncate overflow-hidden whitespace-nowrap"
                                     >
-                                        {String(item[col.key])}
+                                        {col.nestedItem ? col.nestedItem(item) : String(item[col.key])}
                                     </td>
                                 ))}
 

@@ -78,31 +78,31 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
               <th onClick={() => handleSort("first_name")} className="px-4 py-3 font-medium cursor-pointer">
                 <div className="flex items-center">
                   First Name
-                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "first_name" ? "text-black rotate-180" : "text-gray-400"}`} />
+                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "first_name" ? "text-black" : "text-gray-400"}`} />
                 </div>
               </th>
               <th onClick={() => handleSort("last_name")} className="px-4 py-3 font-medium hidden md:table-cell cursor-pointer">
                 <div className="flex items-center">
                   Last Name
-                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "last_name" ? "text-black rotate-180" : "text-gray-400"}`} />
+                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "last_name" ? "text-black" : "text-gray-400"}`} />
                 </div>
               </th>
               <th onClick={() => handleSort("email")} className="px-4 py-3 font-medium hidden md:table-cell cursor-pointer">
                 <div className="flex items-center">
                   Email
-                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "email" ? "text-black rotate-180" : "text-gray-400"}`} />
+                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "email" ? "text-black" : "text-gray-400"}`} />
                 </div>
               </th>
               <th onClick={() => handleSort("department")} className="px-4 py-3 font-medium cursor-pointer">
                 <div className="flex items-center">
                   Department
-                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "department" ? "text-black rotate-180" : "text-gray-400"}`} />
+                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "department" ? "text-black" : "text-gray-400"}`} />
                 </div>
               </th>
               <th onClick={() => handleSort("position")} className="px-4 py-3 font-medium cursor-pointer">
                 <div className="flex items-center">
                   Position
-                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "position" ? "text-black rotate-180" : "text-gray-400"}`} />
+                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "position" ? "text-black" : "text-gray-400"}`} />
                 </div>
               </th>
               <th></th>
