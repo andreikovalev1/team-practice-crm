@@ -8,13 +8,14 @@ import { useIsOwnProfile } from "@/features/profile/useIsOwnProfile"
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { profileUserId, isOwnProfile } = useIsOwnProfile()
+  const { profileUserId } = useIsOwnProfile()
 
   const currentTab = pathname?.includes("/skills")
     ? "skills"
     : pathname?.includes("/languages")
     ? "languages"
-    : "profile"
+    : pathname?.includes("/profile")
+    ? "profile" : "cvs"
 
   function handleChangeTab(value: string) {
     if (value === "profile") {
@@ -22,17 +23,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
 
     if (value === "skills") {
-      router.push(ROUTES.SKILLS(profileUserId || ""))
+      router.push(ROUTES.USERSKILLS(profileUserId || ""))
     }
 
     if (value === "languages") {
-      router.push(ROUTES.LANGUAGES(profileUserId || ""))
+      router.push(ROUTES.USERLANGUAGES(profileUserId || ""))
+    }
+
+    if (value === "cvs") {
+      router.push(ROUTES.USERCVS(profileUserId || ""))
     }
   }
 
   return (
     <>
-      {!isOwnProfile && (
         <Tabs value={currentTab} onValueChange={handleChangeTab}>
           <div className="px-4">
             <TabsList variant="line">
@@ -47,10 +51,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <TabsTrigger value="languages" className="uppercase">
                 Languages
               </TabsTrigger>
+
+              <TabsTrigger value="cvs" className="uppercase">
+                CVs
+              </TabsTrigger>
             </TabsList>
           </div>
         </Tabs>
-      )}
 
       {children}
     </>

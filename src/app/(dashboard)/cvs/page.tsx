@@ -1,71 +1,41 @@
 "use client";
 
 import { useQuery } from "@apollo/client/react";
-import { GET_USER_CVS_QUERY } from "@/features/cvs/graphql";
-import { GetUserCvsResponse, Cv } from "@/features/cvs/types";
-import { useIsOwnProfile } from "@/features/profile/useIsOwnProfile";
+import { GET_GLOBAL_CVS_QUERY } from "@/features/cvs/graphql";
+import { GetGlobalCVsResponse, GlobalCVs } from "@/features/cvs/types";
+import Table from "@/components/table/Table"
+import { ColumnType } from "@/components/table/types"
+import { useSearchStore } from "@/store/useSearchStore"
+
+const GLOBAL_CVS: GlobalCVs[] = []
+
+const columns: ColumnType<GlobalCVs>[] = [
+    { key: "name", label: "Name", sortable: true },
+    { key: "description", label: "Description", sortable: true },
+    { key: "education", label: "Education", sortable: true },
+] as const
 
 export default function CvsPage() {
-  const { user, profileUserId } = useIsOwnProfile();
+const search = useSearchStore((state) => state.search)
 
-  const userId = profileUserId ?? user?.id;
+    const { data: globalCVsData, loading } = useQuery<GetGlobalCVsResponse>(
+        GET_GLOBAL_CVS_QUERY
+    )
 
-  const { data, loading, error } = useQuery<GetUserCvsResponse>(
-    GET_USER_CVS_QUERY,
-    {
-      variables: { userId },
-      skip: !userId, // чтобы не делать запрос пока user не загрузился
-    }
-  );
+    const cvs = globalCVsData?.cvs || GLOBAL_CVS
 
-  if (!userId) return <p>Loading user...</p>;
-  if (loading) return <p>Loading CVs...</p>;
-  if (error) return <p>Error loading CVs</p>;
+    const displayedCVs = cvs
+    .filter(cv => {
+        const name = cv?.name.toLowerCase() || ''
+        const description = cv?.description.toLowerCase() || ''
+        const searchValue = search.toLowerCase()
+        return name.includes(searchValue) || description.includes(searchValue)
+    })
 
-  const cvs = data?.user.cvs || [];
+    if (loading) return <div className="px-6">Loading CVs...</div>
+    console.log("CVs data:", globalCVsData);
 
-  return (
-    // пока так оставлю, потом либо переделаю в отдельный кмопнент.
-    // Сейчас сделала здесь, чтобы проверить саму страницу
-    <div style={{ padding: "30px" }}>
-      <h1>My CVs</h1>
-
-      {cvs.map((cv: Cv) => (
-        <div
-          key={cv.id}
-          style={{
-            border: "1px solid #ccc",
-            padding: "20px",
-            marginBottom: "20px",
-            borderRadius: "8px",
-          }}
-        >
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              marginBottom: "10px",
-            }}
-          >
-            <div>
-              <strong>Name:</strong> {cv.name}
-            </div>
-
-            <div>
-              <strong>Education:</strong> {cv.education || "—"}
-            </div>
-
-            <div>
-              <strong>ID:</strong> {cv.id}
-            </div>
-          </div>
-
-          <div>
-            <strong>Description:</strong>
-            <p>{cv.description}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+    return (
+        <Table<GlobalCVs> data={displayedCVs} columns={columns}/>
+    )
 }

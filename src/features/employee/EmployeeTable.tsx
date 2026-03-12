@@ -8,7 +8,7 @@ import Link from "next/link";
 import { ROUTES } from "@/app/configs/routesConfig";
 import Image from "next/image";
 import { useSearchStore } from "@/store/useSearchStore"
-import AdminActionMenu  from "./AdminActionMenu"
+import AdminActionMenu from "./AdminActionMenu"
 import { useAdmin } from "@/lib/useAdmin";
 
 interface EmployeeTableProps {
@@ -16,30 +16,56 @@ interface EmployeeTableProps {
 }
 
 export default function EmployeeTable({ employees }: EmployeeTableProps) {
-  const [isSorted, setIsSorted] = useState(false)
+  const [sortField, setSortField] = useState<string | null>(null)
   const search = useSearchStore((state) => state.search)
   const isAdmin = useAdmin();
 
+  const handleSort = (field: string) => {
+    setSortField(prev => (prev === field ? null : field));
+  };
 
-  const displayedEmployees = employees.
-  filter(employee => {
-    const firstName = employee.profile?.first_name?.toLowerCase() || ''
-    const lastName = employee.profile?.last_name?.toLowerCase() || ''
-    const fullName = `${firstName} ${lastName}`.trim()
-    const searchValue = String(search ?? "").toLowerCase().trim()
+  const displayedEmployees = employees
+    .filter(employee => {
+      const firstName = employee.profile?.first_name?.toLowerCase() || ''
+      const lastName = employee.profile?.last_name?.toLowerCase() || ''
+      const fullName = `${firstName} ${lastName}`.trim()
+      const searchValue = String(search ?? "").toLowerCase().trim()
+      return fullName.includes(searchValue)
+    })
+    .sort((a, b) => {
+      if (!sortField) return 0
 
-    return fullName?.includes(searchValue)
-  }).sort((a, b) => {
-      if (!isSorted) return 0
+      let valueA = ''
+      let valueB = ''
 
-      const deptA = a.department_name
-      const deptB = b.department_name
+      switch (sortField) {
+        case "first_name":
+          valueA = a.profile?.first_name || ''
+          valueB = b.profile?.first_name || ''
+          break
+        case "last_name":
+          valueA = a.profile?.last_name || ''
+          valueB = b.profile?.last_name || ''
+          break
+        case "email":
+          valueA = a.email || ''
+          valueB = b.email || ''
+          break
+        case "department":
+          valueA = a.department_name || ''
+          valueB = b.department_name || ''
+          break
+        case "position":
+          valueA = a.position_name || ''
+          valueB = b.position_name || ''
+          break
+      }
 
-      if (!deptA) return 1
-      if (!deptB) return -1
+      if (valueA && !valueB) return -1
+      if (!valueA && valueB) return 1
 
-      return deptA.localeCompare(deptB)
-  })
+      return valueA.localeCompare(valueB)
+    })
 
   return (
     <div className="px-6">
@@ -48,67 +74,66 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
           <thead>
             <tr className="text-left">
               <th></th>
-              <th className="px-4 py-3 font-medium">First Name</th>
-              <th className="px-4 py-3 font-medium hidden md:table-cell">Last Name</th>
-              <th className="px-4 py-3 font-medium hidden md:table-cell">Email</th>
-              <th onClick={() => {setIsSorted(prev => !prev)}} className="px-4 py-3 font-medium flex items-center cursor-pointer">
-                Department
-                <GoArrowUp
-                  className={`
-                    transition-all duration-200
-                    ${isSorted ? "text-black" : "text-gray-400"}
-                  `}
-                />
+              {/* Заголовки с вызовом handleSort */}
+              <th onClick={() => handleSort("first_name")} className="px-4 py-3 font-medium cursor-pointer">
+                <div className="flex items-center">
+                  First Name
+                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "first_name" ? "text-black rotate-180" : "text-gray-400"}`} />
+                </div>
               </th>
-              <th className="px-4 py-3 font-medium">Position</th>
+              <th onClick={() => handleSort("last_name")} className="px-4 py-3 font-medium hidden md:table-cell cursor-pointer">
+                <div className="flex items-center">
+                  Last Name
+                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "last_name" ? "text-black rotate-180" : "text-gray-400"}`} />
+                </div>
+              </th>
+              <th onClick={() => handleSort("email")} className="px-4 py-3 font-medium hidden md:table-cell cursor-pointer">
+                <div className="flex items-center">
+                  Email
+                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "email" ? "text-black rotate-180" : "text-gray-400"}`} />
+                </div>
+              </th>
+              <th onClick={() => handleSort("department")} className="px-4 py-3 font-medium cursor-pointer">
+                <div className="flex items-center">
+                  Department
+                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "department" ? "text-black rotate-180" : "text-gray-400"}`} />
+                </div>
+              </th>
+              <th onClick={() => handleSort("position")} className="px-4 py-3 font-medium cursor-pointer">
+                <div className="flex items-center">
+                  Position
+                  <GoArrowUp className={`transition-all duration-200 ml-1 ${sortField === "position" ? "text-black rotate-180" : "text-gray-400"}`} />
+                </div>
+              </th>
               <th></th>
             </tr>
           </thead>
-
           <tbody>
             {displayedEmployees.map((employee) => (
-              <tr
-                key={employee.id}
-                className="border-t border-zinc-200 hover:bg-zinc-50 transition"
-              >
+              <tr key={employee.id} className="border-t border-zinc-200 hover:bg-zinc-50 transition">
                 <td className="px-4 py-4">
                   <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gray-300 flex items-center justify-center">
                     {employee.profile?.avatar ? (
-                      <Image
-                        src={employee.profile.avatar}
-                        alt={`${employee.profile?.first_name || 'User'} avatar`}
-                        fill
-                        sizes="40px"
-                        className="object-cover"
-                        unoptimized
-                      />
+                      <Image src={employee.profile.avatar} alt="Avatar" fill className="object-cover" unoptimized />
                     ) : (
-                      <span className="text-sm font-medium text-white uppercase select-none">
-                        {employee.profile?.first_name
-                          ? employee.profile.first_name.charAt(0)
-                          : employee.email.charAt(0)}
-                      </span>
+                      <span className="text-sm font-medium text-white uppercase">{employee.profile?.first_name?.charAt(0) || employee.email.charAt(0)}</span>
                     )}
                   </div>
                 </td>
-
                 <td className="px-4 py-4">{employee.profile?.first_name}</td>
                 <td className="px-4 py-4 hidden md:table-cell">{employee.profile?.last_name}</td>
                 <td className="px-4 py-4 hidden md:table-cell">{employee.email}</td>
                 <td className="px-4 py-4">{employee.department_name}</td>
                 <td className="px-4 py-4">{employee.position_name}</td>
                 <td className="px-4 py-4 text-right">
-                {isAdmin ? (
-                  <AdminActionMenu employee={employee} />
-                ) : (
-                  <Link 
-                    href={ROUTES.PROFILE(employee.id)}
-                    className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-black transition-colors"
-                  >
-                    <MdArrowForwardIos size={14} />
-                  </Link>
-                )}
-              </td>
+                  {isAdmin ? (
+                    <AdminActionMenu employee={employee} />
+                  ) : (
+                    <Link href={ROUTES.PROFILE(employee.id)} className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-black transition-colors">
+                      <MdArrowForwardIos size={14} />
+                    </Link>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
