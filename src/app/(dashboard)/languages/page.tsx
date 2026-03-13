@@ -7,9 +7,10 @@ import Table from "@/components/table/Table"
 import { ColumnType } from "@/components/table/types"
 import { useSearchStore } from "@/store/useSearchStore"
 import ActionMenu from "@/components/table/ActionMenu";
-import Modal from "@/components/ui/Modal";
 import { useMemo } from "react";
 import useDebounce from "@/components/search/useDebounce";
+import DeleteLanguageModal from "./DeleteLanguageModal"
+import UpdateLanguageModal from "./UpdateLanguageModal";
 
 const GLOBAL_LANGUAGES: GlobalLanguage[] = [];
 
@@ -45,33 +46,35 @@ export default function LanguagesPage() {
       nestedItem: (language: GlobalLanguage) => (
         <ActionMenu
           row={language}
+          entityName="Language"
           renderModal={(row, close, action) => {
-            if (action === "update") {
-              return (
-                <Modal isOpen={true} onClose={close} title={`Update language: ${row.name}`}>
-                  <div className="p-4">
-                    {/* Тут форма обновления навыка */}
-                    Обновить язык: {row.name}
-                  </div>
-                </Modal>
-              );
-            }
-            if (action === "delete") {
-              return (
-                <Modal isOpen={true} onClose={close} title={`Delete language: ${row.name}`}>
-                  <div className="p-4 text-red-600">
-                    Подтвердите удаление языка: {row.name}
-                  </div>
-                </Modal>
-              );
-            }
-          }}
+              if (action === "update") {
+                return (
+                  <UpdateLanguageModal
+                    isOpen={true}
+                    onClose={close}
+                    language={row}
+                  />
+                );
+              }
+
+              if (action === "delete") {
+                return (
+                  <DeleteLanguageModal
+                    isOpen={true}
+                    onClose={close}
+                    language={row}
+                  />
+                );
+              }
+            }}
         />
       )
     }
     ] as const
 
     return(
-        <Table<GlobalLanguage> data={displayedLanguages} columns={columns}></Table>
+        loading ? <div className="px-6">Loading skills</div> :
+                 <Table<GlobalLanguage> data={displayedLanguages} columns={columns} />
     )
 }
