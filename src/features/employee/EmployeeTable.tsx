@@ -10,6 +10,7 @@ import Image from "next/image";
 import { useSearchStore } from "@/store/useSearchStore"
 import AdminActionMenu from "./AdminActionMenu"
 import { useAdmin } from "@/lib/useAdmin";
+import { useMemo } from "react";
 
 interface EmployeeTableProps {
   employees: User[];
@@ -24,7 +25,8 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
     setSortField(prev => (prev === field ? null : field));
   };
 
-  const displayedEmployees = employees
+  const displayedEmployees = useMemo (() => {
+    return employees
     .filter(employee => {
       const firstName = employee.profile?.first_name?.toLowerCase() || ''
       const lastName = employee.profile?.last_name?.toLowerCase() || ''
@@ -66,6 +68,7 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
 
       return valueA.localeCompare(valueB)
     })
+  }, [employees, search, sortField]);
 
   return (
     <div className="px-6">
