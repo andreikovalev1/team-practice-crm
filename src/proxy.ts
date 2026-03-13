@@ -1,43 +1,61 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export async function proxy(request: NextRequest) {
-  const authToken = request.cookies.get('auth_token')?.value;
-  const refreshToken = request.cookies.get('refresh_token')?.value;
+interface TokenPayload {
+  exp?: number;
+}
 
-  if (!refreshToken) {
-    return NextResponse.next();
-  }
+interface RefreshResponse {
+  data?: {
+    updateToken?: {
+      access_token?: string;
+      refresh_token?: string;
+    };
+  };
+  errors?: Array<{ message: string }>;
+}
 
-  let isExpired = false;
-  if (!authToken) {
-    isExpired = true;
-  } else {
-    try {
-      const payloadBase64 = authToken.split('.')[1];
-      const decodedJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
-      const payload = JSON.parse(decodedJson);
-      
-      if (payload.exp * 1000 < Date.now() + 10000) {
-        isExpired = true;
-      }
-    } catch {
-      isExpired = true;
-    }
-  }
-
-  if (!isExpired) {
-    return NextResponse.next();
-  }
-
+function isTokenInvalid(token: string): boolean {
   try {
-    const graphqlUrl = process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:3001/api/graphql';
-    
+    const parts = token.split('.');
+    // JWT должен состоять ровно из 3 частей
+    if (parts.length !== 3 || !parts[0] || !parts[1] || !parts[2]) {
+      return true;
+    }
+
+    // Проверяем что каждая часть — валидный base64
+    for (const part of parts) {
+      atob(part.replace(/-/g, '+').replace(/_/g, '/'));
+    }
+
+    // Проверяем exp в payload
+    const decodedJson = atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'));
+    const payload = JSON.parse(decodedJson) as TokenPayload;
+
+    if (typeof payload.exp !== 'number') return true;
+
+    // Истекает через 10 секунд или раньше
+    if (payload.exp * 1000 < Date.now() + 10_000) {
+      return true;
+    }
+
+    return false;
+  } catch {
+    // Любая ошибка парсинга = невалидный токен
+    return true;
+  }
+}
+
+async function tryRefresh(
+  refreshToken: string,
+  graphqlUrl: string
+): Promise<{ accessToken: string | null; refreshToken: string | null }> {
+  try {
     const res = await fetch(graphqlUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${refreshToken}`,
+        Authorization: `Bearer ${refreshToken}`,
       },
       body: JSON.stringify({
         query: `
@@ -47,41 +65,87 @@ export async function proxy(request: NextRequest) {
               refresh_token
             }
           }
-        `
-      })
+        `,
+      }),
     });
 
-    const json = await res.json();
-    const newAccessToken = json.data?.updateToken?.access_token;
-    const newRefreshToken = json.data?.updateToken?.refresh_token;
+    const json = (await res.json()) as RefreshResponse;
 
-    if (newAccessToken) {
-      const requestHeaders = new Headers(request.headers);
-      requestHeaders.set('cookie', `auth_token=${newAccessToken}; refresh_token=${newRefreshToken || refreshToken}`);
-
-      const response = NextResponse.next({
-        request: {
-          headers: requestHeaders,
-        },
-      });
-
-      response.cookies.set('auth_token', newAccessToken, { path: '/', maxAge: 3600 });
-      if (newRefreshToken) {
-        response.cookies.set('refresh_token', newRefreshToken, { path: '/', maxAge: 2592000 });
-      }
-
-      return response;
+    if (json.errors) {
+      console.error('[Proxy] Token refresh errors:', json.errors);
+      return { accessToken: null, refreshToken: null };
     }
-  } catch {
+
+    return {
+      accessToken: json.data?.updateToken?.access_token || null,
+      refreshToken: json.data?.updateToken?.refresh_token || null,
+    };
+  } catch (error) {
+    console.error('[Proxy] Refresh fetch error:', error);
+    return { accessToken: null, refreshToken: null };
+  }
+}
+
+export async function proxy(request: NextRequest) {
+  const authToken = request.cookies.get('auth_token')?.value;
+  const refreshTokenValue = request.cookies.get('refresh_token')?.value;
+
+  // Нет refresh token — пропускаем
+  if (!refreshTokenValue) {
     return NextResponse.next();
   }
 
-  return NextResponse.next();
+  // Токен есть и валиден — пропускаем
+  if (authToken && !isTokenInvalid(authToken)) {
+    return NextResponse.next();
+  }
+
+  // Токен отсутствует, истёк или сломан — обновляем
+  const graphqlUrl =
+    process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:3001/api/graphql';
+
+  const newTokens = await tryRefresh(refreshTokenValue, graphqlUrl);
+
+  // Refresh провалился — редирект на логин
+  if (!newTokens.accessToken) {
+    const response = NextResponse.redirect(
+      new URL('/auth/login', request.url)
+    );
+    response.cookies.delete('auth_token');
+    response.cookies.delete('refresh_token');
+    return response;
+  }
+
+  // Refresh успешен — обновляем куки
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set(
+    'cookie',
+    `auth_token=${newTokens.accessToken}; refresh_token=${newTokens.refreshToken || refreshTokenValue}`
+  );
+
+  const response = NextResponse.next({
+    request: { headers: requestHeaders },
+  });
+
+  response.cookies.set('auth_token', newTokens.accessToken, {
+    path: '/',
+    maxAge: 3600,
+    httpOnly: false,
+    sameSite: 'lax',
+  });
+
+  if (newTokens.refreshToken) {
+    response.cookies.set('refresh_token', newTokens.refreshToken, {
+      path: '/',
+      maxAge: 2592000,
+      httpOnly: false,
+      sameSite: 'lax',
+    });
+  }
+
+  return response;
 }
 
-// Указываем, на каких маршрутах должен работать
 export const config = {
-  matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|auth).*)',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|auth).*)'],
 };

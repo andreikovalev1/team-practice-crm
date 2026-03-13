@@ -31,3 +31,14 @@ export const checkIsAdminToken = (): boolean => {
     return false;
   }
 };
+
+export const updateAuthCookies = (
+  accessToken: string,
+  refreshToken: string | null
+): void => {
+  if (typeof document === "undefined") return;
+  document.cookie = `auth_token=${encodeURIComponent(accessToken)}; path=/; max-age=3600`;
+  if (refreshToken) {
+    document.cookie = `refresh_token=${encodeURIComponent(refreshToken)}; path=/; max-age=2592000`;
+  }
+};

@@ -6,7 +6,6 @@ import { useQuery } from "@apollo/client/react";
 import Table from "@/components/table/Table"
 import { ColumnType } from "@/components/table/types"
 import { useSearchStore } from "@/store/useSearchStore"
-
 import ActionMenu from "@/components/table/ActionMenu";
 import Modal from "@/components/ui/Modal";
 
@@ -50,6 +49,8 @@ const columns: ColumnType<GlobalLanguage>[] = [
 
 export default function LanguagesPage() {
     const search = useSearchStore((state) => state.search)
+
+    console.log("=== LANGUAGES PAGE RENDER ===");
 
     const { data: globalLanguagesData, loading } = useQuery<GetGlobalLanguagesResponse>(
         GET_GLOBAL_LANGUAGES_QUERY
