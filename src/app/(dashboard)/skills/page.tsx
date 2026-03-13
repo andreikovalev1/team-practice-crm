@@ -6,13 +6,11 @@ import { useQuery } from "@apollo/client/react";
 import Table from "@/components/table/Table";
 import { ColumnType } from "@/components/table/types";
 import { useSearchStore } from "@/store/useSearchStore";
-
-import Modal from "@/components/ui/Modal";
-
 import ActionMenu from "@/components/table/ActionMenu";
 import { useMemo } from "react";
 import useDebounce from "@/components/search/useDebounce";
 import UpdateSkillModal from "./UpdateSkillModal";
+import DeleteSkillModal from "./DeleteSkillModal";
 
 const GLOBAL_SKILL: GlobalSkill[] = [];
 
@@ -41,27 +39,28 @@ export default function SkillsPage() {
       nestedItem: (skill: GlobalSkill) => (
         <ActionMenu
           row={skill}
-            renderModal={(row, close, action) => {
-if (action === "update") {
-  return (
-    <UpdateSkillModal
-      isOpen={true}
-      onClose={close}
-      skill={row}
-    />
-  );
-}
+          entityName="Skill"
+          renderModal={(row, close, action) => {
+              if (action === "update") {
+                return (
+                  <UpdateSkillModal
+                    isOpen={true}
+                    onClose={close}
+                    skill={row}
+                  />
+                );
+              }
 
-  if (action === "delete") {
-    return (
-      <Modal isOpen={true} onClose={close} title={`Delete Skill: ${row.name}`}>
-        <div className="p-4 text-red-600">
-          Подтвердите удаление навыка: {row.name}
-        </div>
-      </Modal>
-    );
-  }
-}}
+              if (action === "delete") {
+                return (
+                  <DeleteSkillModal
+                    isOpen={true}
+                    onClose={close}
+                    skill={row}
+                  />
+                );
+              }
+            }}
         />
       ),
     },

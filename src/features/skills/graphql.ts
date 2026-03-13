@@ -33,6 +33,14 @@ export const UPDATE_SKILL_MUTATION = gql`
   }
 `;
 
+export const DELETE_SKILL_MUTATION = gql`
+  mutation DeleteSkill($skill: DeleteSkillInput!) {
+    deleteSkill(skill: $skill) {
+      affected
+    }
+  }
+`;
+
 export const CREATE_SKILL_MUTATION = gql`
   mutation CreateSkill ($skill: CreateSkillInput!) {
     createSkill (skill: $skill) {
