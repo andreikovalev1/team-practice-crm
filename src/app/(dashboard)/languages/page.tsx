@@ -7,12 +7,45 @@ import Table from "@/components/table/Table"
 import { ColumnType } from "@/components/table/types"
 import { useSearchStore } from "@/store/useSearchStore"
 
+import ActionMenu from "@/components/table/ActionMenu";
+import Modal from "@/components/ui/Modal";
+
 const GLOBAL_LANGUAGES: GlobalLanguage[] = [];
 
 const columns: ColumnType<GlobalLanguage>[] = [
     { key: "name", label: "Name", sortable: true },
     { key: "native_name", label: "Native Name" },
     { key: "iso2", label: "Iso2" },
+    {
+      key: "actions",
+      label: "",
+      nestedItem: (language: GlobalLanguage) => (
+        <ActionMenu
+          row={language}
+          renderModal={(row, close, action) => {
+            if (action === "update") {
+              return (
+                <Modal isOpen={true} onClose={close} title={`Update language: ${row.name}`}>
+                  <div className="p-4">
+                    {/* Тут форма обновления навыка */}
+                    Обновить язык: {row.name}
+                  </div>
+                </Modal>
+              );
+            }
+            if (action === "delete") {
+              return (
+                <Modal isOpen={true} onClose={close} title={`Delete language: ${row.name}`}>
+                  <div className="p-4 text-red-600">
+                    Подтвердите удаление языка: {row.name}
+                  </div>
+                </Modal>
+              );
+            }
+          }}
+        />
+      )
+    }
 ] as const
 
 export default function LanguagesPage() {

@@ -73,7 +73,7 @@ export default function CreateSkillModal({ isOpen, onClose }: CreateSkillModalPr
     <Modal isOpen={isOpen} onClose={onClose} title="Create Skill">
       <form onSubmit={handleSubmit} className="space-y-6">
         <FloatingInput
-          label="Skill Name (e.g., React)"
+          label="Skill Name"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}

@@ -57,7 +57,7 @@ export default function CreateGlobalLanguageModal({ isOpen, onClose }: CreateGlo
     <Modal isOpen={isOpen} onClose={onClose} title="Create Language">
       <form onSubmit={handleSubmit} className="space-y-6">
         <FloatingInput
-          label="Language Name (e.g., English)"
+          label="Language Name"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -65,14 +65,14 @@ export default function CreateGlobalLanguageModal({ isOpen, onClose }: CreateGlo
           required
         />
         <FloatingInput
-          label="Native Name (e.g., English)"
+          label="Native Name"
           type="text"
           value={nativeName}
           onChange={(e) => setNativeName(e.target.value)}
           disabled={isAdding}
         />
         <FloatingInput
-          label="ISO2 Code (e.g., en)"
+          label="ISO2 Code"
           type="text"
           value={iso2}
           onChange={(e) => setIso2(e.target.value)}
