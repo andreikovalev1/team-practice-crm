@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, Trash2, Edit } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -14,7 +14,6 @@ interface ActionMenuProps<T> {
 export default function ActionMenu<T>({ row, renderModal }: ActionMenuProps<T>) {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
   const pathname = usePathname();
 
   return (
@@ -28,10 +27,15 @@ export default function ActionMenu<T>({ row, renderModal }: ActionMenuProps<T>) 
 
         <DropdownMenuContent align="end" className="w-48 rounded-xl shadow-lg">
           <DropdownMenuItem onClick={() => setIsUpdateModalOpen(true)} className="py-2.5 cursor-pointer">
+            <Edit className="mr-2 h-4 w-4 text-gray-500" />
             Update
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={() => setIsDeleteModalOpen(true)} className="py-2.5 text-red-600 cursor-pointer">
+          <DropdownMenuItem 
+            onClick={() => setIsDeleteModalOpen(true)} 
+            className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 py-2.5"
+            >
+            <Trash2 className="mr-2 h-4 w-4" />
             Delete
           </DropdownMenuItem>
 
@@ -45,7 +49,6 @@ export default function ActionMenu<T>({ row, renderModal }: ActionMenuProps<T>) 
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Модалки */}
       {isUpdateModalOpen && renderModal?.(row, () => setIsUpdateModalOpen(false), "update")}
       {isDeleteModalOpen && renderModal?.(row, () => setIsDeleteModalOpen(false), "delete")}
     </>

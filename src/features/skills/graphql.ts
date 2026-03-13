@@ -15,7 +15,17 @@ export const GET_PROFILE_SKILLS_QUERY = gql`
 
 export const GET_GLOBAL_SKILLS_QUERY = gql`
   query GetGlobalSkills {
-    skills {
+  skills {
+    id
+    name
+    category_name
+  }
+}
+`;
+
+export const UPDATE_SKILL_MUTATION = gql`
+  mutation UpdateSkill($skill: UpdateSkillInput!) {
+    updateSkill(skill: $skill) {
       id
       name
       category_name

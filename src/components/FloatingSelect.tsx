@@ -28,8 +28,8 @@ export default function FloatingSelect({
 }: FloatingSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
-  // Закрываем меню при клике вне компонента
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
@@ -47,13 +47,16 @@ export default function FloatingSelect({
 
   return (
     <div ref={wrapperRef} className={`relative w-full ${className}`}>
-      {/* Главное поле (Кнопка) */}
       <div
         onClick={() => !disabled && setIsOpen(!isOpen)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        tabIndex={0}
         className={`
-          relative w-full border bg-white px-3 py-3 text-sm transition-all duration-200 cursor-pointer flex items-center justify-between
-          ${disabled ? "opacity-50 cursor-not-allowed border-gray-300" : "hover:border-gray-400 hover:shadow-sm"}
-          ${isOpen ? "border-[#C8372D] ring-1 ring-[#C8372D]" : "border-gray-300"}
+          relative w-full border duration-200 cursor-pointer flex items-center justify-between
+          bg-transparent px-3 py-3 text-sm text-gray-900
+          ${disabled ? "opacity-50 cursor-not-allowed border-gray-300" : ""}
+          ${isFocused ? "border-red-700" : "border-gray-300"} // красная граница при фокусе
         `}
       >
         <span className={`truncate ${value ? "text-gray-900" : "text-transparent"}`}>
@@ -66,18 +69,16 @@ export default function FloatingSelect({
         />
       </div>
 
-      {/* Плавающий Лейбл */}
       <label
         className={`
           absolute left-3 bg-white px-1 transition-all duration-200 pointer-events-none z-5
-          ${isOpen || value ? "-top-3 text-gray-500 text-sm" : "top-3.5 text-base text-gray-500"}
-          ${isOpen && "text-[#C8372D]"} 
+          ${isOpen || value ? "-top-3 text-sm" : "top-3.5 text-base"}
+          ${isFocused ? "text-[#C10007]" : "text-gray-500"}
         `}
       >
         {label}
       </label>
 
-      {/* Кастомное выпадающее меню */}
       {isOpen && (
         <div className="absolute z-10 w-full mt-2 bg-white border border-gray-100 rounded-lg shadow-xl max-h-56 overflow-y-auto animate-in fade-in zoom-in-95 duration-100">
           {options.length > 0 ? (
