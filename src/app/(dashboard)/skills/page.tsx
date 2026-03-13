@@ -1,61 +1,3 @@
-// "use client"
-
-// import { GET_GLOBAL_SKILLS_QUERY } from "@/features/skills/graphql"
-// import { GetGlobalSkillsResponse, GlobalSkill } from "@/features/skills/types"
-// import { useQuery } from "@apollo/client/react"
-// import Table from "@/components/table/Table"
-// import { ColumnType } from "@/components/table/types"
-// import { useSearchStore } from "@/store/useSearchStore"
-
-// import ActionMenu from "@/components/table/ActionMenu";
-// import Modal from "@/components/ui/Modal";
-
-
-// const GLOBAL_SKILL: GlobalSkill[] = []
-
-// const columns: ColumnType<GlobalSkill>[] = [
-//     { key: "name", label: "Name", sortable: true },
-//     { key: "category_name", label: "Category", sortable: true },
-//     {
-//       key: "actions", 
-//       label: "", 
-//       nestedItem: (skill: GlobalSkill) => (
-//         <ActionMenu
-//           row={skill}
-//           renderModal={(row, close) => (
-//             <Modal isOpen={true} onClose={close} title={`Skill: ${row.name}`}>
-//               <div className="p-4">Create/Delete skill - placeholder</div>
-//             </Modal>
-//           )}
-//         />
-//       )
-//     }
-// ] as const
-
-// export default function SkillsPage() {
-//     const search = useSearchStore((state) => state.search)
-
-//     const { data: globalSkillsData, loading } = useQuery<GetGlobalSkillsResponse>(
-//         GET_GLOBAL_SKILLS_QUERY
-//     )
-
-//     const skills = globalSkillsData?.skills || GLOBAL_SKILL
-
-//     const displayedSkills = skills
-//     .filter(skill => {
-//         const name = skill?.name.toLowerCase() || ''
-//         const category = skill?.category_name.toLowerCase() || ''
-//         const searchValue = search.toLowerCase()
-//         return name.includes(searchValue) || category.includes(searchValue)
-//     })
-
-//     if (loading) return <div className="px-6">Loading skills...</div>
-
-//     return (
-//         <Table<GlobalSkill> data={displayedSkills} columns={columns}/>
-//     )
-// }
-
 "use client";
 
 import { GET_GLOBAL_SKILLS_QUERY } from "@/features/skills/graphql";
@@ -67,20 +9,26 @@ import { useSearchStore } from "@/store/useSearchStore";
 
 import ActionMenu from "@/components/table/ActionMenu";
 import Modal from "@/components/ui/Modal";
+import { useMemo } from "react";
+import useDebounce from "@/components/search/useDebounce";
 
 const GLOBAL_SKILL: GlobalSkill[] = [];
 
 export default function SkillsPage() {
   const search = useSearchStore((state) => state.search);
+  const debouncedSearch  = useDebounce(search, 400)
   const { data: globalSkillsData, loading } = useQuery<GetGlobalSkillsResponse>(GET_GLOBAL_SKILLS_QUERY);
   const skills = globalSkillsData?.skills || GLOBAL_SKILL;
 
-  const displayedSkills = skills.filter(skill => {
-    const name = skill?.name.toLowerCase() || '';
-    const category = skill?.category_name.toLowerCase() || '';
-    const searchValue = search.toLowerCase();
-    return name.includes(searchValue) || category.includes(searchValue);
-  });
+  const displayedSkills = useMemo (() => {
+    const searchValue = debouncedSearch.toLowerCase()
+
+    return skills.filter(skill => {
+      const name = skill?.name.toLowerCase() || '';
+      const category = skill?.category_name.toLowerCase() || '';
+      return name.includes(searchValue) || category.includes(searchValue);
+    })
+  }, [skills, debouncedSearch])
 
   if (loading) return <div className="px-6">Loading skills...</div>;
 
