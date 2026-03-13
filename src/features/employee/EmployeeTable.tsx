@@ -12,6 +12,8 @@ import AdminActionMenu from "./AdminActionMenu"
 import { useAdmin } from "@/lib/useAdmin";
 import { useMemo } from "react";
 
+import useDebounce from "@/components/search/useDebounce";
+
 interface EmployeeTableProps {
   employees: User[];
 }
@@ -19,6 +21,7 @@ interface EmployeeTableProps {
 export default function EmployeeTable({ employees }: EmployeeTableProps) {
   const [sortField, setSortField] = useState<string | null>(null)
   const search = useSearchStore((state) => state.search)
+  const debouncedSearch  = useDebounce(search, 400)
   const isAdmin = useAdmin();
 
   const handleSort = (field: string) => {
@@ -26,12 +29,13 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
   };
 
   const displayedEmployees = useMemo (() => {
+    const searchValue = debouncedSearch.toLowerCase().trim()
+
     return employees
     .filter(employee => {
       const firstName = employee.profile?.first_name?.toLowerCase() || ''
       const lastName = employee.profile?.last_name?.toLowerCase() || ''
       const fullName = `${firstName} ${lastName}`.trim()
-      const searchValue = String(search ?? "").toLowerCase().trim()
       return fullName.includes(searchValue)
     })
     .sort((a, b) => {
@@ -68,7 +72,7 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
 
       return valueA.localeCompare(valueB)
     })
-  }, [employees, search, sortField]);
+  }, [employees, debouncedSearch, sortField]);
 
   return (
     <div className="px-6">

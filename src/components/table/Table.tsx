@@ -7,45 +7,45 @@ import { useAdmin } from "@/lib/useAdmin";
 import { MdArrowForwardIos } from "react-icons/md"
 import Link from "next/link";
 import { usePathname } from "next/navigation"
+import { useMemo } from "react";
 
 export default function Table<T extends { id: string }>({ data, columns }: TableProps<T>) {
     const [sortField, setSortField] = useState<string | null>(null)
     const isAdmin = useAdmin();
-    const pathname = usePathname();
+    const pathname = usePathname()
 
-    if (!data || data.length === 0) return <div className="px-6">No data</div>
-
-    // Фильтруем колонки: actions видны только админам
-    const visibleColumns = columns.filter(col => col.key !== 'actions' || isAdmin)
+    const visibleColumns = useMemo(() => {
+        return columns.filter(col => col.key !== "actions" || isAdmin)
+    }, [columns, isAdmin])
 
     const handleSort = (field: string) => {
         if (sortField === field) setSortField(null)
         else setSortField(field)
     }
 
-    // Сортировка по visibleColumns
-    const sortedData = [...data].sort((a, b) => {
-        if (!sortField) return 0
+    const sortedData = useMemo(() => {
+        if (!sortField) return data
 
-        const column = visibleColumns.find(col => String(col.key) === sortField)
-        if (!column) return 0
+        return [...data].sort((a, b) => {
+            const column = visibleColumns.find(col => String(col.key) === sortField)
+            if (!column) return 0
 
-        const valueA = column.nestedItem ? column.nestedItem(a) : a[sortField as keyof T]
-        const valueB = column.nestedItem ? column.nestedItem(b) : b[sortField as keyof T]
+            const valueA = column.nestedItem ? column.nestedItem(a) : a[sortField as keyof T]
+            const valueB = column.nestedItem ? column.nestedItem(b) : b[sortField as keyof T]
 
-        if (!valueA && valueB) return 1
-        if (valueA && !valueB) return -1
-        if (!valueA && !valueB) return 0
+            if (!valueA && valueB) return 1
+            if (valueA && !valueB) return -1
+            if (!valueA && !valueB) return 0
 
-        return String(valueA).localeCompare(String(valueB))
-    })
+            return String(valueA).localeCompare(String(valueB))
+        })
+    }, [data, sortField, visibleColumns])
 
     return (
         <div className="px-6">
             <div className="overflow-x-auto">
                 <table className="min-w-full">
 
-                    {/* HEAD */}
                     <thead>
                         <tr className="text-left">
                             {visibleColumns.map(col => (
@@ -65,48 +65,44 @@ export default function Table<T extends { id: string }>({ data, columns }: Table
                                 </th>
                             ))}
 
-                            {/* Колонка для обычного пользователя на /cvs */}
                             {!isAdmin && pathname.includes('cvs') && (
                                 <th className="px-4 py-3"></th>
                             )}
                         </tr>
                     </thead>
 
-                    {/* BODY */}
                     <tbody>
-                        {sortedData.map(item => (
-                            <tr
-                                key={item.id}
-                                className="border-t border-zinc-200 hover:bg-zinc-50 transition"
-                            >
+                        {sortedData.length === 0 ? (
+                            <tr>
+                            <td colSpan={visibleColumns.length} className="px-4 py-4">
+                                No data
+                            </td>
+                            </tr>
+                        ) : (
+                            sortedData.map(item => (
+                            <tr key={item.id} className="border-t border-zinc-200 hover:bg-zinc-50 transition">
                                 {visibleColumns.map(col => (
-                                    <td
-                                        key={`${item.id}-${String(col.key)}`}
-                                        className="px-4 py-4 max-w-xs truncate overflow-hidden whitespace-nowrap"
-                                    >
-                                        {col.nestedItem
-                                            ? col.nestedItem(item)
-                                            : col.key in item
-                                                ? String(item[col.key as keyof T])
-                                                : null
-                                        }
-                                    </td>
+                                <td
+                                    key={`${item.id}-${String(col.key)}`}
+                                    className="px-4 py-4 max-w-xs truncate overflow-hidden whitespace-nowrap"
+                                >
+                                    {col.nestedItem ? col.nestedItem(item) : String(item[col.key as keyof T] || '')}
+                                </td>
                                 ))}
-
-                                {/* Колонка с переходом для обычного пользователя на /cvs */}
                                 {!isAdmin && pathname.includes('cvs') && (
-                                    <td className="px-4 py-4">
-                                        <Link
-                                            href={`/cvs/${item.id}`}
-                                            className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-black transition-colors"
-                                        >
-                                            <MdArrowForwardIos size={14} />
-                                        </Link>
-                                    </td>
+                                <td className="px-4 py-4">
+                                    <Link
+                                    href={`/cvs/${item.id}`}
+                                    className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-black transition-colors"
+                                    >
+                                    <MdArrowForwardIos size={14} />
+                                    </Link>
+                                </td>
                                 )}
                             </tr>
-                        ))}
-                    </tbody>
+                            ))
+                        )}
+                        </tbody>
 
                 </table>
             </div>

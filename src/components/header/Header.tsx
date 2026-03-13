@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Breadcrumbs from "@/components/breadcrumbs/Breadcrumbs"
 import SearchInput from "@/components/search/SearchInput"
 import { useSearchStore } from "@/store/useSearchStore"
@@ -9,6 +9,7 @@ import { useAdmin } from "@/lib/useAdmin"
 import CreateUserModal from "@/features/employee/CreateUserModal"
 import CreateLanguageModal from "@/features/languages/CreateLanguageModal"
 import CreateSkillModal from "@/features/skills/CreateSkillModal"
+import { ROUTES } from "@/app/configs/routesConfig"
 
 export default function Header() {
   const search = useSearchStore((state) => state.search)
@@ -17,16 +18,19 @@ export default function Header() {
   const isAdmin = useAdmin();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-   const showSearch =
-    pathname === "/" ||
-    (pathname.includes('/') && pathname.includes('cvs')) ||
-    (pathname.includes('/') && pathname.includes('skills')) ||
-    (pathname.includes('/') && pathname.includes('languages'));
+  useEffect(() => {
+    setSearch('')
+  }, [pathname])
 
-   const getCreateButtonText = () => {
-    if (pathname.includes('languages')) return "Create language";
-    if (pathname.includes('skills')) return "Create skill";
-    if (pathname.includes('cvs')) return "Create CV";
+   const showSearch = pathname ===ROUTES.HOME ||
+    pathname === ROUTES.CVS ||
+    pathname === ROUTES.SKILLS ||
+    pathname === ROUTES.LANGUAGES
+
+  const getCreateButtonText = () => {
+    if (pathname === ROUTES.LANGUAGES) return "Create language";
+    if (pathname === ROUTES.SKILLS) return "Create skill";
+    if (pathname === ROUTES.CVS) return "Create CV";
     return "Create user";
   };
 
