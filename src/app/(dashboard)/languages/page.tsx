@@ -34,20 +34,18 @@ export default function LanguagesPage() {
 
     }, [languages, debouncedSearch])
 
-    if (loading) return <div className="px-6">Loading languages...</div>
-
-    const columns: ColumnType<GlobalLanguage>[] = [
-    { key: "name", label: "Name", sortable: true },
-    { key: "native_name", label: "Native Name" },
-    { key: "iso2", label: "Iso2" },
-    {
-      key: "actions",
-      label: "",
-      nestedItem: (language: GlobalLanguage) => (
-        <ActionMenu
-          row={language}
-          entityName="Language"
-          renderModal={(row, close, action) => {
+    const columns = useMemo<ColumnType<GlobalLanguage>[]>(() => [
+      { key: "name", label: "Name", sortable: true },
+      { key: "native_name", label: "Native Name" },
+      { key: "iso2", label: "Iso2" },
+      {
+        key: "actions",
+        label: "",
+        nestedItem: (language: GlobalLanguage) => (
+          <ActionMenu
+            row={language}
+            entityName="Language"
+            renderModal={(row, close, action) => {
               if (action === "update") {
                 return (
                   <UpdateLanguageModal
@@ -68,10 +66,12 @@ export default function LanguagesPage() {
                 );
               }
             }}
-        />
-      )
-    }
-    ] as const
+          />
+        )
+      }
+    ], [])
+
+    if (loading) return <div className="px-6">Loading languages...</div>
 
     return(
         loading ? <div className="px-6">Loading skills</div> :

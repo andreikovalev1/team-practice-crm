@@ -11,6 +11,7 @@ import ActionMenu from "@/components/table/ActionMenu";
 import Modal from "@/components/ui/Modal";
 import { useMemo } from "react";
 import useDebounce from "@/components/search/useDebounce";
+import UpdateCVModal from "./UpdateCVModal";
 
 const GLOBAL_CVS: GlobalCVs[] = []
 
@@ -47,15 +48,15 @@ export default function CvsPage() {
       nestedItem: (cv: GlobalCVs) => (
         <ActionMenu
           row={cv}
+          entityName="Cv"
           renderModal={(row, close, action) => {
             if (action === "update") {
               return (
-                <Modal isOpen={true} onClose={close} title={`Update cv: ${row.name}`}>
-                  <div className="p-4">
-                    {/* Тут форма обновления навыка */}
-                    Обновить cv: {row.name}
-                  </div>
-                </Modal>
+                <UpdateCVModal
+                  isOpen={true}
+                  onClose={close}
+                  cv={row}
+                />
               );
             }
             if (action === "delete") {
@@ -74,6 +75,11 @@ export default function CvsPage() {
     ] as const;
 
     return (
+        displayedCVs.length === 0 ? 
+        <div className="w-full max-w-sm sm:max-w-lg lg:max-w-2xl mx-auto mt-10 text-center py-8 px-6 text-gray-500 border border-dashed border-zinc-700 rounded-lg">
+          Mapping all CVs to employee roles is under development
+        </div>
+        :
         <Table<GlobalCVs> data={displayedCVs} columns={columns}/>
     )
 }

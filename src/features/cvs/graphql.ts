@@ -15,6 +15,16 @@ export const GET_GLOBAL_CVS_QUERY = gql`
 `;
 
 
+export const UPDATE_GLOBAL_CV_MUTATION = gql`
+  mutation UpdateCv($cv: UpdateCvInput!) {
+    updateCv(cv: $cv) {
+      id
+      name
+      description
+    }
+  }
+`;
+
 // Запрашиваем пользователя и массив его резюме для таблицы
 export const GET_USER_CVS_QUERY = gql`
   query GetUserCvs($userId: ID!) {

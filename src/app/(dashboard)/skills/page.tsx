@@ -30,7 +30,7 @@ export default function SkillsPage() {
     });
   }, [skills, debouncedSearch]);
 
-  const columns: ColumnType<GlobalSkill>[] = [
+  const columns = useMemo<ColumnType<GlobalSkill>[]>(() => [
     { key: "name", label: "Name", sortable: true },
     { key: "category_name", label: "Category", sortable: true },
     {
@@ -41,30 +41,30 @@ export default function SkillsPage() {
           row={skill}
           entityName="Skill"
           renderModal={(row, close, action) => {
-              if (action === "update") {
-                return (
-                  <UpdateSkillModal
-                    isOpen={true}
-                    onClose={close}
-                    skill={row}
-                  />
-                );
-              }
+            if (action === "update") {
+              return (
+                <UpdateSkillModal
+                  isOpen={true}
+                  onClose={close}
+                  skill={row}
+                />
+              );
+            }
 
-              if (action === "delete") {
-                return (
-                  <DeleteSkillModal
-                    isOpen={true}
-                    onClose={close}
-                    skill={row}
-                  />
-                );
-              }
-            }}
+            if (action === "delete") {
+              return (
+                <DeleteSkillModal
+                  isOpen={true}
+                  onClose={close}
+                  skill={row}
+                />
+              );
+            }
+          }}
         />
       ),
     },
-  ] as const;
+  ], []);
 
   return loading ? <div className="px-6">Loading skills</div> :
          <Table<GlobalSkill> data={displayedSkills} columns={columns} />
