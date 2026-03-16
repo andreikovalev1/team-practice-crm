@@ -6,6 +6,7 @@ export const GET_GLOBAL_CVS_QUERY = gql`
       id
       name
       description
+      education
       user {
         id
         email
@@ -13,6 +14,25 @@ export const GET_GLOBAL_CVS_QUERY = gql`
     }
   }
 `;
+
+// export const GET_GLOBAL_CVS_QUERY = gql`
+//   query GetGlobalCvs {
+//     cvs {
+//       id
+//       name
+//       description
+//       education
+//       user {
+//         id
+//         email
+//         profile {
+//           id
+//           full_name
+//         }
+//       }
+//     }
+//   }
+// `;
 
 
 export const UPDATE_GLOBAL_CV_MUTATION = gql`
