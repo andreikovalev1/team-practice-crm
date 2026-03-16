@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import toast from "react-hot-toast";
 import Modal from "@/components/ui/Modal";
@@ -17,17 +17,23 @@ interface UpdateLanguageModalProps {
 }
 
 export default function UpdateLanguageModal({ isOpen, onClose, language }: UpdateLanguageModalProps) {
+  const [prevLanguageId, setPrevLanguageId] = useState<string | undefined>(undefined);
+  const [prevIsOpen, setPrevIsOpen] = useState(false);
+
   const [name, setName] = useState("");
   const [nativeName, setNativeName] = useState("");
   const [iso2, setIso2] = useState("");
 
-  useEffect(() => {
+  if (language?.id !== prevLanguageId || isOpen !== prevIsOpen) {
+    setPrevLanguageId(language?.id);
+    setPrevIsOpen(isOpen);
+
     if (isOpen && language) {
       setName(language.name || "");
       setNativeName(language.native_name || "");
       setIso2(language.iso2 || "");
     }
-  }, [isOpen, language]);
+  }
 
   const [updateLanguage, { loading: isUpdating }] = useMutation(UPDATE_LANGUAGE_MUTATION, {
     refetchQueries: ["GetGlobalLanguages"],
@@ -99,7 +105,7 @@ export default function UpdateLanguageModal({ isOpen, onClose, language }: Updat
           required
         />
 
-        <div className="flex flex-col sm:flex-row gap-4 mt-6 pt-6 border-t border-zinc-200 w-full">
+        <div className="flex flex-col sm:flex-row gap-4 w-full">
           <OvalButton
             text="Cancel"
             type="button"

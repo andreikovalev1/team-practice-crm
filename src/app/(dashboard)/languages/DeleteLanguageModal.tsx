@@ -37,11 +37,11 @@ export default function DeleteLanguageModal({ language, isOpen, onClose }: Delet
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`Delete language: ${language.name}`}>
       <div className="flex flex-col gap-4">
-        <p className="text-red-600 text-sm leading-relaxed">
-          Are you sure you want to delete the language: <span className="font-semibold">{language.name}</span>?
+        <p className="text-sm leading-relaxed">
+          Are you sure you want to delete the language: <span className="font-bold">{language.name}</span>?
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 mt-4 w-full">
+        <div className="flex flex-col sm:flex-row gap-4 mt-3 w-full">
           <OvalButton
             text="Cancel"
             type="button"

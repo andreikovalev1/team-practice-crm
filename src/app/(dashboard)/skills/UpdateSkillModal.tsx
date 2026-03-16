@@ -118,7 +118,7 @@ export default function UpdateGlobalSkillModal({ isOpen, onClose, skill }: Updat
           disabled={isLoading}
         />
 
-        <div className="flex flex-col sm:flex-row gap-4 mt-6 pt-6 border-t border-zinc-200 w-full">
+        <div className="flex flex-col sm:flex-row gap-4 w-full">
           <OvalButton
             text="Cancel"
             type="button"

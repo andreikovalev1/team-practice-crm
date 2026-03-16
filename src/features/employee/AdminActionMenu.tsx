@@ -104,7 +104,7 @@ export default function AdminActionMenu({ employee }: AdminActionMenuProps) {
             Are you sure you want to delete <span className="font-semibold text-black ml-1">{fullName || employee.email}</span>?
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 mt-4 w-full">
+          <div className="flex flex-col sm:flex-row gap-4 mt-3 w-full">
             <OvalButton
               text="Cancel"
               type="button"
