@@ -5,7 +5,6 @@ import Breadcrumbs from "./Breadcrumbs";
 import { useIsOwnProfile } from "@/features/profile/useIsOwnProfile";
 import { useQuery } from "@apollo/client/react";
 
-
 jest.mock("next/navigation");
 jest.mock("@/features/profile/useIsOwnProfile");
 jest.mock("@apollo/client/react");
@@ -30,7 +29,12 @@ describe("Breadcrumbs", () => {
       profileUserId: "1",
       isOwnProfile: true,
     });
-    mockedUseQuery.mockReturnValue({ data: null } as any);
+    
+    // Заменили as any на строгое приведение типов
+    mockedUseQuery.mockReturnValue({ 
+      data: undefined, 
+      loading: false 
+    } as unknown as ReturnType<typeof useQuery>);
 
     render(<Breadcrumbs />);
     expect(screen.getByText(expectedLabel)).toBeInTheDocument();
@@ -43,7 +47,12 @@ describe("Breadcrumbs", () => {
       profileUserId: "1",
       isOwnProfile: true,
     });
-    mockedUseQuery.mockReturnValue({ data: null } as any);
+    
+    // Заменили as any на строгое приведение типов
+    mockedUseQuery.mockReturnValue({ 
+      data: undefined, 
+      loading: false 
+    } as unknown as ReturnType<typeof useQuery>);
 
     render(<Breadcrumbs />);
 
@@ -58,7 +67,12 @@ describe("Breadcrumbs", () => {
       profileUserId: "1",
       isOwnProfile: true,
     });
-    mockedUseQuery.mockReturnValue({ data: null } as any);
+    
+    // Заменили as any на строгое приведение типов
+    mockedUseQuery.mockReturnValue({ 
+      data: undefined, 
+      loading: false 
+    } as unknown as ReturnType<typeof useQuery>);
 
     render(<Breadcrumbs />);
 

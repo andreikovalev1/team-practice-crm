@@ -9,9 +9,11 @@ import { ROUTES } from "@/app/configs/routesConfig"
 jest.mock("@/store/useSearchStore");
 jest.mock("next/navigation");
 jest.mock("@/lib/useAdmin");
-jest.mock("@/components/breadcrumbs/Breadcrumbs", () => () => (
-  <div data-testid="breadcrumbs">Breadcrumbs</div>
-));
+jest.mock("@/components/breadcrumbs/Breadcrumbs", () => {
+  return function MockBreadcrumbs() {
+    return <div data-testid="breadcrumbs">Breadcrumbs</div>;
+  };
+});
 jest.mock("@/components/search/SearchInput", () => ({
   __esModule: true,
   default: ({ value, onChange }: { value: string; onChange: (v: string) => void }) => (
