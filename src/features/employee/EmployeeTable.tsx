@@ -81,7 +81,6 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
           <thead>
             <tr className="text-left">
               <th></th>
-              {/* Заголовки с вызовом handleSort */}
               <th onClick={() => handleSort("first_name")} className="px-4 py-3 font-medium cursor-pointer">
                 <div className="flex items-center">
                   First Name
