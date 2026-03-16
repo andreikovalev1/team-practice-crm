@@ -20,7 +20,7 @@ export default function Header() {
 
   useEffect(() => {
     setSearch('')
-  }, [pathname])
+  }, [pathname, setSearch])
 
    const showSearch = pathname ===ROUTES.HOME ||
     pathname === ROUTES.CVS ||

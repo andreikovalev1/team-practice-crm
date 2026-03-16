@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useId } from "react";
 import { RxTriangleDown } from "react-icons/rx";
 
 interface Option {
@@ -9,6 +9,7 @@ interface Option {
 }
 
 interface FloatingSelectProps {
+  id?: string;
   label: string;
   options: Option[];
   value: string;
@@ -19,6 +20,7 @@ interface FloatingSelectProps {
 }
 
 export default function FloatingSelect({
+  id,
   label,
   options,
   value,
@@ -26,6 +28,8 @@ export default function FloatingSelect({
   disabled,
   className = "",
 }: FloatingSelectProps) {
+  const generatedId = useId();
+  const selectId = id || generatedId;
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -48,6 +52,9 @@ export default function FloatingSelect({
   return (
     <div ref={wrapperRef} className={`relative w-full ${className}`}>
       <div
+        id={selectId}
+        role="combobox"
+        aria-labelledby={`${selectId}-label`}
         onClick={() => !disabled && setIsOpen(!isOpen)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
@@ -70,6 +77,7 @@ export default function FloatingSelect({
       </div>
 
       <label
+        id={`${selectId}-label`}
         className={`
           absolute left-3 bg-white px-1 transition-all duration-200 pointer-events-none z-5
           ${isOpen || value ? "-top-3 text-sm" : "top-3.5 text-base"}

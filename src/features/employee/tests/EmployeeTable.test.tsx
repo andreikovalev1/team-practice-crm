@@ -1,5 +1,5 @@
-import { render, screen, waitFor } from "@testing-library/react"
-import EmployeeTable from "./EmployeeTable"
+import { render, screen } from "@testing-library/react"
+import EmployeeTable from "../EmployeeTable"
 import { User } from "@/types/user.types"
 import { ROUTES } from "@/app/configs/routesConfig"
 import userEvent from "@testing-library/user-event"

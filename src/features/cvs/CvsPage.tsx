@@ -42,6 +42,7 @@ export function CvsPage() {
   };
 
   if (!profileUserId) return null;
+  console.log("Current Profile User ID:", profileUserId);
 
   return (
     <div className="w-full max-w-[1200px] mx-auto mb-8 px-6 py-8">
