@@ -5,7 +5,7 @@ import { Upload, Trash2 } from "lucide-react";
 import { User } from "@/types/user.types";
 import FloatingInput from "@/components/FloatingInput";
 import FloatingSelect from "@/components/FloatingSelect";
-import { useProfileFormLogic } from "./useProfileForm";
+import { useProfileFormLogic } from "./useProfileFormLogic";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { useProfileUser } from "./useProfileUser";
