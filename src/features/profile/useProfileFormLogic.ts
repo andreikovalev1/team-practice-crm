@@ -21,23 +21,15 @@ import {
 
 export function useProfileFormLogic(user: User, isReadOnly: boolean) {
   const { setLogin } = useUserStore();
-
-  // Состояния полей
   const [firstName, setFirstName] = useState(user.profile?.first_name || "");
   const [lastName, setLastName] = useState(user.profile?.last_name || "");
   const [department, setDepartment] = useState(user.department_name || "");
   const [position, setPosition] = useState(user.position_name || "");
-
-  // Состояния аватара и загрузки
   const [avatarPreview, setAvatarPreview] = useState<string | null>(user.profile?.avatar || null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Справочники
   const { data: deptData } = useQuery<{ departments: Department[] }>(GET_DEPARTMENTS_QUERY);
   const { data: posData } = useQuery<{ positions: Position[] }>(GET_POSITIONS_QUERY);
-
-  // Мутации
   const [updateProfile] = useMutation<UpdateProfileResponse>(UPDATE_PROFILE_MUTATION);
   const [uploadAvatar] = useMutation<UploadAvatarResponse>(UPLOAD_AVATAR_MUTATION);
   const [updateUser] = useMutation<UpdateUserResponse>(UPDATE_USER_MUTATION);
@@ -58,8 +50,6 @@ export function useProfileFormLogic(user: User, isReadOnly: boolean) {
 
     try {
       let finalAvatarUrl = user.profile?.avatar || "";
-
-      // 1. Загрузка аватара если есть файл
       if (avatarFile) {
         const base64Data = await fileToBase64(avatarFile);
         const avatarRes = await uploadAvatar({

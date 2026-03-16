@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useId } from "react";
 
 interface FloatingInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -10,16 +10,21 @@ interface FloatingInputProps
 export default function FloatingInput({
   label,
   className = "",
+  id,
   ...props
 }: FloatingInputProps) {
+  const generatedId = useId();
+  const inputId = id || generatedId;
   return (
     <div className="relative w-full">
       <input
         {...props}
+        id={inputId}
         placeholder=" "
         className={`peer w-full border border-gray-300 bg-transparent px-3 py-3 text-sm text-gray-900 focus:border-red-700 focus:outline-none focus:ring-0 transition-colors ${className}`}
       />
       <label
+      htmlFor={inputId}
         className="
           absolute left-3 top-1/2
           -translate-y-1/2
