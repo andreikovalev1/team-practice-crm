@@ -28,7 +28,7 @@ export const GET_GLOBAL_CVS_QUERY = gql`
 //         profile {
 //           id
 //           full_name
-//         }
+//        }
 //       }
 //     }
 //   }
@@ -50,6 +50,7 @@ export const GET_USER_CVS_QUERY = gql`
   query GetUserCvs($userId: ID!) {
     user(userId: $userId) {
       id
+      email
       cvs {
         id
         name

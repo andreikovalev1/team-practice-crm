@@ -3,6 +3,8 @@
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { Cv } from "./types";
 import { CvTableRow } from "./CvTableRow";
+import { TableLayout } from "@/components/CvsTable/TableLayout";
+import { BaseTable } from "@/components/CvsTable/BaseTable";
 
 interface CvsTableProps {
   cvs: Cv[];
@@ -10,66 +12,55 @@ interface CvsTableProps {
   userEmail: string;
   isReadOnly: boolean;
   onDeleteClick: (cv: Cv) => void;
-  // Пропсы для сортировки
   sortDirection: "asc" | "desc";
   onSortToggle: () => void;
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
+  onCreateClick?: () => void;
 }
 
-export function CvsTable({
-  cvs,
-  userId,
-  userEmail,
-  isReadOnly,
-  onDeleteClick,
-  sortDirection,
-  onSortToggle,
-}: CvsTableProps) {
-  
-  if (cvs.length === 0) {
-    return (
-      <div className="text-center py-16 text-gray-500 border-2 border-dashed border-gray-300 dark:border-zinc-700 rounded-lg mt-8">
-        No CVs found.
-      </div>
-    );
-  }
+export function CvsTable(props: CvsTableProps) {
+  const columns = [
+    {
+      header: (
+        <div className="flex items-center gap-2">
+          Name
+          <span className="text-gray-400 group-hover:text-gray-600">
+            {props.sortDirection === "asc" ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
+          </span>
+        </div>
+      ),
+      className: "cursor-pointer hover:text-gray-600 transition-colors group w-1/3",
+      onSort: props.onSortToggle,
+    },
+    { header: "Education", className: "w-1/4" },
+    { header: "Employee", className: "w-1/4" },
+    { header: "", className: "w-[50px]" },
+  ];
 
   return (
-    <div className="w-full overflow-x-auto mt-8">
-      <table className="w-full text-left border-collapse min-w-[800px]">
-        <thead>
-          <tr className="border-b border-gray-200 text-sm font-semibold text-gray-900 dark:text-gray-100">
-            
-            <th 
-              className="py-4 pr-4 cursor-pointer hover:text-gray-600 transition-colors group w-1/2"
-              onClick={onSortToggle}
-            >
-              <div className="flex items-center gap-2">
-                Name
-                <span className="text-gray-400 group-hover:text-gray-600">
-                  {sortDirection === "asc" ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
-                </span>
-              </div>
-            </th>
-            
-            <th className="py-4 px-4">Education</th>
-            <th className="py-4 px-4">Employee</th>
-            <th className="py-4 pl-4"></th>
-          </tr>
-        </thead>
-        
-        <tbody>
-          {cvs.map((cv) => (
-            <CvTableRow
-              key={cv.id}
-              cv={cv}
-              userId={userId}
-              userEmail={userEmail}
-              isReadOnly={isReadOnly}
-              onDeleteClick={onDeleteClick}
-            />
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <TableLayout
+      searchTerm={props.searchTerm}
+      onSearchChange={props.onSearchChange}
+      onCreateClick={props.onCreateClick}
+      createButtonText="Create CV"
+    >
+      <BaseTable 
+        columns={columns} 
+        isEmpty={props.cvs.length === 0} 
+        emptyText="No CVs found."
+      >
+        {props.cvs.map((cv) => (
+          <CvTableRow
+            key={cv.id}
+            cv={cv}
+            userId={props.userId}
+            userEmail={props.userEmail}
+            isReadOnly={props.isReadOnly}
+            onDeleteClick={props.onDeleteClick}
+          />
+        ))}
+      </BaseTable>
+    </TableLayout>
   );
 }

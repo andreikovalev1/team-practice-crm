@@ -1,0 +1,46 @@
+"use client";
+
+interface Column {
+  header: React.ReactNode;
+  className?: string;
+  onSort?: () => void;
+}
+
+interface BaseTableProps {
+  columns: Column[];
+  children: React.ReactNode;
+  isEmpty: boolean;
+  emptyText?: string;
+}
+
+export function BaseTable({ columns, children, isEmpty, emptyText = "No data found" }: BaseTableProps) {
+  if (isEmpty) {
+    return (
+      <div className="text-center py-16 text-gray-500 border-2 border-dashed border-gray-300 dark:border-zinc-700 rounded-lg">
+        {emptyText}
+      </div>
+    );
+  }
+
+  return (
+    <table className="w-full text-left border-collapse min-w-[800px]">
+      <thead>
+        <tr className="border-b border-gray-200 text-sm font-semibold [&>th]:py-4 [&>th]:px-4 text-gray-900 dark:text-gray-100">
+          {columns.map((col, idx) => (
+            <th 
+              key={idx} 
+              className={col.className} 
+              onClick={col.onSort}
+              style={{ cursor: col.onSort ? 'pointer' : 'default' }}
+            >
+              {col.header}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      {/* Мы не оборачиваем children в tbody здесь, так как каждая строка (Row) 
+          в твоем дизайне — это отдельный tbody для группировки основной инфы и описания */}
+      {children}
+    </table>
+  );
+}

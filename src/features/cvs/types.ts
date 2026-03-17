@@ -25,7 +25,8 @@ export interface Cv {
 export interface GetUserCvsResponse {
   user: {
     id: string;
-    cvs: Cv[]; // Массив резюме пользователя
+    email: string;
+    cvs: Cv[];
   };
 }
 

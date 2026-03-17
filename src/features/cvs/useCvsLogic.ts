@@ -103,6 +103,7 @@ export function useCvsLogic(userId: string | undefined) {
   return {
     // Данные
     cvs: filteredAndSortedCvs,
+    userEmail: data?.user?.email,
     totalCount: rawCvs.length,
     loading: isLoadingCvs,
     isCreating,

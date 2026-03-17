@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { MoreVertical, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import { ActionMenu } from "@/components/CvsTable/ActionMenu";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/app/configs/routesConfig";
 import { Cv } from "./types";
@@ -9,86 +9,49 @@ import { Cv } from "./types";
 interface CvTableRowProps {
   cv: Cv;
   userId: string;
-  userEmail: string; // Email владельца профиля
+  userEmail: string;
   isReadOnly: boolean;
   onDeleteClick: (cv: Cv) => void;
 }
 
 export function CvTableRow({ cv, userId, userEmail, isReadOnly, onDeleteClick }: CvTableRowProps) {
   const router = useRouter();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  // Закрытие меню при клике вне его области
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsMenuOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Переход внутрь CV (на вкладку DETAILS)
-  const handleRowClick = () => {
-    router.push(ROUTES.CV_DETAILS(userId, cv.id));
-  };
 
   return (
-    <tr 
-      className="border-b border-gray-200 hover:bg-zinc-50/5 cursor-pointer transition-colors group relative"
-      onClick={handleRowClick}
+    <tbody 
+      onClick={() => router.push(ROUTES.CV_DETAILS(userId, cv.id))}
+      className="border-b border-gray-200 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 cursor-pointer transition-colors group"
     >
-      {/* КОЛОНКА 1: Name + Description */}
-      <td className="py-6 pr-4 align-top w-1/2">
-        <div className="font-medium text-gray-900 dark:text-gray-100 mb-2">
+      <tr className="[&>td]:py-6 [&>td]:px-4">
+        <td className="align-top font-medium text-gray-900 dark:text-gray-100">
           {cv.name}
-        </div>
-        <div className="text-sm text-gray-500 line-clamp-3">
-          {cv.description}
-        </div>
-      </td>
-
-      {/* КОЛОНКА 2: Education */}
-      <td className="py-6 px-4 align-top text-gray-600 dark:text-gray-300">
-        {cv.education || "—"}
-      </td>
-
-      {/* КОЛОНКА 3: Employee (Email) */}
-      <td className="py-6 px-4 align-top text-gray-600 dark:text-gray-300">
-        {userEmail}
-      </td>
-
-      {/* КОЛОНКА 4: Actions (Три точки) */}
-      <td className="py-6 pl-4 align-top text-right" onClick={(e) => e.stopPropagation()}>
-        {!isReadOnly && (
-          <div className="relative inline-block" ref={menuRef}>
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
-            >
-              <MoreVertical size={20} />
-            </button>
-
-            {/* Выпадающее меню */}
-            {isMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-zinc-900 rounded-md shadow-lg border border-gray-200 dark:border-zinc-800 overflow-hidden">
-                <button
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    onDeleteClick(cv);
-                  }}
-                  className="w-full flex items-center gap-2 px-4 py-3 text-sm text-[#C8372D] hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors text-left"
-                >
-                  <Trash2 size={16} />
-                  Delete CV
-                </button>
-              </div>
-            )}
+        </td>
+        <td className="align-top font-medium text-gray-900 dark:text-gray-300">
+          {cv.education || "—"}
+        </td>
+        <td className="align-top font-medium text-gray-900 dark:text-gray-300">
+          {userEmail}
+        </td>
+        <td className="align-top text-right">
+          {!isReadOnly && (
+            <ActionMenu>
+              <button
+                onClick={() => onDeleteClick(cv)}
+                className="w-full flex items-center gap-2 px-4 py-3 text-sm text-[#C8372D] hover:bg-red-50 dark:hover:bg-red-950/30"
+              >
+                <Trash2 size={16} /> Delete CV
+              </button>
+            </ActionMenu>
+          )}
+        </td>
+      </tr>
+      <tr className="[&>td]:pb-5 [&>td]:px-4">
+        <td colSpan={4} className="align-top">
+          <div className="text-base text-gray-500 dark:text-gray-400 line-clamp-3 leading-relaxed">
+            {cv.description}
           </div>
-        )}
-      </td>
-    </tr>
+        </td>
+      </tr>
+    </tbody>
   );
 }
