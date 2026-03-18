@@ -10,6 +10,7 @@ import CreateUserModal from "@/features/employee/CreateUserModal"
 import CreateLanguageModal from "@/features/languages/CreateLanguageModal"
 import CreateSkillModal from "@/features/skills/CreateSkillModal"
 import CreateGlobalPositionModal from "@/features/positions/CreatePositionModal"
+import CreateDepartmentModal from "@/features/departments/CreateDepartmentModal"
 import { ROUTES } from "@/app/configs/routesConfig"
 
   const createAllowedPaths = [
@@ -36,7 +37,8 @@ export default function Header() {
     pathname === ROUTES.CVS ||
     pathname === ROUTES.SKILLS ||
     pathname === ROUTES.LANGUAGES ||
-    pathname === ROUTES.POSITIONS
+    pathname === ROUTES.POSITIONS ||
+    pathname === ROUTES.DEPARTMENTS
 
   const showCreateButton = isAdmin && createAllowedPaths.includes(pathname);
 
@@ -97,6 +99,13 @@ export default function Header() {
 
       {isCreateModalOpen && pathname.includes('position') && (
         <CreateGlobalPositionModal 
+          isOpen={isCreateModalOpen} 
+          onClose={() => setIsCreateModalOpen(false)}
+        />
+      )}  
+
+      {isCreateModalOpen && pathname.includes('department') && (
+        <CreateDepartmentModal 
           isOpen={isCreateModalOpen} 
           onClose={() => setIsCreateModalOpen(false)}
         />

@@ -5,5 +5,5 @@ export interface GlobalDepartment {
 
 
 export interface GetGlobalDepartmentsResponse {
-  department: GlobalDepartment[];
+  departments: GlobalDepartment[];
 }
