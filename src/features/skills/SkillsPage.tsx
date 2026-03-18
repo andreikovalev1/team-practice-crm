@@ -8,10 +8,12 @@ import { SkillsList } from "./SkillsList";
 import { AddSkillModal } from "./AddSkillModal";
 import { UpdateSkillModal } from "./UpdateSkillModal";
 import { ProfileSkillMastery } from "./types";
+import { useAdmin } from "@/lib/useAdmin";
 
 export function SkillsPage() {
   const { profileUserId, isOwnProfile } = useIsOwnProfile();
-  const isReadOnly = !isOwnProfile;
+  const isAdmin = useAdmin();
+  const isReadOnly = !isOwnProfile && !isAdmin;
   
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isRemoveMode, setIsRemoveMode] = useState(false);

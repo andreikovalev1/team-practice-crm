@@ -5,100 +5,115 @@ import {
   GET_USER_CVS_QUERY,
   CREATE_CV_MUTATION,
   DELETE_CV_MUTATION,
+  GET_GLOBAL_CVS_QUERY,
 } from "./graphql";
-import {
-  GetUserCvsResponse,
-  CreateCvResponse,
-  CreateCvInput,
-  DeleteCvResponse,
-  DeleteCvInput,
-  Cv,
-} from "./types";
+import { Cv, CvForTable, GetGlobalCVsResponse, GetUserCvsResponse, CreateCvInput, CreateCvResponse, DeleteCvInput, DeleteCvResponse } from "./types";
 
-const EMPTY_CVS: Cv[] = [];
+const EMPTY_CVS: CvForTable[] = [];
 
-export function useCvsLogic(userId: string | undefined) {
-  // --- ЛОКАЛЬНЫЕ СОСТОЯНИЯ (Для поиска и сортировки) ---
+export function useCvsLogic(userId?: string, mode: "user" | "global" = "user") {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const { data, loading: isLoadingCvs } = useQuery<GetUserCvsResponse>(
+
+  // --- Запросы ---
+  const { data: userData, loading: isLoadingUser } = useQuery<GetUserCvsResponse>(
     GET_USER_CVS_QUERY,
-    {
-      variables: { userId },
-      skip: !userId,
-    }
+    { variables: { userId }, skip: mode !== "user" || !userId }
   );
 
-  const [createCvMutation, { loading: isCreating }] = useMutation<CreateCvResponse,{ cv: CreateCvInput }> (
-    CREATE_CV_MUTATION, {
-    refetchQueries: [{ query: GET_USER_CVS_QUERY, variables: { userId } }],
-  });
+  const { data: globalData, loading: isLoadingGlobal } = useQuery<GetGlobalCVsResponse>(
+    GET_GLOBAL_CVS_QUERY,
+    { skip: mode !== "global" }
+  );
 
-  const [deleteCvMutation, { loading: isDeleting }] = useMutation<DeleteCvResponse,{ cv: DeleteCvInput }>(DELETE_CV_MUTATION);
-  const rawCvs = data?.user?.cvs || EMPTY_CVS;
+  // --- Мутации ---
+  const [createCvMutation, { loading: isCreating }] = useMutation<CreateCvResponse, { cv: CreateCvInput }>(
+    CREATE_CV_MUTATION,
+    { refetchQueries: [{ query: mode === "user" ? GET_USER_CVS_QUERY : GET_GLOBAL_CVS_QUERY, variables: mode === "user" ? { userId } : undefined }] }
+  );
+
+  const [deleteCvMutation, { loading: isDeleting }] = useMutation<DeleteCvResponse, { cv: DeleteCvInput }>(
+    DELETE_CV_MUTATION
+  );
+
+  // --- Нормализация CV для таблицы ---
+const cvs: CvForTable[] = useMemo(() => {
+  if (mode === "user") {
+    // user CVs не имеют user поля, поэтому берём id/email из user
+    return (userData?.user?.cvs || []).map(cv => ({
+      ...cv,
+      userId: userData?.user.id,
+      userEmail: userData?.user.email,
+    }));
+  } else {
+    // global CVs имеют поле user
+    return (globalData?.cvs || []).map(cv => ({
+      id: cv.id,
+      name: cv.name,
+      description: cv.description,
+      education: cv.education,
+      userId: cv.user?.id,
+      userEmail: cv.user?.email,
+    }));
+  }
+}, [userData, globalData, mode]);
+
+  const loading = mode === "user" ? isLoadingUser : isLoadingGlobal;
+
+  // --- Фильтрация и сортировка ---
   const filteredAndSortedCvs = useMemo(() => {
-    // 1. Сначала фильтруем (Поиск по имени или описанию)
-    const filtered = rawCvs.filter((cv) => {
-      const lowerTerm = searchTerm.toLowerCase();
-      const matchName = cv.name.toLowerCase().includes(lowerTerm);
-      const matchDesc = cv.description.toLowerCase().includes(lowerTerm);
-      return matchName || matchDesc;
-    });
-
+    const lowerTerm = searchTerm.toLowerCase();
+    const filtered = cvs.filter(cv =>
+      cv.name.toLowerCase().includes(lowerTerm) ||
+      cv.description.toLowerCase().includes(lowerTerm)
+    );
     return filtered.sort((a, b) => {
-      const comparison = a.name.localeCompare(b.name);
-      return sortDirection === "asc" ? comparison : -comparison;
+      const comp = a.name.localeCompare(b.name);
+      return sortDirection === "asc" ? comp : -comp;
     });
-  }, [rawCvs, searchTerm, sortDirection]);
+  }, [cvs, searchTerm, sortDirection]);
 
-  // --- ОБРАБОТЧИКИ ДЕЙСТВИЙ (ХЭНДЛЕРЫ) ---
-  const handleToggleSort = () => {
-    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
-  };
+  // --- Хэндлеры ---
+  const handleToggleSort = () => setSortDirection(prev => (prev === "asc" ? "desc" : "asc"));
 
-  const handleDeleteCv = async (cvId: string) => {
-    const loadingToast = toast.loading("Deleting CV...");
+  const deleteCv = async (cvId: string) => {
+    const toastId = toast.loading("Deleting CV...");
     try {
       await deleteCvMutation({
         variables: { cv: { cvId } },
-        // Умное удаление из кэша Apollo без лишних запросов на сервер
-        update: (cache) => {
+        update: cache => {
           cache.evict({ id: cache.identify({ __typename: "Cv", id: cvId }) });
           cache.gc();
-        },
+        }
       });
-      toast.success("CV deleted successfully!", { id: loadingToast });
+      toast.success("CV deleted", { id: toastId });
     } catch {
-      toast.error("Failed to delete CV", { id: loadingToast });
+      toast.error("Failed to delete CV", { id: toastId });
     }
   };
 
-  const handleCreateCv = async (name: string, description: string, education?: string) => {
+  const createCv = async (name: string, description: string, education?: string) => {
     if (!userId) return null;
-    const loadingToast = toast.loading("Creating CV...");
+    const toastId = toast.loading("Creating CV...");
     try {
-      const { data } = await createCvMutation({
-        variables: { cv: { name, description, education, userId } },
-      });
-      toast.success("CV created!", { id: loadingToast });
+      const { data } = await createCvMutation({ variables: { cv: { name, description, education, userId } } });
+      toast.success("CV created", { id: toastId });
       return data?.createCv;
     } catch {
-      toast.error("Failed to create CV", { id: loadingToast });
+      toast.error("Failed to create CV", { id: toastId });
     }
   };
 
   return {
     cvs: filteredAndSortedCvs,
-    userEmail: data?.user?.email,
-    totalCount: rawCvs.length,
-    loading: isLoadingCvs,
-    isCreating,
-    isDeleting,
+    loading,
     searchTerm,
     setSearchTerm,
     sortDirection,
     handleToggleSort,
-    deleteCv: handleDeleteCv,
-    createCv: handleCreateCv,
+    deleteCv,
+    createCv,
+    isCreating,
+    isDeleting,
   };
 }

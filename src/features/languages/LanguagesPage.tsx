@@ -8,11 +8,12 @@ import { LanguagesList } from "./LanguagesList";
 import { AddLanguageModal } from "./AddLanguageModal";
 import { UpdateLanguageModal } from "./UpdateLanguageModal";
 import { ProfileLanguage } from "./types";
+import { useAdmin } from "@/lib/useAdmin";
 
 export function LanguagesPage() {
   const { profileUserId, isOwnProfile } = useIsOwnProfile();
-//   const isAdmin = user?.role === "admin";
-  const isReadOnly = !isOwnProfile; // будет добавлено, когда добавится админка: && !isAdmin
+  const isAdmin = useAdmin();
+  const isReadOnly = !isOwnProfile && !isAdmin;
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isRemoveMode, setIsRemoveMode] = useState(false);
