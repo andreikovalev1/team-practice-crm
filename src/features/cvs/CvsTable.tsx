@@ -1,32 +1,34 @@
-"use client";
-
 import { ArrowUp, ArrowDown } from "lucide-react";
-import { Cv } from "./types";
+import { CvForTable } from "./types";
 import { CvTableRow } from "./CvTableRow";
 import { BaseTable } from "@/components/CvsTable/BaseTable";
 import SearchInput from "@/components/search/SearchInput";
+import { ROUTES } from "@/app/configs/routesConfig";
+import { usePathname } from "next/navigation";
 
 interface CvsTableProps {
-  cvs: Cv[];
-  userId: string;
-  userEmail: string;
+  cvs: CvForTable[];
   isReadOnly: boolean;
-  onDeleteClick: (cv: Cv) => void;
+  onDeleteClick: (cv: CvForTable) => void;
   sortDirection: "asc" | "desc";
   onSortToggle: () => void;
   searchTerm: string;
   onSearchChange: (value: string) => void;
   onCreateClick?: () => void;
+  userId?: string;
 }
 
+
 export function CvsTable(props: CvsTableProps) {
+  const pathname = usePathname()
+
   const columns = [
     {
       header: (
         <div className="flex items-center gap-2">
           Name
           <span className="text-gray-400 group-hover:text-gray-600">
-            {props.sortDirection === "asc" ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
+            {props.sortDirection === "asc" ? <ArrowUp size={16}/> : <ArrowDown size={16}/>}
           </span>
         </div>
       ),
@@ -40,8 +42,9 @@ export function CvsTable(props: CvsTableProps) {
 
   return (
     <div className="w-full">
-      {/* Шапка таблицы с поиском и кнопкой */}
-      <div className="flex justify-between items-center w-full mb-6">
+
+      { pathname === ROUTES.USERCVS(props.userId || '') &&  
+          <div className="flex justify-between items-center w-full mb-6">
         <SearchInput
           value={props.searchTerm}
           onChange={props.onSearchChange}
@@ -57,20 +60,16 @@ export function CvsTable(props: CvsTableProps) {
           </button>
         )}
       </div>
+      }
 
-      {/* Обертка для скролла */}
       <div className="w-full overflow-x-auto">
-        <BaseTable 
-          columns={columns} 
-          isEmpty={props.cvs.length === 0} 
-          emptyText="No CVs found."
-        >
-          {props.cvs.map((cv) => (
+        <BaseTable columns={columns} isEmpty={props.cvs.length === 0} emptyText="No CVs found.">
+          {props.cvs.map(cv => (
             <CvTableRow
               key={cv.id}
               cv={cv}
-              userId={props.userId}
-              userEmail={props.userEmail}
+              userId={cv.userId || ""}
+              userEmail={cv.userEmail || ""}
               isReadOnly={props.isReadOnly}
               onDeleteClick={props.onDeleteClick}
             />

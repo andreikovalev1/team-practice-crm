@@ -1,5 +1,6 @@
 import type { User } from "@/types/user.types";
 
+// --- Для глобальной таблицы ---
 export interface GlobalCVs {
   id: string;
   name: string;
@@ -8,20 +9,28 @@ export interface GlobalCVs {
   user?: User;
 }
 
-export interface GetGlobalCVsResponse {
-  cvs: GlobalCVs[];
-}
-
-// --- БАЗОВЫЕ ТИПЫ ---
+// --- Для обычного пользователя ---
 export interface Cv {
   id: string;
   name: string;
   description: string;
   education?: string;
-  // Позже мы добавим сюда projects, skills и languages
 }
 
-// --- ОТВЕТЫ НА ЗАПРОСЫ (QUERIES) ---
+// types.ts
+export interface CvForTable {
+  id: string;
+  name: string;
+  description: string;
+  education?: string;
+  userId?: string;    // будет undefined для Global без пользователя
+  userEmail?: string; // аналогично
+}
+// --- Ответы GraphQL ---
+export interface GetGlobalCVsResponse {
+  cvs: GlobalCVs[];
+}
+
 export interface GetUserCvsResponse {
   user: {
     id: string;

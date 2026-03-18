@@ -29,7 +29,7 @@ export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick }: CvTable
     >
       <tr className="[&>td]:py-6 [&>td]:px-4">
         <td className="align-top font-medium text-gray-900 dark:text-gray-100">{cv.name}</td>
-        <td className="align-top font-medium text-gray-900 dark:text-gray-300">{cv.education || "—"}</td>
+        <td className="align-top font-medium text-gray-900 dark:text-gray-300">{cv.education}</td>
         <td className="align-top font-medium text-gray-900 dark:text-gray-300">{userEmail}</td>
         
         <td className="align-top text-right" onClick={(e) => e.stopPropagation()}>
