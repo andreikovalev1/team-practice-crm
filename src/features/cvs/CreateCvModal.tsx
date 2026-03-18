@@ -20,7 +20,6 @@ export function CreateCvModal({ isOpen, onClose, onSubmit, isCreating }: CreateC
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
-    
     await onSubmit(name, description, education);
     
     // Сбрасываем форму
@@ -67,20 +66,14 @@ export function CreateCvModal({ isOpen, onClose, onSubmit, isCreating }: CreateC
             variant="ovalOutline"
             onClick={onClose}
             disabled={isCreating}
-            className="w-full border-zinc-300 text-zinc-600 hover:bg-zinc-100"
+            className="w-full"
           />
           <OvalButton
-            // Текст меняется ТОЛЬКО если идет реальный процесс создания
             text={isCreating ? "CREATING..." : "CREATE"}
             type="submit"
-            // Кнопка блокируется, если идет загрузка ИЛИ имя пустое
             disabled={isCreating || !name.trim()}
-            className={`w-full transition-colors ${
-            isCreating || !name.trim() 
-                ? "opacity-50 cursor-not-allowed bg-zinc-400" 
-                : "bg-zinc-800 text-white hover:bg-zinc-900"
-            }`}
-            />
+            className="w-full"
+           />
         </div>
       </form>
     </Modal>

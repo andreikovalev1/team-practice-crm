@@ -69,6 +69,13 @@ export const GET_CV_BY_ID_QUERY = gql`
       name
       description
       education
+      user {
+        id
+        profile {
+          first_name
+          last_name
+        }
+      }
     }
   }
 `;

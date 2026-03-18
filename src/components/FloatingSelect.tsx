@@ -53,7 +53,6 @@ export default function FloatingSelect({
     <div ref={wrapperRef} className={`relative w-full ${className}`}>
       <div
         id={selectId}
-        role="combobox"
         aria-labelledby={`${selectId}-label`}
         onClick={() => !disabled && setIsOpen(!isOpen)}
         onFocus={() => setIsFocused(true)}

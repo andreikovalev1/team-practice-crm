@@ -18,7 +18,7 @@ export interface Cv {
   name: string;
   description: string;
   education?: string;
-  // Позже мы добавим сюда projects, skills и languages
+  user?: User,
 }
 
 // --- ОТВЕТЫ НА ЗАПРОСЫ (QUERIES) ---
