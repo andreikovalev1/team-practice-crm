@@ -1,4 +1,5 @@
 import { GoArrowUp } from "react-icons/go"
+import { Plus } from "lucide-react";
 import { CvForTable } from "./types";
 import { CvTableRow } from "./CvTableRow";
 import { BaseTable } from "@/components/CvsTable/BaseTable";
@@ -21,8 +22,6 @@ interface CvsTableProps {
 export function CvsTable(props: CvsTableProps) {
   const pathname = usePathname();
 
-  // ВАЖНО: Задаем min-w (минимальную ширину) для колонок, чтобы они не сжимались
-  // в нечитаемые полоски на мобильных телефонах.
   const columns = [
     {
       header: (

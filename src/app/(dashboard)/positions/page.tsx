@@ -9,8 +9,6 @@ import { useSearchStore } from "@/store/useSearchStore";
 import ActionMenu from "@/components/table/ActionMenu";
 import { useMemo } from "react";
 import useDebounce from "@/components/search/useDebounce";
-// import UpdateSkillModal from "./UpdateSkillModal";
-// import DeleteSkillModal from "./DeleteSkillModal";
 import UpdatePositionModal from "./UpdatePositionModal";
 import DeletePositionModal from "./DeletePositionsModal";
 
