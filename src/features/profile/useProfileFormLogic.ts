@@ -18,9 +18,11 @@ import {
   UploadAvatarResponse,
   UpdateUserResponse,
 } from "./types";
+import { useProfileUser } from "./useProfileUser";
 
 export function useProfileFormLogic(user: User, isReadOnly: boolean) {
   const { setLogin } = useUserStore();
+  const { isOwnProfile } = useProfileUser();
   const [firstName, setFirstName] = useState(user.profile?.first_name || "");
   const [lastName, setLastName] = useState(user.profile?.last_name || "");
   const [department, setDepartment] = useState(user.department_name || "");
@@ -102,18 +104,20 @@ export function useProfileFormLogic(user: User, isReadOnly: boolean) {
         }
       }
 
-      // 4. Синхронизация со стором
-      setLogin({
-        ...user,
-        department_name: updatedDeptName || user.department_name,
-        position_name: updatedPosName || user.position_name,
-        profile: {
-          ...user.profile,
-          first_name: profileRes.data?.updateProfile.first_name ?? firstName,
-          last_name: profileRes.data?.updateProfile.last_name ?? lastName,
-          avatar: finalAvatarUrl,
-        },
-      });
+      // 4. Синхронизация со стором (ТОЛЬКО если это свой профиль)
+      if (isOwnProfile) {
+        setLogin({
+          ...user,
+          department_name: updatedDeptName || user.department_name,
+          position_name: updatedPosName || user.position_name,
+          profile: {
+            ...user.profile,
+            first_name: profileRes.data?.updateProfile.first_name ?? firstName,
+            last_name: profileRes.data?.updateProfile.last_name ?? lastName,
+            avatar: finalAvatarUrl,
+          },
+        });
+      }
 
       setAvatarFile(null);
       toast.success("Profile updated successful", { id: loadingToast });

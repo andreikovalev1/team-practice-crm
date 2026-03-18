@@ -10,9 +10,11 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import { useProfileUser } from "./useProfileUser";
 
-export default function ProfileForm() {
+import { useAdmin } from "@/lib/useAdmin";
 
+export default function ProfileForm() {
   const { isClient, profileUser, isOwnProfile, loading } = useProfileUser();
+  const isAdmin = useAdmin();
 
   if (!isClient || loading) {
     return <div className="p-10 text-center">Loading...</div>;
@@ -23,14 +25,15 @@ export default function ProfileForm() {
   }
 
   return (
-    <ProfileFormContent key={profileUser.id} user={profileUser} isReadOnly={!isOwnProfile} />
+    <ProfileFormContent key={profileUser.id} user={profileUser} isReadOnly={!isOwnProfile && !isAdmin} isAdmin={isAdmin} isOwnProfile={isOwnProfile}/>
   );
 }
 
-function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: boolean }) {
+function ProfileFormContent({ user, isReadOnly, isOwnProfile, isAdmin }: {   user: User; isReadOnly: boolean; isOwnProfile: boolean; isAdmin: boolean; }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const logic = useProfileFormLogic(user, isReadOnly);
   const [isDragging, setIsDragging] = useState(false);
+  const isEditingForeignProfile = isAdmin && !isOwnProfile;
 
   const handleFile = (file: File) => {
     const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
@@ -171,13 +174,13 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
           label="First Name"
           value={logic.firstName}
           onChange={(e) => logic.setFirstName(e.target.value)}
-          disabled={isReadOnly}
+          disabled={isReadOnly || isEditingForeignProfile}
         />
         <FloatingInput
           label="Last Name"
           value={logic.lastName}
           onChange={(e) => logic.setLastName(e.target.value)}
-          disabled={isReadOnly}
+          disabled={isReadOnly || isEditingForeignProfile}
         />
         <FloatingSelect
           label="Department"
