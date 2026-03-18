@@ -50,9 +50,9 @@ export function CvsPage() {
   if (!profileUserId) return null;
 
   return (
-    <div className="w-full max-w-[1200px] mx-auto mb-8 px-6 py-8">
+    <div className="w-full max-w-[1200px] mx-auto mb-8 px-4 md:px-6 py-6 md:py-8">
       {loading ? (
-        <div className="text-center py-16 text-gray-500 font-medium">
+        <div className="text-center py-16 text-gray-500 font-medium text-sm md:text-base">
           Loading CVs...
         </div>
       ) : (

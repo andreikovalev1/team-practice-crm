@@ -27,12 +27,19 @@ export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick }: CvTable
       onClick={() => router.push(ROUTES.CV_DETAILS(cv.id))}
       className="border-b border-gray-200 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 cursor-pointer transition-colors group"
     >
+      {/*ОСНОВНАЯ СТРОКА С ДАННЫМИ*/}
       <tr className="[&>td]:py-6 [&>td]:px-4">
-        <td className="align-top font-medium text-gray-900 dark:text-gray-100">{cv.name}</td>
-        <td className="align-top font-medium text-gray-900 dark:text-gray-300">{cv.education}</td>
-        <td className="align-top font-medium text-gray-900 dark:text-gray-300">{userEmail}</td>
+        <td className="align-top font-medium text-gray-900 dark:text-gray-100 pr-2 break-words">
+          {cv.name}
+        </td>
+        <td className="hidden md:table-cell align-top font-medium text-gray-900 dark:text-gray-300 pr-2 break-words">
+          {cv.education || "—"}
+        </td>
+        <td className="align-top font-medium text-gray-900 dark:text-gray-300 pr-2 break-all md:break-words">
+          {userEmail}
+        </td>
         
-        <td className="align-top text-right" onClick={(e) => e.stopPropagation()}>
+        <td className="align-top text-right w-10 md:w-14" onClick={(e) => e.stopPropagation()}>
           {!isReadOnly && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -53,13 +60,23 @@ export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick }: CvTable
           )}
         </td>
       </tr>
-      <tr className="[&>td]:pb-5 [&>td]:px-4">
-        <td colSpan={4} className="align-top">
-          <div className="text-base text-gray-500 dark:text-gray-400 line-clamp-3 leading-relaxed">
+
+      <tr className="md:hidden [&>td]:pb-5">
+        <td colSpan={3} className="px-4">
+          <div className="text-base text-gray-500 dark:text-gray-400 line-clamp-3 leading-relaxed break-all whitespace-normal">
             {cv.description}
           </div>
         </td>
       </tr>
+
+      <tr className="hidden md:table-row [&>td]:pb-5">
+        <td colSpan={4} className="px-4">
+          <div className="text-base text-gray-500 dark:text-gray-400 line-clamp-3 leading-relaxed break-all whitespace-normal">
+            {cv.description}
+          </div>
+        </td>
+      </tr>
+
     </tbody>
   );
 }

@@ -1,4 +1,4 @@
-import { ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUp, ArrowDown, Plus } from "lucide-react";
 import { CvForTable } from "./types";
 import { CvTableRow } from "./CvTableRow";
 import { BaseTable } from "@/components/CvsTable/BaseTable";
@@ -18,10 +18,11 @@ interface CvsTableProps {
   userId?: string;
 }
 
-
 export function CvsTable(props: CvsTableProps) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
+  // ВАЖНО: Задаем min-w (минимальную ширину) для колонок, чтобы они не сжимались
+  // в нечитаемые полоски на мобильных телефонах.
   const columns = [
     {
       header: (
@@ -32,49 +33,55 @@ export function CvsTable(props: CvsTableProps) {
           </span>
         </div>
       ),
-      className: "cursor-pointer hover:text-gray-600 transition-colors group w-1/3",
+      className: "cursor-pointer hover:text-gray-600 transition-colors group w-[35%] min-w-[280px]",
       onSort: props.onSortToggle,
     },
-    { header: "Education", className: "w-1/4" },
-    { header: "Employee", className: "w-1/4" },
-    { header: "", className: "w-[50px]" },
+    { header: "Education", className: "hidden md:table-cell w-[25%] min-w-[180px]" }, // Убрали hidden! Теперь она видна через скролл
+    { header: "Employee", className: "w-[30%] min-w-[200px]" },
+    { header: "", className: "w-[10%] min-w-[60px]" },
   ];
 
   return (
     <div className="w-full">
-
-      { pathname === ROUTES.USERCVS(props.userId || '') &&  
-          <div className="flex justify-between items-center w-full mb-6">
-        <SearchInput
-          value={props.searchTerm}
-          onChange={props.onSearchChange}
-        />
-
-        {props.onCreateClick && (
-          <button
-            onClick={props.onCreateClick}
-            className="flex items-center gap-2 px-5 py-2 text-[#c53030] rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium text-sm uppercase"
-          >
-            <span className="text-xl leading-none mb-1">+</span>
-            Create CV
-          </button>
-        )}
-      </div>
-      }
-
-      <div className="w-full overflow-x-auto">
-        <BaseTable columns={columns} isEmpty={props.cvs.length === 0} emptyText="No CVs found.">
-          {props.cvs.map(cv => (
-            <CvTableRow
-              key={cv.id}
-              cv={cv}
-              userId={cv.userId || ""}
-              userEmail={cv.userEmail || ""}
-              isReadOnly={props.isReadOnly}
-              onDeleteClick={props.onDeleteClick}
+      {pathname === ROUTES.USERCVS(props.userId || '') && (
+        <div className="flex flex-row gap-4 items-center w-full mb-6">
+          <div className="flex-1">
+            <SearchInput
+              value={props.searchTerm}
+              onChange={props.onSearchChange}
             />
-          ))}
-        </BaseTable>
+          </div>
+
+          {props.onCreateClick && (
+            <button
+              onClick={props.onCreateClick}
+              className="flex-shrink-0 flex items-center justify-center w-10 h-10 md:w-auto md:px-5 md:py-2 text-red-600 bg-red-50 dark:bg-red-900/20 rounded-full hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors font-medium text-sm uppercase"
+            >
+              <Plus size={20} className="md:hidden" />
+              <span className="hidden md:flex items-center gap-2">
+                <span className="text-xl leading-none mb-1">+</span>
+                Create CV
+              </span>
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className="w-full overflow-x-auto pb-4 custom-scrollbar">
+        <div className="w-full">
+          <BaseTable columns={columns} isEmpty={props.cvs.length === 0} emptyText="No CVs found.">
+            {props.cvs.map(cv => (
+              <CvTableRow
+                key={cv.id}
+                cv={cv}
+                userId={cv.userId || ""}
+                userEmail={cv.userEmail || ""}
+                isReadOnly={props.isReadOnly}
+                onDeleteClick={props.onDeleteClick}
+              />
+            ))}
+          </BaseTable>
+        </div>
       </div>
     </div>
   );

@@ -19,7 +19,6 @@ export interface Cv {
 
 }
 
-// types.ts
 export interface CvForTable {
   id: string;
   name: string;
