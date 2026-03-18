@@ -3,8 +3,8 @@
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { Cv } from "./types";
 import { CvTableRow } from "./CvTableRow";
-import { TableLayout } from "@/components/CvsTable/TableLayout";
 import { BaseTable } from "@/components/CvsTable/BaseTable";
+import SearchInput from "@/components/search/SearchInput";
 
 interface CvsTableProps {
   cvs: Cv[];
@@ -39,28 +39,44 @@ export function CvsTable(props: CvsTableProps) {
   ];
 
   return (
-    <TableLayout
-      searchTerm={props.searchTerm}
-      onSearchChange={props.onSearchChange}
-      onCreateClick={props.onCreateClick}
-      createButtonText="Create CV"
-    >
-      <BaseTable 
-        columns={columns} 
-        isEmpty={props.cvs.length === 0} 
-        emptyText="No CVs found."
-      >
-        {props.cvs.map((cv) => (
-          <CvTableRow
-            key={cv.id}
-            cv={cv}
-            userId={props.userId}
-            userEmail={props.userEmail}
-            isReadOnly={props.isReadOnly}
-            onDeleteClick={props.onDeleteClick}
-          />
-        ))}
-      </BaseTable>
-    </TableLayout>
+    <div className="w-full">
+      {/* Шапка таблицы с поиском и кнопкой */}
+      <div className="flex justify-between items-center w-full mb-6">
+        <SearchInput
+          value={props.searchTerm}
+          onChange={props.onSearchChange}
+        />
+
+        {props.onCreateClick && (
+          <button
+            onClick={props.onCreateClick}
+            className="flex items-center gap-2 px-5 py-2 text-[#c53030] rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium text-sm uppercase"
+          >
+            <span className="text-xl leading-none mb-1">+</span>
+            Create CV
+          </button>
+        )}
+      </div>
+
+      {/* Обертка для скролла */}
+      <div className="w-full overflow-x-auto">
+        <BaseTable 
+          columns={columns} 
+          isEmpty={props.cvs.length === 0} 
+          emptyText="No CVs found."
+        >
+          {props.cvs.map((cv) => (
+            <CvTableRow
+              key={cv.id}
+              cv={cv}
+              userId={props.userId}
+              userEmail={props.userEmail}
+              isReadOnly={props.isReadOnly}
+              onDeleteClick={props.onDeleteClick}
+            />
+          ))}
+        </BaseTable>
+      </div>
+    </div>
   );
 }

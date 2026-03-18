@@ -13,12 +13,10 @@ export function CvsPage() {
   const params = useParams();
   const { isOwnProfile } = useIsOwnProfile();
   const isAdmin = useAdmin();
-  
   const profileUserId = (params?.id || params?.userId) as string;
-  
   const canModify = isOwnProfile || isAdmin;
   const isReadOnly = !canModify;
-
+  const canCreate = isOwnProfile;
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const {
@@ -42,7 +40,6 @@ export function CvsPage() {
         router.push(ROUTES.CV_DETAILS(profileUserId, newCv.id));
       }
     } catch {
-      // Ошибка обрабатывается внутри хука
     }
   };
 
@@ -63,7 +60,7 @@ export function CvsPage() {
           onSortToggle={handleToggleSort}
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
-          onCreateClick={canModify ? () => setIsCreateModalOpen(true) : undefined}
+          onCreateClick={canCreate ? () => setIsCreateModalOpen(true) : undefined}
         />
       )}
     </div>
