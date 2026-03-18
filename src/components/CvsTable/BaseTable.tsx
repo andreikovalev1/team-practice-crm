@@ -23,7 +23,7 @@ export function BaseTable({ columns, children, isEmpty, emptyText = "No data fou
   }
 
   return (
-    <table className="w-full text-left border-collapse min-w-[800px]">
+    <table className="w-full text-left border-collapse table-fixed">
       <thead>
         <tr className="border-b border-gray-200 text-sm font-semibold [&>th]:py-4 [&>th]:px-4 text-gray-900 dark:text-gray-100">
           {columns.map((col, idx) => (
@@ -38,8 +38,6 @@ export function BaseTable({ columns, children, isEmpty, emptyText = "No data fou
           ))}
         </tr>
       </thead>
-      {/* Мы не оборачиваем children в tbody здесь, так как каждая строка (Row) 
-          в твоем дизайне — это отдельный tbody для группировки основной инфы и описания */}
       {children}
     </table>
   );
