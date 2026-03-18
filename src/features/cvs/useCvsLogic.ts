@@ -21,32 +21,21 @@ export function useCvsLogic(userId: string | undefined) {
   // --- ЛОКАЛЬНЫЕ СОСТОЯНИЯ (Для поиска и сортировки) ---
   const [searchTerm, setSearchTerm] = useState("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-
-  // --- ЗАПРОСЫ К СЕРВЕРУ ---
   const { data, loading: isLoadingCvs } = useQuery<GetUserCvsResponse>(
     GET_USER_CVS_QUERY,
     {
       variables: { userId },
-      skip: !userId, // Не делаем запрос, пока нет ID
+      skip: !userId,
     }
   );
 
-  const [createCvMutation, { loading: isCreating }] = useMutation<
-    CreateCvResponse,
-    { cv: CreateCvInput }
-  >(CREATE_CV_MUTATION, {
-    // Обновляем кэш, чтобы новое CV сразу появилось в списке
+  const [createCvMutation, { loading: isCreating }] = useMutation<CreateCvResponse,{ cv: CreateCvInput }> (
+    CREATE_CV_MUTATION, {
     refetchQueries: [{ query: GET_USER_CVS_QUERY, variables: { userId } }],
   });
 
-  const [deleteCvMutation, { loading: isDeleting }] = useMutation<
-    DeleteCvResponse,
-    { cv: DeleteCvInput }
-  >(DELETE_CV_MUTATION);
-
-  // --- БИЗНЕС-ЛОГИКА: ПОИСК И СОРТИРОВКА (AC-2.1, AC-2.2) ---
+  const [deleteCvMutation, { loading: isDeleting }] = useMutation<DeleteCvResponse,{ cv: DeleteCvInput }>(DELETE_CV_MUTATION);
   const rawCvs = data?.user?.cvs || EMPTY_CVS;
-
   const filteredAndSortedCvs = useMemo(() => {
     // 1. Сначала фильтруем (Поиск по имени или описанию)
     const filtered = rawCvs.filter((cv) => {
@@ -56,7 +45,6 @@ export function useCvsLogic(userId: string | undefined) {
       return matchName || matchDesc;
     });
 
-    // 2. Затем сортируем по имени (Name)
     return filtered.sort((a, b) => {
       const comparison = a.name.localeCompare(b.name);
       return sortDirection === "asc" ? comparison : -comparison;
@@ -76,11 +64,11 @@ export function useCvsLogic(userId: string | undefined) {
         // Умное удаление из кэша Apollo без лишних запросов на сервер
         update: (cache) => {
           cache.evict({ id: cache.identify({ __typename: "Cv", id: cvId }) });
-          cache.gc(); // Очистка "мусора"
+          cache.gc();
         },
       });
       toast.success("CV deleted successfully!", { id: loadingToast });
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete CV", { id: loadingToast });
     }
   };
@@ -93,29 +81,23 @@ export function useCvsLogic(userId: string | undefined) {
         variables: { cv: { name, description, education, userId } },
       });
       toast.success("CV created!", { id: loadingToast });
-      return data?.createCv; // Возвращаем созданное резюме (понадобится для редиректа)
-    } catch (error) {
+      return data?.createCv;
+    } catch {
       toast.error("Failed to create CV", { id: loadingToast });
-      throw error;
     }
   };
 
   return {
-    // Данные
     cvs: filteredAndSortedCvs,
     userEmail: data?.user?.email,
     totalCount: rawCvs.length,
     loading: isLoadingCvs,
     isCreating,
     isDeleting,
-    
-    // Поиск и сортировка
     searchTerm,
     setSearchTerm,
     sortDirection,
     handleToggleSort,
-    
-    // Экшены
     deleteCv: handleDeleteCv,
     createCv: handleCreateCv,
   };

@@ -3,19 +3,14 @@
 import { useQuery } from "@apollo/client/react";
 import { GET_GLOBAL_CVS_QUERY } from "@/features/cvs/graphql";
 import { GetGlobalCVsResponse, GlobalCVs } from "@/features/cvs/types";
-
-
 import Table from "@/components/table/Table"
 import { ColumnType } from "@/components/table/types"
-
-
 import { useSearchStore } from "@/store/useSearchStore"
-
 import ActionMenu from "@/components/table/ActionMenu";
 import Modal from "@/components/ui/Modal";
 import { useMemo, useState } from "react";
 import useDebounce from "@/components/search/useDebounce";
-import UpdateCVModal from "./UpdateCVModal";
+import UpdateCVModal from "@/features/cvs/UpdateCvModal";
 import { GoArrowUp } from "react-icons/go"
 import { useAdmin } from "@/lib/useAdmin";
 import Link from "next/link";
@@ -84,6 +79,13 @@ export default function CvsPage() {
 
     if (loading) return <div className="px-6">Loading CVs...</div>
 
+    if (!isAdmin) {
+      return (
+        <div className="w-full max-w-sm sm:max-w-lg lg:max-w-2xl mx-auto mt-10 text-center py-8 px-6 text-gray-500 border border-dashed border-zinc-700 rounded-lg">
+          Mapping all CVs to employee roles is under development
+        </div>
+      );
+    }
     // const columns: ColumnType<GlobalCVs>[] = [
     // { key: "name", label: "Name", sortable: true },
     // { key: "description", label: "Description" },
@@ -122,11 +124,10 @@ export default function CvsPage() {
 
     return (
         displayedCVs.length === 0 ? 
-        <div className="w-full max-w-sm sm:max-w-lg lg:max-w-2xl mx-auto mt-10 text-center py-8 px-6 text-gray-500 border border-dashed border-zinc-700 rounded-lg">
-          Mapping all CVs to employee roles is under development
+        <div className="px-6 py-8 text-center text-gray-400">
+          No CVs found in the system.
         </div>
         :
-        // <Table<GlobalCVs> data={displayedCVs} columns={columns}/>
         <div className="px-6">
           <div className="overflow-x-auto">
             <table className="min-w-full">
@@ -158,7 +159,6 @@ export default function CvsPage() {
                   <tr key={cv.id} className="border-t border-zinc-200 hover:bg-zinc-50 transition">
                     <td className="px-4 py-4">{cv.name}</td>
                     <td className="px-4 py-4 hidden md:table-cell">{cv.education}</td>
-                    {/* <td className="px-4 py-4 hidden md:table-cell">{cv.user?.email ?? cv.user?.profile?.full_name}</td> */}
                     <td className="px-4 py-4 hidden md:table-cell">{cv.user?.email}</td>
                     <td className="px-4 py-4 text-right">
                       {isAdmin ? (
@@ -187,7 +187,7 @@ export default function CvsPage() {
                                   }}
                                 />
                       ) : (
-                        <Link href={ROUTES.CV_DETAILS(cv.id, cv.user?.id || '')} className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-black transition-colors">
+                        <Link href={ROUTES.CV_DETAILS(cv.id || '')} className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-black transition-colors">
                           <MdArrowForwardIos size={14} />
                         </Link>
                       )}
