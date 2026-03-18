@@ -17,4 +17,7 @@ export const ROUTES = {
     SKILLS: '/skills',
     LANGUAGES: '/languages',
     CVS: '/cvs',
+    // Для админа
+    POSITIONS: '/positions',
+    DEPARTMENTS: '/departments',
 }

@@ -9,7 +9,17 @@ import { useAdmin } from "@/lib/useAdmin"
 import CreateUserModal from "@/features/employee/CreateUserModal"
 import CreateLanguageModal from "@/features/languages/CreateLanguageModal"
 import CreateSkillModal from "@/features/skills/CreateSkillModal"
+import CreateGlobalPositionModal from "@/features/positions/CreatePositionModal"
 import { ROUTES } from "@/app/configs/routesConfig"
+
+  const createAllowedPaths = [
+    ROUTES.HOME,
+    ROUTES.SKILLS,
+    ROUTES.LANGUAGES,
+    ROUTES.POSITIONS,
+    ROUTES.DEPARTMENTS,
+  ];
+
 
 export default function Header() {
   const search = useSearchStore((state) => state.search)
@@ -22,15 +32,19 @@ export default function Header() {
     setSearch('')
   }, [pathname, setSearch])
 
-   const showSearch = pathname ===ROUTES.HOME ||
+  const showSearch = pathname ===ROUTES.HOME ||
     pathname === ROUTES.CVS ||
     pathname === ROUTES.SKILLS ||
-    pathname === ROUTES.LANGUAGES
+    pathname === ROUTES.LANGUAGES ||
+    pathname === ROUTES.POSITIONS
+
+  const showCreateButton = isAdmin && createAllowedPaths.includes(pathname);
 
   const getCreateButtonText = () => {
     if (pathname === ROUTES.LANGUAGES) return "Create language";
     if (pathname === ROUTES.SKILLS) return "Create skill";
-    if (pathname === ROUTES.CVS) return "Create CV";
+    if (pathname === ROUTES.POSITIONS) return "Create position"
+    if (pathname === ROUTES.DEPARTMENTS) return "Create department"
     return "Create user";
   };
 
@@ -45,8 +59,9 @@ export default function Header() {
               value={search}
               onChange={setSearch}
             />
+            
 
-            {isAdmin && (
+            {showCreateButton && (
               <button
                 onClick={() => setIsCreateModalOpen(true)} 
                 className="flex items-center gap-2 px-5 py-2 text-[#c53030] rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium text-sm uppercase"
@@ -78,7 +93,14 @@ export default function Header() {
           isOpen={isCreateModalOpen} 
           onClose={() => setIsCreateModalOpen(false)}
         />
-      )} 
+      )}
+
+      {isCreateModalOpen && pathname.includes('position') && (
+        <CreateGlobalPositionModal 
+          isOpen={isCreateModalOpen} 
+          onClose={() => setIsCreateModalOpen(false)}
+        />
+      )}  
     </>
   )
 }

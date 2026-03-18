@@ -1,4 +1,4 @@
-import { ArrowUp, ArrowDown } from "lucide-react";
+import { GoArrowUp } from "react-icons/go"
 import { CvForTable } from "./types";
 import { CvTableRow } from "./CvTableRow";
 import { BaseTable } from "@/components/CvsTable/BaseTable";
@@ -25,12 +25,12 @@ export function CvsTable(props: CvsTableProps) {
   const columns = [
     {
       header: (
-        <div className="flex items-center gap-2">
-          Name
-          <span className="text-gray-400 group-hover:text-gray-600">
-            {props.sortDirection === "asc" ? <ArrowUp size={16}/> : <ArrowDown size={16}/>}
-          </span>
-        </div>
+      <div className="flex items-center gap-2">
+        Name
+        <span className={`${props.sortDirection === 'desc' ? 'text-black' : 'text-gray-400'}`}>
+          <GoArrowUp />
+        </span>
+      </div>
       ),
       className: "cursor-pointer hover:text-gray-600 transition-colors group w-1/3",
       onSort: props.onSortToggle,
