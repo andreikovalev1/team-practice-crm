@@ -19,12 +19,12 @@ interface CvTableRowProps {
   onDeleteClick: (cv: Cv) => void;
 }
 
-export function CvTableRow({ cv, userId, userEmail, isReadOnly, onDeleteClick }: CvTableRowProps) {
+export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick }: CvTableRowProps) {
   const router = useRouter();
 
   return (
     <tbody 
-      onClick={() => router.push(ROUTES.CV_DETAILS(userId, cv.id))}
+      onClick={() => router.push(ROUTES.CV_DETAILS(cv.id))}
       className="border-b border-gray-200 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 cursor-pointer transition-colors group"
     >
       <tr className="[&>td]:py-6 [&>td]:px-4">

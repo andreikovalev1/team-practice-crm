@@ -1,15 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { ROUTES } from "@/app/configs/routesConfig";
+import { useParams } from "next/navigation";
 import { useIsOwnProfile } from "@/features/profile/useIsOwnProfile";
 import { useAdmin } from "@/lib/useAdmin"; 
 import { useCvsLogic } from "./useCvsLogic";
 import { CvsTable } from "./CvsTable";
+import { CreateCvModal } from "./CreateCvModal";
 
 export function CvsPage() {
-  const router = useRouter();
   const params = useParams();
   const { isOwnProfile } = useIsOwnProfile();
   const isAdmin = useAdmin();
@@ -18,6 +17,7 @@ export function CvsPage() {
   const isReadOnly = !canModify;
   const canCreate = isOwnProfile;
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCreatingInModal, setIsCreatingInModal] = useState(false);
 
   const {
     cvs,
@@ -33,13 +33,15 @@ export function CvsPage() {
 
   const handleCreateSubmit = async (name: string, description: string, education: string) => {
     if (!profileUserId) return;
+    setIsCreatingInModal(true);
     try {
       const newCv = await createCv(name, description, education);
       if (newCv) {
         setIsCreateModalOpen(false);
-        router.push(ROUTES.CV_DETAILS(profileUserId, newCv.id));
       }
     } catch {
+    } finally {
+      setIsCreatingInModal(false);
     }
   };
 
@@ -50,18 +52,27 @@ export function CvsPage() {
       {loading ? (
         <div className="text-center py-16 text-gray-500 font-medium">Loading CVs...</div>
       ) : (
-        <CvsTable
-          cvs={cvs}
-          userId={profileUserId}
-          userEmail={userEmail || "—"}
-          isReadOnly={isReadOnly}
-          onDeleteClick={(cv) => deleteCv(cv.id)}
-          sortDirection={sortDirection}
-          onSortToggle={handleToggleSort}
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          onCreateClick={canCreate ? () => setIsCreateModalOpen(true) : undefined}
-        />
+        <>
+          <CvsTable
+            cvs={cvs}
+            userId={profileUserId}
+            userEmail={userEmail || "—"}
+            isReadOnly={isReadOnly}
+            onDeleteClick={(cv) => deleteCv(cv.id)}
+            sortDirection={sortDirection}
+            onSortToggle={handleToggleSort}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            onCreateClick={canCreate ? () => setIsCreateModalOpen(true) : undefined}
+          />
+
+          <CreateCvModal
+            isOpen={isCreateModalOpen}
+            onClose={() => setIsCreateModalOpen(false)}
+            onSubmit={handleCreateSubmit}
+            isCreating={isCreatingInModal}
+          />
+        </>
       )}
     </div>
   );
