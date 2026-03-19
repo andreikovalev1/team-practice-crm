@@ -133,3 +133,5 @@ export function useSkillsLogic(userId: string | undefined) {
     updateMastery: handleUpdateMastery,
   };
 }
+
+export type UseSkillsLogicReturn = ReturnType<typeof useSkillsLogic>;
