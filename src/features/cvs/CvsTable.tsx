@@ -35,9 +35,9 @@ export function CvsTable(props: CvsTableProps) {
       className: "cursor-pointer hover:text-gray-600 transition-colors group w-[35%] min-w-[280px]",
       onSort: props.onSortToggle,
     },
-    { header: "Education", className: "hidden md:table-cell w-[25%] min-w-[180px]" }, // Убрали hidden! Теперь она видна через скролл
+    { header: "Education", className: "hidden md:table-cell w-[30%] min-w-[180px]" }, // Убрали hidden! Теперь она видна через скролл
     { header: "Employee", className: "w-[30%] min-w-[200px]" },
-    { header: "", className: "w-[10%] min-w-[60px]" },
+    { header: "", className: "w-[5%] min-w-[50px]" },
   ];
 
   return (
