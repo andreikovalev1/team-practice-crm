@@ -65,12 +65,14 @@ function CvDetailsForm({ cv }: { cv: NonNullable<GetCvByIdResponse["cv"]> }) {
           label="Name"
           value={formData.name}
           disabled={isReadOnly}
+          className="text-sm md:text-base"
           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
         />
         <FloatingInput 
           label="Education"
           value={formData.education}
           disabled={isReadOnly}
+          className="text-sm md:text-base"
           onChange={(e) => setFormData(prev => ({ ...prev, education: e.target.value }))}
         />
         
@@ -81,7 +83,7 @@ function CvDetailsForm({ cv }: { cv: NonNullable<GetCvByIdResponse["cv"]> }) {
              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
              placeholder=" "
              rows={6}
-             className={`peer w-full border border-gray-300 px-3 py-3 text-sm outline-none transition-all resize-none break-words${
+             className={`peer w-full border border-gray-300 px-3 py-3 text-sm md:text-base outline-none transition-all resize-none break-words${
               isReadOnly ? "bg-gray-50 cursor-default" : "focus:border-red-700"
             }`}
            />

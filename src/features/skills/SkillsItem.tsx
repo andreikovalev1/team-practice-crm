@@ -89,7 +89,7 @@ export function SkillsItem({
         </div>
       </div>
 
-      <span className="text-gray-500 text-md font-medium truncate flex-1 min-w-0 select-none">
+      <span className="text-gray-500 text-sm font-medium truncate flex-1 min-w-0 select-none md:text-base">
         {skill.name}
       </span>
     </div>
