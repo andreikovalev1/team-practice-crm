@@ -8,14 +8,13 @@ import FloatingInput from "@/components/FloatingInput";
 import OvalButton from "@/components/button/OvalButton";
 
 import { UPDATE_GLOBAL_CV_MUTATION } from "@/features/cvs/graphql";
-import { GlobalCVs } from "@/features/cvs/types";
+import { CvForTable } from "@/features/cvs/types";
 
 interface UpdateCVsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  cv: GlobalCVs | null;
+  cv: CvForTable | null;
 }
-
 
 export default function UpdateCVModal({ isOpen, onClose, cv }: UpdateCVsModalProps) {
   const [prevCvId, setPrevCvId] = useState<string | undefined>(undefined);
@@ -23,6 +22,7 @@ export default function UpdateCVModal({ isOpen, onClose, cv }: UpdateCVsModalPro
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [education, setEducation] = useState("");
   const [user, setUser] = useState("");
 
   if (cv?.id !== prevCvId || isOpen !== prevIsOpen) {
@@ -32,7 +32,8 @@ export default function UpdateCVModal({ isOpen, onClose, cv }: UpdateCVsModalPro
     if (isOpen && cv) {
       setName(cv.name || "");
       setDescription(cv.description|| "");
-      setUser(cv.user?.email || "");
+      setEducation(cv.education || "");
+      setUser(cv.userEmail || "");
     }
   }
 
@@ -43,7 +44,7 @@ export default function UpdateCVModal({ isOpen, onClose, cv }: UpdateCVsModalPro
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!cv || !name || !description || !user) {
+    if (!cv || !name || !description || !education) {
       toast.error("Please fill all fields");
       return;
     }
@@ -57,6 +58,7 @@ export default function UpdateCVModal({ isOpen, onClose, cv }: UpdateCVsModalPro
             cvId: cv.id,
             name,
             description,
+            education
           },
         },
       });
@@ -72,7 +74,8 @@ export default function UpdateCVModal({ isOpen, onClose, cv }: UpdateCVsModalPro
   const isChanged =
     cv &&
     (name !== cv.name ||
-      description !== cv.description);
+      description !== cv.description ||
+      education !== cv.education);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Cv">
@@ -83,7 +86,6 @@ export default function UpdateCVModal({ isOpen, onClose, cv }: UpdateCVsModalPro
           value={name}
           onChange={(e) => setName(e.target.value)}
           disabled={isUpdating}
-          required
         />
 
         <FloatingInput
@@ -92,7 +94,14 @@ export default function UpdateCVModal({ isOpen, onClose, cv }: UpdateCVsModalPro
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           disabled={isUpdating}
-          required
+        />
+
+        <FloatingInput
+          label="Cv Education"
+          type="text"
+          value={education}
+          onChange={(e) => setEducation(e.target.value)}
+          disabled={isUpdating}
         />
 
         <FloatingInput

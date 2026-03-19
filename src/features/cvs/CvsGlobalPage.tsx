@@ -5,20 +5,23 @@ import { useCvsLogic } from "./useCvsLogic";
 import { CvsTable } from "./CvsTable";
 import { useSearchStore } from "@/store/useSearchStore";
 import useDebounce from "@/components/search/useDebounce";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { CvForTable, GlobalCVs } from "./types";
+import UpdateCVModal from "./UpdateCvModal";
 
 export function CvsGlobalPage() {
   const isAdmin = useAdmin();
   const search = useSearchStore((state) => state.search)
   const debouncedSearch  = useDebounce(search, 400)
+  const [selectedCv, setSelectedCv] = useState<GlobalCVs | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     cvs,
     loading,
     sortDirection,
     handleToggleSort,
-    deleteCv,
-    updateCv
+    deleteCv
   } = useCvsLogic(undefined, "global");
 
   const displayedCvs = useMemo (() => {
@@ -32,6 +35,11 @@ export function CvsGlobalPage() {
       })
     }, [cvs, debouncedSearch]);
 
+    const handleUpdateClick = (cv: CvForTable) => {
+      setSelectedCv(cv as GlobalCVs);
+      setIsModalOpen(true);
+    };
+
   return (
     <div className="w-full max-w-[1200px] mx-auto mb-8 px-6 py-8">
       {loading ? (
@@ -39,14 +47,22 @@ export function CvsGlobalPage() {
           Loading CVs...
         </div>
       ) : (
+      <>
         <CvsTable
           cvs={displayedCvs}
-          isReadOnly={!isAdmin}          // только админ может удалять
+          isReadOnly={!isAdmin}
           onDeleteClick={(cv) => deleteCv(cv.id)}
           sortDirection={sortDirection}
           onSortToggle={handleToggleSort}
-          onUpdateClick={(cv) => updateCv(cv.id, cv.name, cv.description, cv.education)}
+          onUpdateClick={handleUpdateClick}
         />
+
+        <UpdateCVModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          cv={selectedCv}
+        />
+      </>
       )}
     </div>
   );

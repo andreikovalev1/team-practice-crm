@@ -7,6 +7,8 @@ import { useAdmin } from "@/lib/useAdmin";
 import { useCvsLogic } from "./useCvsLogic";
 import { CvsTable } from "./CvsTable";
 import { CreateCvModal } from "./CreateCvModal";
+import { CvForTable, GlobalCVs } from "./types";
+import UpdateCVModal from "./UpdateCvModal";
 
 export function CvsPage() {
   const params = useParams();
@@ -20,6 +22,8 @@ export function CvsPage() {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isCreatingInModal, setIsCreatingInModal] = useState(false);
+  const [selectedCv, setSelectedCv] = useState<GlobalCVs | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     cvs,
@@ -47,6 +51,11 @@ export function CvsPage() {
     }
   };
 
+  const handleUpdateClick = (cv: CvForTable) => {
+      setSelectedCv(cv as GlobalCVs);
+      setIsModalOpen(true);
+  };
+
   if (!profileUserId) return null;
 
   return (
@@ -67,6 +76,7 @@ export function CvsPage() {
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
             onCreateClick={canCreate ? () => setIsCreateModalOpen(true) : undefined}
+            onUpdateClick={handleUpdateClick}
           />
 
           <CreateCvModal
@@ -74,6 +84,12 @@ export function CvsPage() {
             onClose={() => setIsCreateModalOpen(false)}
             onSubmit={handleCreateSubmit}
             isCreating={isCreatingInModal}
+          />
+
+          <UpdateCVModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            cv={selectedCv}
           />
         </>
       )}

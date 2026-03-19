@@ -22,6 +22,7 @@ export const UPDATE_GLOBAL_CV_MUTATION = gql`
       id
       name
       description
+      education
     }
   }
 `;

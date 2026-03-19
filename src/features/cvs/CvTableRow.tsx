@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2, MoreVertical } from "lucide-react";
+import { Trash2, MoreVertical, Edit } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/app/configs/routesConfig";
 import { Cv } from "./types";
@@ -17,7 +17,7 @@ interface CvTableRowProps {
   userEmail: string;
   isReadOnly: boolean;
   onDeleteClick: (cv: Cv) => void;
-  onUpdateClick?: (cv: Cv) => void;
+  onUpdateClick: (cv: Cv) => void;
 }
 
 export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick, onUpdateClick }: CvTableRowProps) {
@@ -28,7 +28,6 @@ export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick, onUpdateC
       onClick={() => router.push(ROUTES.CV_DETAILS(cv.id))}
       className="border-b border-gray-200 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 cursor-pointer transition-colors group"
     >
-      {/*ОСНОВНАЯ СТРОКА С ДАННЫМИ*/}
       <tr className="[&>td]:py-6 [&>td]:px-4 text-sm md:text-base">
         <td className="align-top font-medium text-gray-900 dark:text-gray-100 pr-2 break-words">
           {cv.name}
@@ -49,6 +48,17 @@ export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick, onUpdateC
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 rounded-xl shadow-lg">
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onUpdateClick?.(cv);
+                  }}
+                  className="cursor-pointer py-2.5"
+                >
+                  <Edit className="mr-2 h-4 w-4 text-gray-500" />
+                  <span>Update CV</span>
+                </DropdownMenuItem>
+
                 <DropdownMenuItem 
                   onClick={() => onDeleteClick(cv)}
                   className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/30 py-2.5"

@@ -17,7 +17,7 @@ interface CvsTableProps {
   onSearchChange?: (value: string) => void;
   onCreateClick?: () => void;
   userId?: string;
-  onUpdateClick?: (cv: CvForTable) => void;
+  onUpdateClick: (cv: CvForTable) => void;
 }
 
 export function CvsTable(props: CvsTableProps) {
