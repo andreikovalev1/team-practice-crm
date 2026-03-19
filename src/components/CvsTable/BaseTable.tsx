@@ -23,13 +23,13 @@ export function BaseTable({ columns, children, isEmpty, emptyText = "No data fou
   }
 
   return (
-    <table className="w-full text-left border-collapse table-fixed">
+    <table className="w-full text-left text-base border-collapse table-fixed">
       <thead>
-        <tr className="border-b border-gray-200 text-sm font-semibold [&>th]:py-4 [&>th]:px-4 text-gray-900 dark:text-gray-100">
+        <tr className="border-b border-gray-200 [&>th]:py-4 [&>th]:px-4 text-gray-900 dark:text-gray-100">
           {columns.map((col, idx) => (
             <th 
               key={idx} 
-              className={col.className} 
+              className={`${col.className ?? ""} text-sm md:text-base`}
               onClick={col.onSort}
               style={{ cursor: col.onSort ? 'pointer' : 'default' }}
             >

@@ -29,7 +29,7 @@ export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick, onUpdateC
       className="border-b border-gray-200 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 cursor-pointer transition-colors group"
     >
       {/*ОСНОВНАЯ СТРОКА С ДАННЫМИ*/}
-      <tr className="[&>td]:py-6 [&>td]:px-4">
+      <tr className="[&>td]:py-6 [&>td]:px-4 text-sm md:text-base">
         <td className="align-top font-medium text-gray-900 dark:text-gray-100 pr-2 break-words">
           {cv.name}
         </td>
@@ -62,17 +62,17 @@ export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick, onUpdateC
         </td>
       </tr>
 
-      <tr className="md:hidden [&>td]:pb-5">
+      <tr className="text-sm md:hidden md:text-base [&>td]:pb-5">
         <td colSpan={3} className="px-4">
-          <div className="text-base text-gray-500 dark:text-gray-400 line-clamp-3 leading-relaxed break-all whitespace-normal">
+          <div className="text-gray-500 dark:text-gray-400 line-clamp-3 leading-relaxed break-words whitespace-normal">
             {cv.description}
           </div>
         </td>
       </tr>
 
-      <tr className="hidden md:table-row [&>td]:pb-5">
+      <tr className="text-sm hidden md:table-row md:text-base [&>td]:pb-5">
         <td colSpan={4} className="px-4">
-          <div className="text-base text-gray-500 dark:text-gray-400 line-clamp-3 leading-relaxed break-all whitespace-normal">
+          <div className="text-gray-500 dark:text-gray-400 line-clamp-3 leading-relaxed break-all whitespace-normal">
             {cv.description}
           </div>
         </td>
