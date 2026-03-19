@@ -30,8 +30,8 @@ export default function CvLayout({ children }: { children: React.ReactNode }) {
     <div className="w-full h-full flex flex-col">
       {/* Здесь позже добавим Breadcrumbs (хлебные крошки) из макета */}
       <Tabs value={currentTab} onValueChange={handleChangeTab} className="mb-6">
-        <div>
-          <TabsList variant="line" className="bg-transparent h-12 w-full justify-start gap-8">
+        <div className="px-4">
+          <TabsList variant="line" className="bg-transparent h-12 w-full justify-start gap-5 md:gap-8 ">
             <TabsTrigger value="details" className="uppercase font-semibold tracking-wider text-xs">
               Details
             </TabsTrigger>

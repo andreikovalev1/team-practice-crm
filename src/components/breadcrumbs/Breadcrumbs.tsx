@@ -85,7 +85,6 @@ export default function Breadcrumbs() {
 
   if (pathname.startsWith("/cvs") && cvId && pathname !== ROUTES.CVS) {
     if (cvOwner) {
-      // Если у CV есть владелец, строим путь через него (как на твоем скрине)
       breadcrumbs.push({ label: "Employees", href: ROUTES.HOME });
       breadcrumbs.push({ 
         label: cvOwnerName || "User", 
@@ -93,14 +92,11 @@ export default function Breadcrumbs() {
       });
       breadcrumbs.push({ 
         label: "CVs", 
-        href: `/users/${cvOwner.id}/cvs` // Путь к списку всех CV этого пользователя
+        href: `/users/${cvOwner.id}/cvs`
       });
     } else {
-      // Если данных о владельце нет, просто показываем общую папку
       breadcrumbs.push({ label: "CVs", href: ROUTES.CVS });
     }
-
-    // Добавляем имя самого CV (делаем его красным, так как это конечная точка)
     breadcrumbs.push({ label: cv?.name || "Loading..." });
   }
 

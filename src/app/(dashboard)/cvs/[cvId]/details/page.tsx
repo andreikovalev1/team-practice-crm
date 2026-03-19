@@ -59,7 +59,7 @@ function CvDetailsForm({ cv }: { cv: NonNullable<GetCvByIdResponse["cv"]> }) {
   };
 
   return (
-    <div className="flex justify-center w-full">
+    <div className="flex justify-center w-full px-4 md:px-0 md:py-10">
       <form onSubmit={handleSubmit} className="max-w-2xl w-full flex flex-col gap-8 mx-auto">
         <FloatingInput 
           label="Name"
@@ -81,7 +81,7 @@ function CvDetailsForm({ cv }: { cv: NonNullable<GetCvByIdResponse["cv"]> }) {
              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
              placeholder=" "
              rows={6}
-             className={`peer w-full border border-gray-300 px-3 py-3 text-sm outline-none transition-all resize-none ${
+             className={`peer w-full border border-gray-300 px-3 py-3 text-sm outline-none transition-all resize-none break-words${
               isReadOnly ? "bg-gray-50 cursor-default" : "focus:border-red-700"
             }`}
            />
@@ -91,13 +91,13 @@ function CvDetailsForm({ cv }: { cv: NonNullable<GetCvByIdResponse["cv"]> }) {
         </div>
         
         {!isReadOnly && (
-        <div className="grid grid-cols-2 w-full">
-            <div /> 
+        <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-4">
+            <div className="hidden md:block" />
             <OvalButton 
             type="submit" 
             text={isUpdating ? "SAVING..." : "UPDATE"} 
             disabled={isButtonDisabled}
-            className="w-full"
+            className="w-full max-w-[320px] md:max-w-none"
             />
         </div>
         )}
