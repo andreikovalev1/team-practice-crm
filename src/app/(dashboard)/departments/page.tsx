@@ -35,31 +35,32 @@ export default function PositionsPage() {
       key: "actions",
       label: "",
       nestedItem: (department: GlobalDepartment) => (
-        <ActionMenu
-          row={department}
-          entityName="Department"
-          renderModal={(row, close, action) => {
-            if (action === "update") {
-              return (
-                <UpdateDepartmentModal
-                  isOpen={true}
-                  onClose={close}
-                  department={row}
-                />
-              );
-            }
-
-            if (action === "delete") {
-              return (
-                <DeleteDepartmentModal
-                  isOpen={true}
-                  onClose={close}
-                  department={row}
-                />
-              );
-            }
-          }}
-        />
+        <div className="flex justify-end">
+          <ActionMenu
+            row={department}
+            entityName="Department"
+            renderModal={(row, close, action) => {
+              if (action === "update") {
+                return (
+                  <UpdateDepartmentModal
+                    isOpen={true}
+                    onClose={close}
+                    department={row}
+                  />
+                );
+              }
+              if (action === "delete") {
+                return (
+                  <DeleteDepartmentModal
+                    isOpen={true}
+                    onClose={close}
+                    department={row}
+                  />
+                );
+              }
+            }}
+          />
+        </div>
       ),
     },
   ], []);
