@@ -6,8 +6,9 @@ import {
   CREATE_CV_MUTATION,
   DELETE_CV_MUTATION,
   GET_GLOBAL_CVS_QUERY,
+  UPDATE_CV_MUTATION
 } from "./graphql";
-import { Cv, CvForTable, GetGlobalCVsResponse, GetUserCvsResponse, CreateCvInput, CreateCvResponse, DeleteCvInput, DeleteCvResponse } from "./types";
+import { Cv, CvForTable, GetGlobalCVsResponse, GetUserCvsResponse, CreateCvInput, CreateCvResponse, DeleteCvInput, DeleteCvResponse, UpdateCvInput, UpdateCvResponse } from "./types";
 
 const EMPTY_CVS: CvForTable[] = [];
 
@@ -34,6 +35,10 @@ export function useCvsLogic(userId?: string, mode: "user" | "global" = "user") {
 
   const [deleteCvMutation, { loading: isDeleting }] = useMutation<DeleteCvResponse, { cv: DeleteCvInput }>(
     DELETE_CV_MUTATION
+  );
+
+  const [updateCvMutation, { loading: isUpdating }] = useMutation<UpdateCvResponse, { cv: UpdateCvInput }>(
+    UPDATE_CV_MUTATION
   );
 
   // --- Нормализация CV для таблицы ---
@@ -104,6 +109,27 @@ const cvs: CvForTable[] = useMemo(() => {
     }
   };
 
+  const updateCv = async (
+    cvId: string,
+    name: string,
+    description: string,
+    education?: string
+  ) => {
+    const toastId = toast.loading("Updating CV...");
+    try {
+      const { data } = await updateCvMutation({
+        variables: {
+          cv: { cvId, name, description, education },
+        },
+      });
+
+      toast.success("CV updated", { id: toastId });
+      return data?.updateCv;
+    } catch {
+      toast.error("Failed to update CV", { id: toastId });
+    }
+  };
+
   return {
     cvs: filteredAndSortedCvs,
     loading,
@@ -115,5 +141,7 @@ const cvs: CvForTable[] = useMemo(() => {
     createCv,
     isCreating,
     isDeleting,
+    updateCv,
+    isUpdating
   };
 }

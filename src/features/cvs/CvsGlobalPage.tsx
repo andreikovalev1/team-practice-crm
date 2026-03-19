@@ -15,11 +15,10 @@ export function CvsGlobalPage() {
   const {
     cvs,
     loading,
-    searchTerm,
-    setSearchTerm,
     sortDirection,
     handleToggleSort,
     deleteCv,
+    updateCv
   } = useCvsLogic(undefined, "global");
 
   const displayedCvs = useMemo (() => {
@@ -46,8 +45,7 @@ export function CvsGlobalPage() {
           onDeleteClick={(cv) => deleteCv(cv.id)}
           sortDirection={sortDirection}
           onSortToggle={handleToggleSort}
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
+          onUpdateClick={(cv) => updateCv(cv.id, cv.name, cv.description, cv.education)}
         />
       )}
     </div>

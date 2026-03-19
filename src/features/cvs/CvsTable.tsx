@@ -13,10 +13,11 @@ interface CvsTableProps {
   onDeleteClick: (cv: CvForTable) => void;
   sortDirection: "asc" | "desc";
   onSortToggle: () => void;
-  searchTerm: string;
-  onSearchChange: (value: string) => void;
+  searchTerm?: string;
+  onSearchChange?: (value: string) => void;
   onCreateClick?: () => void;
   userId?: string;
+  onUpdateClick?: (cv: CvForTable) => void;
 }
 
 export function CvsTable(props: CvsTableProps) {
@@ -46,8 +47,8 @@ export function CvsTable(props: CvsTableProps) {
         <div className="flex flex-row gap-4 items-center w-full mb-6">
           <div className="flex-1">
             <SearchInput
-              value={props.searchTerm}
-              onChange={props.onSearchChange}
+              value={props.searchTerm || ''}
+              onChange={props.onSearchChange ||(() => {})}
             />
           </div>
 
@@ -77,6 +78,7 @@ export function CvsTable(props: CvsTableProps) {
                 userEmail={cv.userEmail || ""}
                 isReadOnly={props.isReadOnly}
                 onDeleteClick={props.onDeleteClick}
+                onUpdateClick={props.onUpdateClick}
               />
             ))}
           </BaseTable>

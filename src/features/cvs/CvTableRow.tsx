@@ -17,9 +17,10 @@ interface CvTableRowProps {
   userEmail: string;
   isReadOnly: boolean;
   onDeleteClick: (cv: Cv) => void;
+  onUpdateClick?: (cv: Cv) => void;
 }
 
-export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick }: CvTableRowProps) {
+export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick, onUpdateClick }: CvTableRowProps) {
   const router = useRouter();
 
   return (
@@ -33,7 +34,7 @@ export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick }: CvTable
           {cv.name}
         </td>
         <td className="hidden md:table-cell align-top font-medium text-gray-900 dark:text-gray-300 pr-2 break-words">
-          {cv.education || "—"}
+          {cv.education || " "}
         </td>
         <td className="align-top font-medium text-gray-900 dark:text-gray-300 pr-2 break-all md:break-words">
           {userEmail}
