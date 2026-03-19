@@ -9,8 +9,8 @@ import { useSearchStore } from "@/store/useSearchStore";
 import ActionMenu from "@/components/table/ActionMenu";
 import { useMemo } from "react";
 import useDebounce from "@/components/search/useDebounce";
-import UpdatePositionModal from "./UpdatePositionModal";
-import DeletePositionModal from "./DeletePositionsModal";
+import UpdatePositionModal from "@/features/positions/UpdatePositionModal";
+import DeletePositionModal from "@/features/positions/DeletePositionsModal";
 
 const GLOBAL_POSITION: GlobalPosition[] = [];
 
@@ -64,6 +64,9 @@ export default function PositionsPage() {
     },
   ], []);
 
-  return loading ? <div className="px-6">Loading positions</div> :
-         <Table<GlobalPosition> data={displayedPositions} columns={columns} />
+  return loading ?           
+    <div className="text-center py-26 text-gray-500 font-medium">
+      Loading Positions...
+    </div> :
+    <Table<GlobalPosition> data={displayedPositions} columns={columns} />
 }

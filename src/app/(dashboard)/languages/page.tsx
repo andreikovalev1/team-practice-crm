@@ -9,8 +9,8 @@ import { useSearchStore } from "@/store/useSearchStore"
 import ActionMenu from "@/components/table/ActionMenu";
 import { useMemo } from "react";
 import useDebounce from "@/components/search/useDebounce";
-import DeleteLanguageModal from "./DeleteLanguageModal"
-import UpdateLanguageModal from "./UpdateLanguageModal";
+import DeleteLanguageModal from "@/features/languages/globalPageModals/DeleteLanguageModal"
+import UpdateLanguageModal from "@/features/languages/globalPageModals/UpdateLanguageModal";
 
 const GLOBAL_LANGUAGES: GlobalLanguage[] = [];
 
@@ -71,10 +71,11 @@ export default function LanguagesPage() {
       }
     ], [])
 
-    if (loading) return <div className="px-6">Loading languages...</div>
-
     return(
-        loading ? <div className="px-6">Loading skills</div> :
-                 <Table<GlobalLanguage> data={displayedLanguages} columns={columns} />
+        loading ? 
+          <div className="text-center py-26 text-gray-500 font-medium">
+            Loading Languages...
+          </div> :
+          <Table<GlobalLanguage> data={displayedLanguages} columns={columns} />
     )
 }

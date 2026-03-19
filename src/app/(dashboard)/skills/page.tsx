@@ -9,8 +9,8 @@ import { useSearchStore } from "@/store/useSearchStore";
 import ActionMenu from "@/components/table/ActionMenu";
 import { useMemo } from "react";
 import useDebounce from "@/components/search/useDebounce";
-import UpdateSkillModal from "./UpdateSkillModal";
-import DeleteSkillModal from "./DeleteSkillModal";
+import UpdateSkillModal from "@/features/skills/globalPageModals/UpdateSkillModal";
+import DeleteSkillModal from "@/features/skills/globalPageModals/DeleteSkillModal";
 
 const GLOBAL_SKILL: GlobalSkill[] = [];
 
@@ -66,6 +66,9 @@ export default function SkillsPage() {
     },
   ], []);
 
-  return loading ? <div className="px-6">Loading skills</div> :
-         <Table<GlobalSkill> data={displayedSkills} columns={columns} />
+  return loading ?           
+    <div className="text-center py-26 text-gray-500 font-medium">
+      Loading Skills...
+    </div> :
+    <Table<GlobalSkill> data={displayedSkills} columns={columns} />
 }

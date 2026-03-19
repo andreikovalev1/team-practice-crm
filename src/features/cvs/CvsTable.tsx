@@ -55,7 +55,7 @@ export function CvsTable(props: CvsTableProps) {
           {props.onCreateClick && (
             <button
               onClick={props.onCreateClick}
-              className="flex-shrink-0 flex items-center justify-center w-10 h-10 md:w-auto md:px-5 md:py-2 text-red-600 bg-red-50 dark:bg-red-900/20 rounded-full hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors font-medium text-sm uppercase"
+              className="flex-shrink-0 flex items-center justify-center w-10 h-10 md:w-auto md:px-5 md:py-2 text-red-700 dark:bg-red-900/20 rounded-full hover:bg-red-50 dark:hover:bg-red-900/40 transition-colors font-medium text-sm uppercase"
             >
               <Plus size={20} className="md:hidden" />
               <span className="hidden md:flex items-center gap-2">

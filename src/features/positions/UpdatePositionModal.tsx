@@ -7,84 +7,75 @@ import Modal from "@/components/ui/Modal";
 import FloatingInput from "@/components/FloatingInput";
 import OvalButton from "@/components/button/OvalButton";
 
-import { UPDATE_DEPARTMENT_MUTATION } from "@/features/departments/graphql";
-import { GlobalDepartment } from "@/features/departments/types";
+import { UPDATE_POSITION_MUTATION } from "@/features/positions/graphql";
+import { GlobalPosition } from "@/features/positions/types";
 
-interface UpdateDepartmentModalProps {
+interface UpdatePositionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  department: GlobalDepartment | null;
+  position: GlobalPosition | null;
 }
 
-export default function UpdateDepartmentModal({
-  isOpen,
-  onClose,
-  department,
-}: UpdateDepartmentModalProps) {
-  const [prevDepartmentId, setPrevDepartmentId] = useState<string | undefined>(undefined);
+export default function UpdatePositionModal({ isOpen, onClose, position }: UpdatePositionModalProps) {
+  const [prevPositionId, setPrevLPositionId] = useState<string | undefined>(undefined);
   const [prevIsOpen, setPrevIsOpen] = useState(false);
 
   const [name, setName] = useState("");
 
-  if (department?.id !== prevDepartmentId || isOpen !== prevIsOpen) {
-    setPrevDepartmentId(department?.id);
+  if (position?.id !== prevPositionId || isOpen !== prevIsOpen) {
+    setPrevLPositionId(position?.id);
     setPrevIsOpen(isOpen);
 
-    if (isOpen && department) {
-      setName(department.name || "");
+    if (isOpen && position) {
+      setName(position.name || "");
     }
   }
 
-  const [updateDepartment, { loading: isUpdating }] = useMutation(
-    UPDATE_DEPARTMENT_MUTATION,
-    {
-      refetchQueries: ["GetGlobalDepartments"],
-    }
-  );
+  const [updatePosition, { loading: isUpdating }] = useMutation(UPDATE_POSITION_MUTATION, {
+    refetchQueries: ["GetGlobalPositions"],
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!department || !name) {
+    if (!position || !name) {
       toast.error("Please fill all fields");
       return;
     }
 
-    const loadingToast = toast.loading("Updating department...");
+    const loadingToast = toast.loading("Updating position...");
 
     try {
-      await updateDepartment({
+      await updatePosition({
         variables: {
-          department: {
-            departmentId: department.id,
+          position: {
+            positionId: position.id,
             name,
           },
         },
       });
 
-      toast.success("Department updated successfully!", { id: loadingToast });
+      toast.success("Position updated successfully!", { id: loadingToast });
       onClose();
     } catch (error: unknown) {
-      const msg =
-        error instanceof Error
-          ? error.message
-          : "Failed to update department";
+      const msg = error instanceof Error ? error.message : "Failed to update position";
       toast.error(msg, { id: loadingToast });
     }
   };
 
-  const isChanged = department && name !== department.name;
+  const isChanged =
+    position &&
+    (name !== position.name);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Edit Department">
+    <Modal isOpen={isOpen} onClose={onClose} title="Edit Position">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6 mt-4">
         <FloatingInput
-          label="Department Name"
+          label="Position Name"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           disabled={isUpdating}
-          required
         />
 
         <div className="flex flex-col sm:flex-row gap-4 w-full">

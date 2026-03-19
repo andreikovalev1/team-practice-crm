@@ -66,7 +66,7 @@ export default function UpdateGlobalSkillModal({ isOpen, onClose, skill }: Updat
     }
 
     if (!skill || !name || !finalCategoryId) {
-      toast.error("Please fill all fields correctly");
+      toast.error("Please fill all fields");
       return;
     }
 
@@ -103,7 +103,6 @@ export default function UpdateGlobalSkillModal({ isOpen, onClose, skill }: Updat
           value={name}
           onChange={(e) => setName(e.target.value)}
           disabled={isLoading}
-          required
         />
 
         <FloatingSelect

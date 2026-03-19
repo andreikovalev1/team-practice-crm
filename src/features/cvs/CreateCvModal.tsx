@@ -22,14 +22,25 @@ export function CreateCvModal({ isOpen, onClose, onSubmit, isCreating }: CreateC
     if (!name.trim()) return;
     await onSubmit(name, description, education);
     
-    // Сбрасываем форму
+    setName("");
+    setEducation("");
+    setDescription("");
+  };
+
+  const resetForm = () => {
     setName("");
     setEducation("");
     setDescription("");
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Create CV">
+    <Modal 
+      isOpen={isOpen} 
+      onClose={() => {
+        resetForm();
+        onClose();
+      }} 
+      title="Create CV">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6 mt-8">
         
         <FloatingInput 
@@ -45,7 +56,6 @@ export function CreateCvModal({ isOpen, onClose, onSubmit, isCreating }: CreateC
           onChange={(e) => setEducation(e.target.value)}
         />
 
-        {/* Для Description используем похожую стилистику */}
         <div className="relative w-full">
           <textarea
             value={description}
@@ -64,14 +74,17 @@ export function CreateCvModal({ isOpen, onClose, onSubmit, isCreating }: CreateC
             text="CANCEL"
             type="button"
             variant="ovalOutline"
-            onClick={onClose}
+            onClick={() => {
+              resetForm();
+              onClose();
+            }}
             disabled={isCreating}
             className="w-full"
           />
           <OvalButton
             text={isCreating ? "CREATING..." : "CREATE"}
             type="submit"
-            disabled={isCreating || !name.trim()}
+            disabled={isCreating || !name.trim() || !education.trim() || !description.trim()}
             className="w-full"
            />
         </div>

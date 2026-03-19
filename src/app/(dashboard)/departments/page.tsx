@@ -9,8 +9,8 @@ import { useSearchStore } from "@/store/useSearchStore";
 import ActionMenu from "@/components/table/ActionMenu";
 import { useMemo } from "react";
 import useDebounce from "@/components/search/useDebounce";
-import UpdateDepartmentModal from "./UpdateDepatmentModal";
-import DeleteDepartmentModal from "./DeleteDepatmentModal";
+import UpdateDepartmentModal from "@/features/departments/UpdateDepatmentModal";
+import DeleteDepartmentModal from "@/features/departments/DeleteDepatmentModal";
 
 const GLOBAL_DEPARTMENT: GlobalDepartment[] = [];
 
@@ -64,6 +64,9 @@ export default function PositionsPage() {
     },
   ], []);
 
-  return loading ? <div className="px-6">Loading departments</div> :
-         <Table<GlobalDepartment> data={displayeddDpartments} columns={columns} />
+  return loading ?         
+    <div className="text-center py-26 text-gray-500 font-medium">
+      Loading Departments...
+    </div> :
+    <Table<GlobalDepartment> data={displayeddDpartments} columns={columns} />
 }

@@ -84,7 +84,6 @@ export default function UpdateLanguageModal({ isOpen, onClose, language }: Updat
           value={name}
           onChange={(e) => setName(e.target.value)}
           disabled={isUpdating}
-          required
         />
 
         <FloatingInput
@@ -93,7 +92,6 @@ export default function UpdateLanguageModal({ isOpen, onClose, language }: Updat
           value={nativeName}
           onChange={(e) => setNativeName(e.target.value)}
           disabled={isUpdating}
-          required
         />
 
         <FloatingInput
@@ -102,7 +100,6 @@ export default function UpdateLanguageModal({ isOpen, onClose, language }: Updat
           value={iso2}
           onChange={(e) => setIso2(e.target.value)}
           disabled={isUpdating}
-          required
         />
 
         <div className="flex flex-col sm:flex-row gap-4 w-full">
