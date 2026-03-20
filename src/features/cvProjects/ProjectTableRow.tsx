@@ -29,15 +29,14 @@ export function ProjectTableRow({ project, isReadOnly, onDeleteClick, onEditClic
   return (
     <tbody 
       onClick={() => !isReadOnly && onEditClick(project)}
-      className="border-b border-gray-200 hover:bg-zinc-50/50 transition-colors cursor-pointer group"
+      className="border-b border-gray-200 hover:bg-zinc-50/50 transition-colors cursor-pointer"
     >
       <tr className="[&>td]:py-4 [&>td]:px-4 text-sm md:text-base font-medium text-gray-900">
-        <td className="w-[30%] min-w-[200px] align-top">{project.project.name}</td>
-        <td className="w-[25%] min-w-[150px] align-top">{project.project.domain}</td>
-        <td className="w-[20%] min-w-[120px] align-top">{formatDate(project.start_date)}</td>
-        <td className="w-[20%] min-w-[120px] align-top">{formatDate(project.end_date)}</td>
-        
-        <td className="w-[5%] min-w-[50px] align-top text-right" onClick={(e) => e.stopPropagation()}>
+        <td className="w-[45%] md:w-[30%] min-w-[140px] align-top">{project.project.name}</td>
+        <td className="w-[45%] md:w-[25%] min-w-[140px] align-top text-gray-600">{project.project.domain}</td>
+        <td className="hidden md:table-cell md:w-[20%] min-w-[120px] align-top">{formatDate(project.start_date)}</td>
+        <td className="hidden md:table-cell md:w-[20%] min-w-[120px] align-top">{formatDate(project.end_date)}</td>
+        <td className="w-[10%] md:w-[5%] min-w-[40px] align-top text-right" onClick={(e) => e.stopPropagation()}>
           {!isReadOnly && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

@@ -25,25 +25,21 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
     skip: !!projectsFromStore, 
   });
 
-  // 2. Синхронизируем стор Apollo -> Zustand при получении данных
   useEffect(() => {
     if (data?.cv?.projects) {
       setCvProjects(cvId, data.cv.projects);
     }
   }, [data, cvId, setCvProjects]);
 
-  // 3. Состояние загрузки (только если данных еще нет в сторе)
   if (loading && !projectsFromStore) {
     return <div className="py-20 text-center text-gray-500 animate-pulse">Loading projects...</div>;
   }
 
-  // 4. Ошибка (опционально)
   if (error && !projectsFromStore) {
     return <div className="py-20 text-center text-red-500">Error loading projects: {error.message}</div>;
   }
 
   const displayProjects = projectsFromStore || [];
-
   const filteredProjects = displayProjects.filter((p) => {
     const name = p.project?.name || "";
     const domain = p.project?.domain || "";
@@ -72,7 +68,7 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
       <AddProjectModal 
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        onAdd={handleAddProject} // Эта функция уже есть в твоем useProjectsLogic
+        onAdd={handleAddProject}
       />
     </>
   );
