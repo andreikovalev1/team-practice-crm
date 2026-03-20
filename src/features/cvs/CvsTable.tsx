@@ -45,7 +45,7 @@ export function CvsTable(props: CvsTableProps) {
     <div className="w-full">
       {pathname === ROUTES.USERCVS(props.userId || '') && (
         <div className="flex flex-row gap-4 items-center w-full mb-6">
-          <div className="flex-1">
+          <div>
             <SearchInput
               value={props.searchTerm || ''}
               onChange={props.onSearchChange ||(() => {})}

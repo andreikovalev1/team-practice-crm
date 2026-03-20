@@ -7,6 +7,7 @@ import { ProjectsTable } from "./ProjectsTable";
 import { useProjectsLogic } from "./useProjectsLogic";
 import { CvProject, GetCvProjectsResponse } from "./types";
 import { GET_CV_PROJECTS } from "./graphql";
+import { AddProjectModal } from "./AddProjectModal";
 
 interface CvProjectsContainerProps {
   cvId: string;
@@ -15,16 +16,10 @@ interface CvProjectsContainerProps {
 
 export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsContainerProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // Zustand стор
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const projectsFromStore = useCvStore((state) => state.cvs[cvId]?.projects);
   const setCvProjects = useCvStore((state) => state.setCvProjects);
-  
-  // Бизнес-логика (мутации)
-  const { handleRemoveProject, isMutating } = useProjectsLogic(cvId);
-
-  // 1. Запрос данных с сервера
-  // Сработает только если projectsFromStore === undefined (skip: !!projectsFromStore)
+  const { handleRemoveProject, handleAddProject, isMutating } = useProjectsLogic(cvId);
   const { data, loading, error } = useQuery<GetCvProjectsResponse>(GET_CV_PROJECTS, {
     variables: { cvId },
     skip: !!projectsFromStore, 
@@ -49,10 +44,12 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
 
   const displayProjects = projectsFromStore || [];
 
-  const filteredProjects = displayProjects.filter((p) =>
-    p.project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.project.domain.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProjects = displayProjects.filter((p) => {
+    const name = p.project?.name || "";
+    const domain = p.project?.domain || "";
+    const term = searchTerm.toLowerCase();
+    return name.toLowerCase().includes(term) || domain.toLowerCase().includes(term);
+  });
 
   const onDelete = async (cvProj: CvProject) => {
     if (confirm(`Remove ${cvProj.project.name}?`)) {
@@ -61,14 +58,22 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
   };
 
   return (
-    <ProjectsTable 
-      projects={filteredProjects}
-      isReadOnly={isReadOnly || isMutating}
-      searchTerm={searchTerm}
-      onSearchChange={setSearchTerm}
-      onAddClick={() => console.log("Open Add Modal")}
-      onDeleteProject={onDelete}
-      onEditProject={(p) => console.log("Open Edit Modal", p)}
-    />
+    <>
+      <ProjectsTable 
+        projects={filteredProjects}
+        isReadOnly={isReadOnly || isMutating}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        onAddClick={() => setIsAddModalOpen(true)}
+        onDeleteProject={onDelete}
+        onEditProject={(p) => console.log("Open Edit Modal", p)}
+      />
+
+      <AddProjectModal 
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onAdd={handleAddProject} // Эта функция уже есть в твоем useProjectsLogic
+      />
+    </>
   );
 }

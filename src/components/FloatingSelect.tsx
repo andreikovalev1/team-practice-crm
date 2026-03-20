@@ -60,7 +60,7 @@ export default function FloatingSelect({
         tabIndex={0}
         className={`
           relative w-full border duration-200 cursor-pointer flex items-center justify-between
-          bg-transparent px-3 py-3 text-sm text-gray-900
+          bg-transparent px-3 py-3 text-sm text-gray-900 md:text-base
           ${disabled ? "opacity-50 cursor-not-allowed border-gray-300" : ""}
           ${isFocused ? "border-red-700" : "border-gray-300"} // красная граница при фокусе
         `}
@@ -79,7 +79,7 @@ export default function FloatingSelect({
         id={`${selectId}-label`}
         className={`
           absolute left-3 bg-white px-1 transition-all duration-200 pointer-events-none z-5
-          ${isOpen || value ? "-top-3 text-sm" : "top-3.5 text-base"}
+          ${isOpen || value ? "-top-3 text-sm" : "top-3.5 text-sm md:text-base"}
           ${isFocused ? "text-[#C10007]" : "text-gray-500"}
         `}
       >

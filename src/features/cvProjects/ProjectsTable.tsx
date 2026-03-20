@@ -43,7 +43,6 @@ export function ProjectsTable({
           value={searchTerm} 
           onChange={onSearchChange} 
           placeholder="Search"
-          className="w-full md:max-w-[320px]"
         />
         
         {!isReadOnly && (

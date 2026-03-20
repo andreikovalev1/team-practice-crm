@@ -45,6 +45,7 @@ export const ADD_CV_PROJECT = gql`
     addCvProject(project: $project) {
       id
       projects {
+        id
         start_date
         end_date
         roles
@@ -64,17 +65,18 @@ export const UPDATE_CV_PROJECT = gql`
     updateCvProject(project: $project) {
       id
       projects {
+        id
         start_date
         end_date
         roles
         responsibilities
         project {
-          id
-          name
+          ...ProjectFields
         }
       }
     }
   }
+   ${PROJECT_FIELDS} 
 `;
 
 // Удаление проекта из CV
@@ -96,6 +98,7 @@ export const GET_CV_PROJECTS = gql`
     cv(cvId: $cvId) {
       id
       projects {
+        id
         start_date
         end_date
         roles
