@@ -53,6 +53,7 @@ export const GET_CV_BY_ID_QUERY = gql`
       education
       user {
         id
+        position_name
         profile {
           first_name
           last_name
