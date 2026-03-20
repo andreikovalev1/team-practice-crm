@@ -63,10 +63,10 @@ export function AddProjectModal({ isOpen, onClose, onAdd }: AddProjectModalProps
   })) || [];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Add project">
+    <Modal isOpen={isOpen} onClose={onClose} title="Add project" className="max-w-2xl">
       <form 
         onSubmit={handleSubmit} 
-        className="space-y-6 max-h-[70vh] md:max-h-none overflow-y-auto px-1 pb-2"
+        className="space-y-6 max-h-[70vh] md:max-h-none overflow-y-auto px-4 pb-2"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
           <FloatingSelect
@@ -148,7 +148,7 @@ export function AddProjectModal({ isOpen, onClose, onAdd }: AddProjectModalProps
             onChange={(e) => setCurrentResp(e.target.value)}
             onKeyDown={handleAddResponsibility}
           />
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mt-2">
             {responsibilities.map((resp, idx) => (
               <span key={idx} className="px-3 py-1 bg-red-50 text-red-700 rounded-full text-xs flex items-center gap-2 border border-red-100">
                 {resp}
@@ -160,7 +160,7 @@ export function AddProjectModal({ isOpen, onClose, onAdd }: AddProjectModalProps
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-end gap-4 pt-4 bg-white sticky bottom-0">
+        <div className="flex flex-col md:flex-row justify-end gap-4 pt-3 bg-white sticky bottom-0">
             <OvalButton text="CANCEL" variant="ovalOutline" type="button" onClick={onClose} className="w-full" />
             <OvalButton text="ADD" variant="oval" type="submit" className="w-full" />
         </div>

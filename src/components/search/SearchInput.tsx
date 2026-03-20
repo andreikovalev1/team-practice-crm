@@ -18,7 +18,7 @@ export default function SearchInput({
 }: SearchInputProps) {
   return (
     <div
-      className={`max-w-[320px] h-10 rounded-[40px] border border-gray-300 bg-white flex items-center px-4 ${className}`}
+      className={`w-full max-w-[220px] h-10 rounded-[40px] border border-gray-300 bg-white flex items-center px-4 ${className}`}
     >
       <IoIosSearch className="text-zinc-400 mr-2" size={18} />
 
