@@ -4,8 +4,6 @@ import { GoArrowUp } from "react-icons/go"
 import { TableProps } from "./types"
 import { useState } from "react";
 import { useAdmin } from "@/lib/useAdmin";
-import { MdArrowForwardIos } from "react-icons/md"
-import Link from "next/link";
 import { usePathname } from "next/navigation"
 import { useMemo } from "react";
 
@@ -89,16 +87,6 @@ export default function Table<T extends { id: string }>({ data, columns }: Table
                                     {col.nestedItem ? col.nestedItem(item) : String(item[col.key as keyof T] || '')}
                                 </td>
                                 ))}
-                                {!isAdmin && pathname.includes('cvs') && (
-                                <td className="px-4 py-4">
-                                    <Link
-                                    href={`/cvs/${item.id}`}
-                                    className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-black transition-colors"
-                                    >
-                                    <MdArrowForwardIos size={14} />
-                                    </Link>
-                                </td>
-                                )}
                             </tr>
                             ))
                         )}

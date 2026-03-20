@@ -8,6 +8,7 @@ import { ROUTES } from "@/app/configs/routesConfig";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, LogOut, User as UserIcon } from "lucide-react";
 import { useUserStore } from "@/store/useUserStore";
+import { useAdmin } from "@/lib/useAdmin";
 import {
   Tooltip,
   TooltipContent,
@@ -28,6 +29,7 @@ export default function Sidebar() {
   const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const isAdmin = useAdmin();
 
   useEffect(() => {
     setIsMounted(true);
@@ -45,6 +47,11 @@ export default function Sidebar() {
     router.push('/auth/login');
   };
 
+  const visibleNavItems = NAV_ITEMS.filter(item => {
+    if (item.isAdminOnly && !isAdmin) return false;
+    return true;
+  });
+
   return (
     <TooltipProvider delayDuration={300}>
       <aside 
@@ -54,7 +61,7 @@ export default function Sidebar() {
         )}
       >
         <nav className="flex-1 py-11 space-y-[14px]">
-          {NAV_ITEMS.map((item) => {
+          {visibleNavItems.map((item) => {
             const path = item.href;
             const isActive = pathname === path;
             return (
@@ -193,7 +200,7 @@ export default function Sidebar() {
       {/* МОБИЛЬНОЕ МЕНЮ */}
       <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white flex justify-between items-center px-4 py-2 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
         <div className="flex gap-2 flex-1 items-center">
-          {NAV_ITEMS.slice(0, 3).map((item) => {
+          {visibleNavItems.slice(0, 3).map((item) => {
             const path = item.href;
             const isActive = pathname === path;
             

@@ -42,31 +42,32 @@ export default function LanguagesPage() {
         key: "actions",
         label: "",
         nestedItem: (language: GlobalLanguage) => (
-          <ActionMenu
-            row={language}
-            entityName="Language"
-            renderModal={(row, close, action) => {
-              if (action === "update") {
-                return (
-                  <UpdateLanguageModal
-                    isOpen={true}
-                    onClose={close}
-                    language={row}
-                  />
-                );
-              }
-
-              if (action === "delete") {
-                return (
-                  <DeleteLanguageModal
-                    isOpen={true}
-                    onClose={close}
-                    language={row}
-                  />
-                );
-              }
-            }}
-          />
+          <div className="flex justify-end">
+            <ActionMenu
+              row={language}
+              entityName="Language"
+              renderModal={(row, close, action) => {
+                if (action === "update") {
+                  return (
+                    <UpdateLanguageModal
+                      isOpen={true}
+                      onClose={close}
+                      language={row}
+                    />
+                  );
+                }
+                if (action === "delete") {
+                  return (
+                    <DeleteLanguageModal
+                      isOpen={true}
+                      onClose={close}
+                      language={row}
+                    />
+                  );
+                }
+              }}
+            />
+          </div>
         )
       }
     ], [])

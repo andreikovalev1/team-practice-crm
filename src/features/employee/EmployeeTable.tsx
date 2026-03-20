@@ -133,7 +133,9 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
                 <td className="px-4 py-4">{employee.position_name}</td>
                 <td className="px-4 py-4 text-right">
                   {isAdmin ? (
-                    <AdminActionMenu employee={employee} />
+                    <div className="flex justify-end">
+                      <AdminActionMenu employee={employee} />
+                    </div>
                   ) : (
                     <Link href={ROUTES.PROFILE(employee.id)} className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-black transition-colors">
                       <MdArrowForwardIos size={14} />

@@ -37,31 +37,32 @@ export default function SkillsPage() {
       key: "actions",
       label: "",
       nestedItem: (skill: GlobalSkill) => (
-        <ActionMenu
-          row={skill}
-          entityName="Skill"
-          renderModal={(row, close, action) => {
-            if (action === "update") {
-              return (
-                <UpdateSkillModal
-                  isOpen={true}
-                  onClose={close}
-                  skill={row}
-                />
-              );
-            }
-
-            if (action === "delete") {
-              return (
-                <DeleteSkillModal
-                  isOpen={true}
-                  onClose={close}
-                  skill={row}
-                />
-              );
-            }
-          }}
-        />
+        <div className="flex justify-end">
+          <ActionMenu
+            row={skill}
+            entityName="Skill"
+            renderModal={(row, close, action) => {
+              if (action === "update") {
+                return (
+                  <UpdateSkillModal
+                    isOpen={true}
+                    onClose={close}
+                    skill={row}
+                  />
+                );
+              }
+              if (action === "delete") {
+                return (
+                  <DeleteSkillModal
+                    isOpen={true}
+                    onClose={close}
+                    skill={row}
+                  />
+                );
+              }
+            }}
+          />
+        </div>
       ),
     },
   ], []);
