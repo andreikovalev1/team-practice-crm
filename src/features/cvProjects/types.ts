@@ -65,5 +65,8 @@ export interface GetCvProjectsResponse {
   cv: {
     id: string;
     projects: CvProject[];
+    user: {
+        id: string;
+    };
   };
 }

@@ -17,7 +17,7 @@ export function useProfileUser() {
 
   const { user, profileUserId, isOwnProfile } = useIsOwnProfile();
 
-  const { data, loading } = useQuery<GetUserByIdResponse>(
+  const { data, loading: queryLoading } = useQuery<GetUserByIdResponse>(
     GET_USER_BY_ID_QUERY,
     {
       variables: { userId: profileUserId },
@@ -26,6 +26,7 @@ export function useProfileUser() {
   );
 
   const profileUser = isOwnProfile ? user : data?.user;
+  const loading = isOwnProfile ? false : queryLoading;
 
   return {
     isClient,

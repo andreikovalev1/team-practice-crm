@@ -1,16 +1,16 @@
 import { create } from 'zustand';
-import { CvProject } from '@/features/cvProjects/types'; // Твой тип
+import { CvProject } from '@/features/cvProjects/types';
 
 interface CvData {
   id: string;
   projects: CvProject[];
-  // Сюда потом добавим skills: string[], info и т.д.
+  userId?: string;
 }
 
 interface CvState {
   cvs: Record<string, CvData>;
   
-  setCvProjects: (cvId: string, projects: CvProject[]) => void;
+  setCvProjects: (cvId: string, projects: CvProject[], userId?: string) => void;
   updateCvProject: (cvId: string, project: CvProject) => void;
   removeCvProject: (cvId: string, projectId: string) => void;
   clearCv: (cvId: string) => void;
@@ -19,19 +19,18 @@ interface CvState {
 export const useCvStore = create<CvState>((set) => ({
   cvs: {},
 
-  // Установка всех проектов (после загрузки с сервера)
-  setCvProjects: (cvId, projects) => set((state) => ({
+  setCvProjects: (cvId, projects, userId) => set((state) => ({
     cvs: {
       ...state.cvs,
       [cvId]: {
         ...state.cvs[cvId],
         id: cvId,
-        projects: projects
+        projects,
+        userId: userId ?? state.cvs[cvId]?.userId,
       }
     }
   })),
 
-  // Обновление одного проекта внутри CV
   updateCvProject: (cvId, updatedProject) => set((state) => {
     const currentCv = state.cvs[cvId];
     if (!currentCv) return state;
@@ -49,7 +48,6 @@ export const useCvStore = create<CvState>((set) => ({
     };
   }),
 
-  // Удаление проекта
   removeCvProject: (cvId, projectId) => set((state) => {
     const currentCv = state.cvs[cvId];
     if (!currentCv) return state;

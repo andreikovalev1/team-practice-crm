@@ -15,7 +15,6 @@ export function useCvsLogic(userId?: string, mode: "user" | "global" = "user") {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  // --- Запросы ---
   const { data: userData, loading: isLoadingUser } = useQuery<GetUserCvsResponse>(
     GET_USER_CVS_QUERY,
     { variables: { userId }, skip: mode !== "user" || !userId }
@@ -26,7 +25,6 @@ export function useCvsLogic(userId?: string, mode: "user" | "global" = "user") {
     { skip: mode !== "global" }
   );
 
-  // --- Мутации ---
   const [createCvMutation, { loading: isCreating }] = useMutation<CreateCvResponse, { cv: CreateCvInput }>(
     CREATE_CV_MUTATION,
     { refetchQueries: [{ query: mode === "user" ? GET_USER_CVS_QUERY : GET_GLOBAL_CVS_QUERY, variables: mode === "user" ? { userId } : undefined }] }
@@ -36,17 +34,15 @@ export function useCvsLogic(userId?: string, mode: "user" | "global" = "user") {
     DELETE_CV_MUTATION
   );
 
-  // --- Нормализация CV для таблицы ---
 const cvs: CvForTable[] = useMemo(() => {
   if (mode === "user") {
-    // user CVs не имеют user поля, поэтому берём id/email из user
     return (userData?.user?.cvs || []).map(cv => ({
       ...cv,
       userId: userData?.user.id,
       userEmail: userData?.user.email,
     }));
   } else {
-    // global CVs имеют поле user
+
     return (globalData?.cvs || []).map(cv => ({
       id: cv.id,
       name: cv.name,
@@ -73,7 +69,6 @@ const cvs: CvForTable[] = useMemo(() => {
     });
   }, [cvs, searchTerm, sortDirection]);
 
-  // --- Хэндлеры ---
   const handleToggleSort = () => setSortDirection(prev => (prev === "asc" ? "desc" : "asc"));
 
   const deleteCv = async (cvId: string) => {
@@ -103,7 +98,6 @@ const cvs: CvForTable[] = useMemo(() => {
       toast.error("Failed to create CV", { id: toastId });
     }
   };
-
 
   return {
     cvs: filteredAndSortedCvs,

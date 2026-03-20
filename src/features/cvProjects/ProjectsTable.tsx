@@ -13,6 +13,7 @@ interface ProjectsTableProps {
   projects: CvProject[];
   isReadOnly: boolean;
   searchTerm: string;
+  ownerId?: string;
   onSearchChange: (val: string) => void;
   onAddClick: () => void;
   onDeleteProject: (p: CvProject) => void;
@@ -26,9 +27,9 @@ type SortConfigType = {
 } | null;
 
 export function ProjectsTable({ 
-  projects, isReadOnly, searchTerm, onSearchChange, onAddClick, onDeleteProject, onEditProject 
+  projects, isReadOnly, searchTerm, onSearchChange, onAddClick, ownerId, onDeleteProject, onEditProject 
 }: ProjectsTableProps) {
-  const { isOwnProfile } = useIsOwnProfile();
+  const { isOwnProfile } = useIsOwnProfile(ownerId);
   const canModify = !isReadOnly && isOwnProfile;
   const [sortConfig, setSortConfig] = useState<SortConfigType>(null);
   

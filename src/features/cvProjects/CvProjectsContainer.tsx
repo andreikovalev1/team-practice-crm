@@ -12,14 +12,20 @@ import { AddProjectModal } from "./AddProjectModal";
 interface CvProjectsContainerProps {
   cvId: string;
   isReadOnly?: boolean;
+  // ❗ Я убрал ownerId отсюда, он больше не нужен
 }
 
 export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsContainerProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  
   const projectsFromStore = useCvStore((state) => state.cvs[cvId]?.projects);
+  // ❗ Пробуем достать ownerId из стора (если данные уже были закэшированы)
+  const storeOwnerId = useCvStore((state) => state.cvs[cvId]?.userId);
+  
   const setCvProjects = useCvStore((state) => state.setCvProjects);
   const { handleRemoveProject, handleAddProject, isMutating } = useProjectsLogic(cvId);
+  
   const { data, loading, error } = useQuery<GetCvProjectsResponse>(GET_CV_PROJECTS, {
     variables: { cvId },
     skip: !!projectsFromStore, 
@@ -27,7 +33,8 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
 
   useEffect(() => {
     if (data?.cv?.projects) {
-      setCvProjects(cvId, data.cv.projects);
+      // Сохраняем и projects, и userId
+      setCvProjects(cvId, data.cv.projects, data.cv.user?.id);
     }
   }, [data, cvId, setCvProjects]);
 
@@ -38,6 +45,10 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
   if (error && !projectsFromStore) {
     return <div className="py-20 text-center text-red-500">Error loading projects: {error.message}</div>;
   }
+
+  // ❗ Вот тут мы вычисляем реального владельца. 
+  // Либо из свежего ответа GraphQL, либо из кэша стора.
+  const actualOwnerId = data?.cv?.user?.id || storeOwnerId;
 
   const displayProjects = projectsFromStore || [];
   const filteredProjects = displayProjects.filter((p) => {
@@ -63,6 +74,8 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
         onAddClick={() => setIsAddModalOpen(true)}
         onDeleteProject={onDelete}
         onEditProject={(p) => console.log("Open Edit Modal", p)}
+        // ❗ Передаем вычисленный ID в таблицу
+        ownerId={actualOwnerId}
       />
 
       <AddProjectModal 

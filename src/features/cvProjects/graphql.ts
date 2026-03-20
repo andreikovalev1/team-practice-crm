@@ -97,6 +97,9 @@ export const GET_CV_PROJECTS = gql`
   query GetCvProjects($cvId: ID!) {
     cv(cvId: $cvId) {
       id
+      user {
+        id
+      }
       projects {
         id
         start_date

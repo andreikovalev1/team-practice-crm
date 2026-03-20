@@ -36,7 +36,6 @@ export function useProfileFormLogic(user: User, isReadOnly: boolean) {
   const [uploadAvatar] = useMutation<UploadAvatarResponse>(UPLOAD_AVATAR_MUTATION);
   const [updateUser] = useMutation<UpdateUserResponse>(UPDATE_USER_MUTATION);
 
-  // Проверка на изменения
   const isDirty = useMemo(() => (
     firstName !== (user.profile?.first_name || "") ||
     lastName !== (user.profile?.last_name || "") ||
@@ -69,7 +68,6 @@ export function useProfileFormLogic(user: User, isReadOnly: boolean) {
         }
       }
 
-      // 2. Обновление профиля
       const profileRes = await updateProfile({
         variables: {
           profile: {
@@ -80,7 +78,6 @@ export function useProfileFormLogic(user: User, isReadOnly: boolean) {
         },
       });
 
-      // 3. Обновление системных данных (Департамент/Должность)
       const selectedDeptId = deptData?.departments.find((d) => d.name === department)?.id;
       const selectedPosId = posData?.positions.find((p) => p.name === position)?.id;
 
@@ -104,7 +101,6 @@ export function useProfileFormLogic(user: User, isReadOnly: boolean) {
         }
       }
 
-      // 4. Синхронизация со стором (ТОЛЬКО если это свой профиль)
       if (isOwnProfile) {
         setLogin({
           ...user,
