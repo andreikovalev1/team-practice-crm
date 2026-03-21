@@ -62,10 +62,10 @@ export default function FloatingSelect({
           relative w-full border duration-200 cursor-pointer flex items-center justify-between
           bg-transparent px-3 py-3 text-sm text-gray-900 md:text-base
           ${disabled ? "opacity-50 cursor-not-allowed border-gray-300" : ""}
-          ${isFocused ? "border-red-700" : "border-gray-300"} // красная граница при фокусе
+          ${isFocused ? "border-red-700" : "border-gray-300"}
         `}
       >
-        <span className={`truncate ${value ? "text-gray-900" : "text-transparent"}`}>
+        <span className={`truncate ${value ? "text-gray-900 dark:text-[#ECECED]" : "text-transparent"}`}>
           {value || "Placeholder"}
         </span>
 
@@ -78,7 +78,7 @@ export default function FloatingSelect({
       <label
         id={`${selectId}-label`}
         className={`
-          absolute left-3 bg-white px-1 transition-all duration-200 pointer-events-none z-5
+          absolute left-3 bg-white px-1 transition-all duration-200 pointer-events-none z-5 dark:bg-[#353535]
           ${isOpen || value ? "-top-3 text-sm" : "top-3.5 text-sm md:text-base"}
           ${isFocused ? "text-[#C10007]" : "text-gray-500"}
         `}
@@ -87,7 +87,7 @@ export default function FloatingSelect({
       </label>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-2 bg-white border border-gray-100 rounded-lg shadow-xl max-h-56 overflow-y-auto animate-in fade-in zoom-in-95 duration-100">
+        <div className="absolute z-10 w-full mt-2 bg-white dark:bg-[#353535] border border-gray-100 rounded-lg shadow-xl max-h-56 overflow-y-auto animate-in fade-in zoom-in-95 duration-100">
           {options.length > 0 ? (
             options.map((opt) => (
               <div
@@ -95,7 +95,7 @@ export default function FloatingSelect({
                 onClick={() => handleSelect(opt.name)}
                 className={`
                   px-4 py-2.5 text-sm cursor-pointer transition-colors text-left
-                  ${value === opt.name ? "bg-red-50 text-[#C8372D] font-medium" : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"}
+                  ${value === opt.name ? "bg-red-50 text-[#C8372D] dark:bg-[#454545] font-medium" : "text-gray-700 dark:text-[#ECECED] dark:hover:bg-[#454545] hover:bg-gray-50 hover:text-gray-900"}
                 `}
               >
                 {opt.name}

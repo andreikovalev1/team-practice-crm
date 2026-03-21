@@ -202,7 +202,7 @@ export default function AuthForm({ mode }: AuthProp) {
                         : ROUTES.LOGIN
                     )
                   }}
-                  className="text-gray-500 cursor-pointer uppercase hover:text-gray-700"
+                  className="text-gray-500 cursor-pointer uppercase hover:text-gray-700 dark:text-[#ECECED] dark:hover:text-black"
                 >
                   {feature}
                 </button>

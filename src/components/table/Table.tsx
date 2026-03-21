@@ -78,7 +78,7 @@ export default function Table<T extends { id: string }>({ data, columns }: Table
                             </tr>
                         ) : (
                             sortedData.map(item => (
-                            <tr key={item.id} className="border-t border-zinc-200 hover:bg-zinc-50 transition">
+                            <tr key={item.id} className="border-t border-zinc-200 hover:bg-zinc-50 dark:hover:bg-[#454545] transition">
                                 {visibleColumns.map(col => (
                                 <td
                                     key={`${item.id}-${String(col.key)}`}

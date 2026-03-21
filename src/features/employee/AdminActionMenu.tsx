@@ -100,8 +100,8 @@ export default function AdminActionMenu({ employee }: AdminActionMenuProps) {
         title="Delete User"
       >
         <div className="flex flex-col gap-4">
-          <p className="text-gray-600 text-sm leading-relaxed flex justify-start">
-            Are you sure you want to delete <span className="font-semibold text-black ml-1">{fullName || employee.email}</span>?
+          <p className="text-gray-600 text-sm leading-relaxed flex justify-start dark:text-[#ECECED]">
+            Are you sure you want to delete <span className="font-semibold text-black ml-1 dark:text-[#ECECED]">{fullName || employee.email}</span>?
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 mt-3 w-full">

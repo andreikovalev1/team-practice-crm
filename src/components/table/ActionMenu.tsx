@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { MoreVertical, Trash2, Edit } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
 
 interface ActionMenuProps<T> {
   row: T;
@@ -15,7 +13,6 @@ interface ActionMenuProps<T> {
 export default function ActionMenu<T>({ row, entityName = "Item", renderModal }: ActionMenuProps<T>) {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const pathname = usePathname();
 
   return (
     <>
@@ -39,14 +36,6 @@ export default function ActionMenu<T>({ row, entityName = "Item", renderModal }:
             <Trash2 className="mr-2 h-4 w-4" />
             Delete {entityName}
           </DropdownMenuItem>
-
-          {pathname.includes("/cvs") && (
-            <DropdownMenuItem className="py-2.5 text-blue-600 cursor-pointer">
-                <Link href='#' className="text-blue-600 underline">
-                    Перейти на CV
-                </Link>
-            </DropdownMenuItem>
-          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
