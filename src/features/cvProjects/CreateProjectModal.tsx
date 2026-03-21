@@ -6,18 +6,19 @@ import Modal from "@/components/ui/Modal";
 import FloatingInput from "@/components/FloatingInput";
 import OvalButton from "@/components/button/OvalButton";
 
+interface CreateProjectFormInput {
+  name: string;
+  domain: string;
+  start_date: string;
+  end_date?: string;
+  description: string;
+  environment: string[];
+}
+
 interface CreateProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (input: {
-    name: string;
-    domain: string;
-    start_date: string;
-    end_date?: string;
-    description: string;
-    environment: string[];
-  }) => Promise<void>;
-  /** Список технологий, собранных из существующих проектов на бэкенде */
+  onCreate: (input: CreateProjectFormInput) => void; 
   availableEnvironments?: string[];
 }
 
@@ -34,12 +35,10 @@ export function CreateProjectModal({
   const [description, setDescription] = useState("");
   const [environment, setEnvironment] = useState<string[]>([]);
 
-  // Dropdown state
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTech, setSearchTech] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Закрытие при клике вне
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -50,14 +49,12 @@ export function CreateProjectModal({
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // Фильтруем доступные технологии: убираем уже выбранные + фильтр по поиску
   const filteredOptions = availableEnvironments.filter(
     (t) =>
       !environment.includes(t) &&
       t.toLowerCase().includes(searchTech.toLowerCase())
   );
 
-  // Можно ли добавить кастомное значение (нет совпадения в списке и ещё не выбрано)
   const canAddCustom =
     searchTech.trim() !== "" &&
     !environment.includes(searchTech.trim()) &&
@@ -98,11 +95,11 @@ export function CreateProjectModal({
     onClose();
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !domain || !startDate || !description) return;
 
-    await onCreate({
+    onCreate({
       name,
       domain,
       start_date: startDate,
@@ -112,13 +109,12 @@ export function CreateProjectModal({
     });
 
     resetForm();
-    onClose();
+    onClose(); 
   };
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="Create Project" className="max-w-2xl">
       <form onSubmit={handleSubmit} className="space-y-6 max-h-[70vh] md:max-h-none overflow-y-auto px-4 pb-2">
-        {/* --- Name / Domain --- */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
           <FloatingInput
             label="Project Name"
@@ -161,7 +157,6 @@ export function CreateProjectModal({
           </div>
         </div>
 
-        {/* --- Description --- */}
         <div className="relative">
           <label className="absolute -top-3 left-3 bg-white px-1 text-sm text-gray-500 z-10">
             Description
@@ -176,7 +171,6 @@ export function CreateProjectModal({
           />
         </div>
 
-        {/* --- Environment / Tech Stack (FloatingSelect) --- */}
         <div className="relative" ref={dropdownRef}>
           <label className="absolute -top-3 left-3 bg-white px-1 text-sm text-gray-500 z-10">
             Environment / Tech Stack
@@ -225,7 +219,6 @@ export function CreateProjectModal({
               )}
             </div>
 
-            {/* Стрелочка */}
             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
               <ChevronDown
                 size={20}
@@ -234,7 +227,6 @@ export function CreateProjectModal({
             </div>
           </div>
 
-          {/* Dropdown */}
           {isDropdownOpen && (
             <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
               {canAddCustom && (
@@ -270,8 +262,7 @@ export function CreateProjectModal({
           )}
         </div>
 
-        {/* --- Buttons --- */}
-        <div className="flex flex-col md:flex-row justify-end gap-4 pt-3 bg-white sticky bottom-0">
+        <div className="flex flex-col md:flex-row justify-end gap-4 sticky bottom-0">
           <OvalButton text="CANCEL" variant="ovalOutline" type="button" onClick={handleClose} className="w-full" />
           <OvalButton text="CREATE" variant="oval" type="submit" className="w-full" />
         </div>

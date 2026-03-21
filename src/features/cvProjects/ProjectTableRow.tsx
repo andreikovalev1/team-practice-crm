@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2, MoreVertical } from "lucide-react";
+import { Trash2, MoreVertical, Pencil } from "lucide-react";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { CvProject } from "./types";
+import toast from "react-hot-toast";
 
 interface ProjectTableRowProps {
   project: CvProject; 
@@ -26,9 +27,18 @@ export function ProjectTableRow({ project, isReadOnly, onDeleteClick, onEditClic
     }
   };
 
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onEditClick(project);
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDeleteClick(project);
+  };
+
   return (
     <tbody 
-      onClick={() => !isReadOnly && onEditClick(project)}
       className="border-b border-gray-200 hover:bg-zinc-50/50 transition-colors cursor-pointer"
     >
       <tr className="[&>td]:py-4 [&>td]:px-4 text-sm md:text-base font-medium text-gray-900">
@@ -45,6 +55,13 @@ export function ProjectTableRow({ project, isReadOnly, onDeleteClick, onEditClic
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 rounded-xl shadow-lg">
+                <DropdownMenuItem 
+                  onClick={handleEdit}
+                  className="cursor-pointer py-2.5 transition-colors focus:bg-gray-50"
+                >
+                  <Pencil className="mr-2 h-4 w-4 text-gray-500" />
+                  <span>Update Project</span>
+                </DropdownMenuItem>
                 <DropdownMenuItem 
                   onClick={() => onDeleteClick(project)}
                   className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 py-2.5"

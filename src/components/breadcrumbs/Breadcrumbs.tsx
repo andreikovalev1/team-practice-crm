@@ -55,6 +55,10 @@ export default function Breadcrumbs() {
     breadcrumbs.push({ label: "CVs" })
   }
 
+  if (pathname === ROUTES.PROJECTS) {
+    breadcrumbs.push({ label: "Projects" })
+  }
+
   if (pathname.startsWith("/users") && profileUserId) {
     breadcrumbs.push({
       label: "Employees",

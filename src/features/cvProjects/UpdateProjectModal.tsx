@@ -12,7 +12,7 @@ interface UpdateProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
   projectToEdit: Project | null;
-  onUpdate: (projectId: string, input: UpdateProjectInput) => Promise<void>;
+  onUpdate: (projectId: string, input: UpdateProjectInput) => void;
   availableEnvironments: string[];
 }
 
@@ -39,14 +39,12 @@ export function UpdateProjectModal({ isOpen, onClose, projectToEdit, onUpdate, a
           availableEnvironments={availableEnvironments}
         />
       ) : (
-        // Заглушка на долю секунды, пока нет данных
         <div className="p-8 text-center text-gray-500">Loading project data...</div>
       )}
     </Modal>
   );
 }
 
-// 3. ВНУТРЕННИЙ КОМПОНЕНТ: Сама форма (Абсолютно чистая от useEffect)
 function ProjectFormContent({ 
   project, 
   onUpdate, 
@@ -54,7 +52,7 @@ function ProjectFormContent({
   availableEnvironments
 }: { 
   project: Project; 
-  onUpdate: (projectId: string, input: UpdateProjectInput) => Promise<void>; 
+  onUpdate: (projectId: string, input: UpdateProjectInput) => void; 
   onClose: () => void;
   availableEnvironments: string[];
 }) {
@@ -72,7 +70,7 @@ function ProjectFormContent({
     if (endDate && newStart && newStart > endDate) setEndDate("");
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !domain.trim() || !startDate || !description.trim()) return;
 
@@ -86,7 +84,7 @@ function ProjectFormContent({
       environment,
     };
 
-    await onUpdate(project.id, input);
+    onUpdate(project.id, input);
     onClose();
   };
 
@@ -99,14 +97,12 @@ function ProjectFormContent({
           onChange={(e) => setName(e.target.value)}
           required
         />
-
         <FloatingInput
           label="Domain"
           value={domain}
           onChange={(e) => setDomain(e.target.value)}
           required
         />
-
         <div className="relative">
           <label className="absolute -top-3 left-3 bg-white px-1 text-sm text-gray-500 transition-all">
             Start Date
@@ -119,7 +115,6 @@ function ProjectFormContent({
             className="w-full bg-transparent border border-gray-300 dark:border-zinc-700 p-3 text-sm md:text-base text-gray-900 dark:text-white focus:outline-none focus:border-red-700 transition-colors"
           />
         </div>
-
         <div className="relative">
           <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500 transition-all">
             End Date
@@ -154,7 +149,7 @@ function ProjectFormContent({
           label="Select Environment / Stack"
           value={currentEnv}
           options={availableEnvironments
-            .filter(env => !environment.includes(env)) // Прячем уже выбранные
+            .filter(env => !environment.includes(env))
             .map((env, index) => ({ id: `env-${index}`, name: env }))}
           onChange={(selectedName) => {
             if (selectedName && !environment.includes(selectedName)) {
@@ -163,7 +158,6 @@ function ProjectFormContent({
             setCurrentEnv(""); 
           }}
         />
-
         <div className="flex flex-wrap gap-2 mt-2">
           {environment.map((env, idx) => (
             <span key={idx} className="px-3 py-1 bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-white rounded-full text-xs flex items-center gap-2 border dark:border-zinc-600">
@@ -176,9 +170,9 @@ function ProjectFormContent({
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row justify-end gap-4 pt-3 bg-white dark:bg-zinc-900 sticky bottom-0 border-t dark:border-zinc-800">
-          <OvalButton text="CANCEL" variant="ovalOutline" type="button" onClick={onClose} className="w-full md:w-32" />
-          <OvalButton text="UPDATE" variant="oval" type="submit" className="w-full md:w-32" />
+      <div className="flex flex-col md:flex-row justify-end gap-4 dark:bg-zinc-900 sticky bottom-0 dark:border-zinc-800">
+          <OvalButton text="CANCEL" variant="ovalOutline" type="button" onClick={onClose} className="w-full" />
+          <OvalButton text="UPDATE" variant="oval" type="submit" className="w-full" />
       </div>
     </form>
   );

@@ -5,7 +5,8 @@ import Breadcrumbs from "@/components/breadcrumbs/Breadcrumbs"
 import SearchInput from "@/components/search/SearchInput"
 import { useSearchStore } from "@/store/useSearchStore"
 import { usePathname } from "next/navigation"
-import { useAdmin } from "@/lib/useAdmin" 
+import { useAdmin } from "@/lib/useAdmin"
+import { useModalStore } from "@/store/useModalStore"
 import CreateUserModal from "@/features/employee/CreateUserModal"
 import CreateLanguageModal from "@/features/languages/CreateLanguageModal"
 import CreateSkillModal from "@/features/skills/CreateSkillModal"
@@ -19,6 +20,7 @@ import { ROUTES } from "@/app/configs/routesConfig"
     ROUTES.LANGUAGES,
     ROUTES.POSITIONS,
     ROUTES.DEPARTMENTS,
+    ROUTES.PROJECTS
   ];
 
 
@@ -28,6 +30,7 @@ export default function Header() {
   const pathname = usePathname()
   const isAdmin = useAdmin();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const openProjectCreate = useModalStore((state) => state.openProjectCreate)
 
   useEffect(() => {
     setSearch('')
@@ -38,8 +41,8 @@ export default function Header() {
     pathname === ROUTES.SKILLS ||
     pathname === ROUTES.LANGUAGES ||
     pathname === ROUTES.POSITIONS ||
-    pathname === ROUTES.DEPARTMENTS
-
+    pathname === ROUTES.DEPARTMENTS ||
+    pathname === ROUTES.PROJECTS;
   const showCreateButton = isAdmin && createAllowedPaths.includes(pathname);
 
   const getCreateButtonText = () => {
@@ -49,6 +52,14 @@ export default function Header() {
     if (pathname === ROUTES.DEPARTMENTS) return "Create department"
     if (pathname === ROUTES.PROJECTS) return "Create project"
     return "Create user";
+  };
+
+  const handleCreateClick = () => {
+    if (pathname === ROUTES.PROJECTS) {
+      openProjectCreate();
+    } else {
+      setIsCreateModalOpen(true);
+    }
   };
 
   return (
@@ -62,11 +73,10 @@ export default function Header() {
               value={search}
               onChange={setSearch}
             />
-            
 
             {showCreateButton && (
               <button
-                onClick={() => setIsCreateModalOpen(true)} 
+                onClick={handleCreateClick} 
                 className="flex items-center gap-2 px-5 py-2 text-[#c53030] rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium text-sm uppercase"
               >
                 <span className="text-xl leading-none mb-1">+</span>
