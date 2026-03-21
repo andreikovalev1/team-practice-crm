@@ -8,17 +8,18 @@ import { ProjectTableRow } from "./ProjectTableRow";
 import { CvProject } from "./types";
 import { GoArrowUp } from "react-icons/go";
 import { useIsOwnProfile } from "../profile/useIsOwnProfile";
+import { useSearchStore } from "@/store/useSearchStore";
 
 interface ProjectsTableProps {
   projects: CvProject[];
   isReadOnly: boolean;
-  searchTerm: string;
   ownerId?: string;
-  onSearchChange: (val: string) => void;
-  onAddClick: () => void;
   onDeleteProject: (p: CvProject) => void;
   onEditProject: (p: CvProject) => void;
   isAdminMode?: boolean;
+  searchTerm?: string;
+  onSearchChange?: (val: string) => void;
+  onAddClick?: () => void;
 }
 
 type SortKey = "name" | "domain" | "start_date" | "end_date";
@@ -27,13 +28,23 @@ type SortConfigType = {
   direction: "asc" | "desc";
 } | null;
 
-export function ProjectsTable({ 
-  projects, isReadOnly, searchTerm, onSearchChange, onAddClick, ownerId, isAdminMode, onDeleteProject, onEditProject 
+export function ProjectsTable({
+  projects,
+  isReadOnly,
+  ownerId,
+  isAdminMode,
+  onDeleteProject,
+  onEditProject,
+  searchTerm,
+  onSearchChange,
+  onAddClick,
 }: ProjectsTableProps) {
   const { isOwnProfile } = useIsOwnProfile(ownerId);
+  const globalSearch = useSearchStore((state) => state.search);
+  const activeSearch = searchTerm !== undefined ? searchTerm : globalSearch;
   const canModify = !isReadOnly && (isOwnProfile || isAdminMode);
   const [sortConfig, setSortConfig] = useState<SortConfigType>(null);
-  
+
   const handleSort = (key: SortKey) => {
     let direction: "asc" | "desc" = "asc";
     if (sortConfig && sortConfig.key === key && sortConfig.direction === "asc") {
@@ -43,9 +54,10 @@ export function ProjectsTable({
   };
 
   const displayedProjects = useMemo(() => {
-    let filtered = projects.filter((p) =>
-      p.project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.project.domain.toLowerCase().includes(searchTerm.toLowerCase())
+    let filtered = projects.filter(
+      (p) =>
+        p.project.name.toLowerCase().includes(activeSearch.toLowerCase()) ||
+        p.project.domain.toLowerCase().includes(activeSearch.toLowerCase())
     );
 
     if (sortConfig) {
@@ -77,21 +89,20 @@ export function ProjectsTable({
       });
     }
     return filtered;
-  }, [projects, searchTerm, sortConfig]);
+  }, [projects, activeSearch, sortConfig]);
 
   const renderHeader = (label: string, key: SortKey) => {
     const isActive = sortConfig?.key === key;
-
     return (
-      <div 
+      <div
         className="flex items-center gap-1 cursor-pointer select-none group w-fit"
         onClick={() => handleSort(key)}
       >
         {label}
-        <GoArrowUp 
+        <GoArrowUp
           className={`transition-all duration-200 ${
             isActive ? "text-gray-900" : "text-gray-300 group-hover:text-gray-500"
-          }`} 
+          }`}
           size={18}
         />
       </div>
@@ -108,38 +119,40 @@ export function ProjectsTable({
 
   return (
     <div className="w-full">
-      <div className="flex flex-row items-center justify-between gap-4 mb-8 px-0 w-full">
-        <div className="flex-1 md:flex-none">
-          <SearchInput 
-            value={searchTerm} 
-            onChange={onSearchChange} 
-            placeholder="Search"
-          />
-        </div>
-        
-        {canModify && (
-          <button 
-            onClick={onAddClick}
-            className="flex items-center justify-center w-10 h-10 md:w-auto md:px-4 md:py-2 text-red-600 bg-red-50 hover:bg-red-100 md:bg-transparent md:hover:bg-red-50 transition-colors rounded-full font-bold text-sm uppercase tracking-wider shrink-0"
-          >
-            <Plus size={20} className="shrink-0" /> 
-            <span className="hidden md:inline md:ml-2">
+      {onAddClick && (
+        <div className="flex flex-row items-center justify-between gap-4 mb-8 px-0 w-full">
+          <div className="flex-1 md:flex-none">
+            <SearchInput
+              value={activeSearch}
+              onChange={onSearchChange || (() => {})}
+              placeholder="Search"
+            />
+          </div>
+
+          {canModify && (
+            <button
+              onClick={onAddClick}
+              className="flex items-center justify-center w-10 h-10 md:w-auto md:px-4 md:py-2 text-red-600 bg-red-50 hover:bg-red-100 md:bg-transparent md:hover:bg-red-50 transition-colors rounded-full font-bold text-sm uppercase tracking-wider shrink-0"
+            >
+              <Plus size={20} className="shrink-0" />
+              <span className="hidden md:inline md:ml-2">
                 {isAdminMode ? "Create Project" : "Add Project"}
-            </span>
-          </button>
-        )}
-      </div>
+              </span>
+            </button>
+          )}
+        </div>
+      )}
 
       <div className="w-full overflow-x-auto pb-4 custom-scrollbar">
-        <BaseTable 
-          columns={columns} 
-          isEmpty={displayedProjects.length === 0} 
-          emptyText={searchTerm ? "No projects match your search." : "No projects found."}
+        <BaseTable
+          columns={columns}
+          isEmpty={displayedProjects.length === 0}
+          emptyText={activeSearch ? "No projects match your search." : "No projects found."}
         >
           {displayedProjects.map((item) => (
-            <ProjectTableRow 
-              key={item.project.id} 
-              project={item} 
+            <ProjectTableRow
+              key={item.project.id}
+              project={item}
               isReadOnly={!canModify}
               onDeleteClick={onDeleteProject}
               onEditClick={onEditProject}

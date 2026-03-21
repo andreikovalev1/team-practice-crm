@@ -81,3 +81,12 @@ export interface UpdateProjectInput {
   description: string;
   environment: string[]; // Из макета видно, что это стек, а не 'split' строка
 }
+
+export interface CreateProjectInput {
+  name: string;
+  domain: string;
+  start_date: string;
+  end_date?: string | null;
+  description: string;
+  environment: string[];
+}

@@ -2,30 +2,69 @@
 
 import { useState } from "react";
 import { useQuery, useMutation } from "@apollo/client/react";
-import { GET_ALL_PROJECTS, CREATE_PROJECT, UPDATE_PROJECT } from "./graphql";
+import { GET_ALL_PROJECTS, CREATE_PROJECT, UPDATE_PROJECT, DELETE_PROJECT } from "./graphql";
 import { ProjectsTable } from "./ProjectsTable";
-import { Project, CvProject, UpdateProjectInput } from "./types";
+import { Project, CvProject, UpdateProjectInput, CreateProjectInput } from "./types";
 import { CreateProjectModal } from "./CreateProjectModal";
 import { UpdateProjectModal } from "./UpdateProjectModal";
+import { DeleteProjectModal } from "./DeleteProjectModal";
+import { useModalStore } from "@/store/useModalStore";
+import toast from "react-hot-toast";
+
+// Интерфейс для аргументов создания, если он не импортирован из типов
+interface CreateProjectFormInput {
+  name: string;
+  domain: string;
+  start_date: string;
+  end_date?: string;
+  description: string;
+  environment: string[];
+}
 
 export function AdminProjectsContainer() {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedProjectForEdit, setSelectedProjectForEdit] = useState<Project | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  
+  const isCreateModalOpen = useModalStore((state) => state.isProjectCreateOpen);
+  const closeCreateModal = useModalStore((state) => state.closeProjectCreate);
 
   const { data, loading, error } = useQuery<{ projects: Project[] }>(GET_ALL_PROJECTS);
 
-  const [createProject] = useMutation(CREATE_PROJECT, {
+  // --- Мутации с типизированными коллбэками ---
+
+  const [createProject] = useMutation<{ createProject: Project }, { project: CreateProjectInput }>(CREATE_PROJECT, {
     refetchQueries: [{ query: GET_ALL_PROJECTS }],
+    onCompleted: () => {
+      toast.success("Project created successfully!");
+      closeCreateModal();
+    },
+    onError: (err) => toast.error(`Error: ${err.message}`),
   });
 
-  const [updateProject] = useMutation(UPDATE_PROJECT, {
+  const [updateProject] = useMutation<{ updateProject: Project }, { project: UpdateProjectInput }>(UPDATE_PROJECT, {
     refetchQueries: [{ query: GET_ALL_PROJECTS }],
+    onCompleted: () => {
+      toast.success("Project updated!");
+      setIsUpdateModalOpen(false);
+      setSelectedProjectForEdit(null);
+    },
+    onError: (err) => toast.error(`Update failed: ${err.message}`),
   });
 
-  if (loading) return <div className="py-20 text-center animate-pulse text-gray-500">Loading all projects...</div>;
-  if (error) return <div className="py-20 text-center text-red-500 font-medium">Error: {error.message}</div>;
+  const [deleteProject] = useMutation<{ deleteProject: { affected: number } }, { project: { projectId: string } }>(DELETE_PROJECT, {
+    refetchQueries: [{ query: GET_ALL_PROJECTS }],
+    onCompleted: () => {
+      toast.success("Project deleted");
+      setIsDeleteModalOpen(false);
+      setProjectToDelete(null);
+    },
+    onError: (err) => toast.error(`Delete failed: ${err.message}`),
+  });
+
+  if (loading) return <div className="py-20 text-center animate-pulse text-gray-500">Loading...</div>;
+  if (error) return <div className="py-20 text-center text-red-500">Error: {error.message}</div>;
 
   const allEnvironments: string[] = Array.from(
     new Set((data?.projects || []).flatMap(p => p.environment || []))
@@ -40,32 +79,14 @@ export function AdminProjectsContainer() {
     responsibilities: p.environment || [],
   }));
 
-  const filtered = mappedProjects.filter(p =>
-    p.project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.project.domain.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleEditClick = (cvProj: CvProject) => {
-    setSelectedProjectForEdit(cvProj.project);
-    setIsUpdateModalOpen(true);
-  };
-
-  // ---- Обработчик создания ----
-  const handleCreate = async (input: {
-    name: string;
-    domain: string;
-    start_date: string;
-    end_date?: string;
-    description: string;
-    environment: string[];
-  }) => {
-    await createProject({
+  const handleCreate = (input: CreateProjectFormInput) => {
+    createProject({
       variables: {
         project: {
           name: input.name,
           domain: input.domain,
           start_date: input.start_date,
-          end_date: input.end_date || null,
+          end_date: input.end_date || undefined,
           description: input.description,
           environment: input.environment,
         },
@@ -73,53 +94,65 @@ export function AdminProjectsContainer() {
     });
   };
 
-  const handleUpdate = async (id: string, input: UpdateProjectInput) => {
-    await updateProject({
+  const handleUpdate = (id: string, input: UpdateProjectInput) => {
+    updateProject({
       variables: {
         project: {
+          ...input,
           projectId: id,
-          name: input.name,
-          domain: input.domain,
-          start_date: input.start_date,
-          end_date: input.end_date || null,
-          description: input.description,
-          environment: input.environment,
+          end_date: input.end_date || undefined,
         },
       },
     });
+  };
+
+  const handleConfirmDelete = () => {
+    if (projectToDelete) {
+      deleteProject({
+        variables: {
+          project: { projectId: projectToDelete.id }
+        }
+      });
+    }
   };
 
   return (
-    <div className="w-full max-w-[1200px] mx-auto px-4 md:px-6 py-8">
+    <div className="w-full max-w-[1200px] mx-auto px-4 md:px-6">
       <ProjectsTable
-        projects={filtered}
+        projects={mappedProjects}
         isReadOnly={false}
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        onAddClick={() => setIsCreateModalOpen(true)}
-        onDeleteProject={(p) => console.log("Delete Global Project", p)}
-        onEditProject={handleEditClick}
+        onDeleteProject={(cvProj) => {
+          setProjectToDelete(cvProj.project);
+          setIsDeleteModalOpen(true);
+        }}
+        onEditProject={(cvProj) => {
+          setSelectedProjectForEdit(cvProj.project);
+          setIsUpdateModalOpen(true);
+        }}
         isAdminMode={true}
       />
 
-      {/* Модалка обновления */}
+      {/* Модалки */}
+      <DeleteProjectModal 
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        projectName={projectToDelete?.name || ""}
+      />
+
       {selectedProjectForEdit && (
         <UpdateProjectModal
           isOpen={isUpdateModalOpen}
-          onClose={() => {
-            setIsUpdateModalOpen(false);
-            setSelectedProjectForEdit(null);
-          }}
+          onClose={() => setIsUpdateModalOpen(false)}
           projectToEdit={selectedProjectForEdit}
           onUpdate={handleUpdate}
           availableEnvironments={allEnvironments}
         />
       )}
 
-      {/* Модалка создания */}
       <CreateProjectModal
         isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
+        onClose={closeCreateModal}
         onCreate={handleCreate}
         availableEnvironments={allEnvironments}
       />
