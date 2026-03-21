@@ -64,7 +64,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-4 bg-white px-6 pt-4 pb-4 flex flex-col gap-4">
+      <header className="sticky top-0 z-4 bg-white dark:bg-[#353535] px-6 pt-4 pb-4 flex flex-col gap-4">
         <Breadcrumbs />
 
           {showSearch && (

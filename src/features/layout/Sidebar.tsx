@@ -7,6 +7,7 @@ import Image from "next/image";
 import { ROUTES } from "@/app/configs/routesConfig";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, LogOut, User as UserIcon } from "lucide-react";
+import { IoSettingsOutline } from "react-icons/io5";
 import { useUserStore } from "@/store/useUserStore";
 import { useAdmin } from "@/lib/useAdmin";
 import {
@@ -23,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { NAV_ITEMS } from "@/features/layout/navItemsConfig";
+import { useSettingsStore } from "@/store/useSettingsStore";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -30,6 +32,9 @@ export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const isAdmin = useAdmin();
+  const theme = useSettingsStore((state) => state.theme);
+
+  const navItems = NAV_ITEMS(theme === "dark");
 
   useEffect(() => {
     setIsMounted(true);
@@ -47,7 +52,7 @@ export default function Sidebar() {
     router.push('/auth/login');
   };
 
-  const visibleNavItems = NAV_ITEMS.filter(item => {
+  const visibleNavItems = navItems.filter(item => {
     if (item.isAdminOnly && !isAdmin) return false;
     return true;
   });
@@ -56,7 +61,7 @@ export default function Sidebar() {
     <TooltipProvider delayDuration={300}>
       <aside 
         className={cn(
-          "hidden md:flex flex-col h-screen bg-white transition-all top-0 sticky duration-300 ease-in-out",
+          "hidden md:flex flex-col h-screen  transition-all top-0 sticky duration-300 ease-in-out",
           isCollapsed ? "w-[80px]" : "w-[200px]"
         )}
       >
@@ -69,15 +74,15 @@ export default function Sidebar() {
                 key={item.name}
                 href={path}
                 className={cn(
-                  "flex items-center py-4 transition-all duration-300 ease-in-out rounded-r-full overflow-hidden", 
+                  "flex items-center py-4 transition-all ease-in-out rounded-r-full overflow-hidden", 
                   isCollapsed ? "justify-center px-0" : "px-4",
                   isActive 
-                    ? "bg-[#ECECED] text-[#2E2E2E] font-medium"
-                    : "text-[#00000099] hover:bg-[#ECECED] hover:text-[#2E2E2E]"
+                    ? "bg-[#ECECED] text-[#2E2E2E] font-medium transition-all ease-in-out dark:bg-[#454545] dark:text-[#ECECED]"
+                    : "text-[#00000099] hover:bg-[#ECECED] hover:text-[#2E2E2E] dark:text-[#ECECED] dark:hover:bg-[#454545]"
                 )}
               >
                 <div className={cn(
-                  "w-6 h-6 shrink-0 flex items-center justify-center transition-opacity duration-300",
+                  "w-6 h-6 shrink-0 flex items-center justify-center transition-opacity",
                   isActive ? "opacity-100" : "opacity-90"
                 )}>
                   <Image 
@@ -90,7 +95,7 @@ export default function Sidebar() {
                 </div>
 
                 <span className={cn(
-                  "whitespace-nowrap transition-all duration-300 ease-in-out",
+                  "whitespace-nowrap transition-all ease-in-out",
                   isCollapsed ? "max-w-0 opacity-0 ml-0" : "max-w-[120px] opacity-100 ml-4"
                 )}>
                   {item.name}
@@ -118,7 +123,7 @@ export default function Sidebar() {
                 <TooltipTrigger asChild>
                   <DropdownMenuTrigger asChild>
                     <button className={cn(
-                      "flex items-center w-full focus:outline-none transition-all duration-300 ease-in-out hover:bg-gray-50", 
+                      "flex items-center w-full focus:outline-none transition-all duration-300 ease-in-out hover:bg-gray-50 dark:text-[#ECECED] dark:hover:bg-[#454545]", 
                       isCollapsed ? "justify-center px-0 py-2" : "px-2 py-2 text-left"
                     )}>
                       <div className="relative w-10 h-10 rounded-full bg-[#C8372D] flex items-center justify-center text-white font-medium shrink-0 text-[18px] overflow-hidden">
@@ -136,7 +141,7 @@ export default function Sidebar() {
                       </div>
                       
                       <span className={cn(
-                        "text-md font-medium text-black truncate whitespace-nowrap transition-all duration-300 ease-in-out",
+                        "text-md font-medium text-black truncate whitespace-nowrap transition-all duration-300 ease-in-out dark:text-[#ECECED]",
                         isCollapsed ? "max-w-0 opacity-0 ml-0" : "max-w-[150px] opacity-100 ml-2"
                       )}>
                         {fullName}
@@ -178,6 +183,13 @@ export default function Sidebar() {
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild className="cursor-pointer py-2.5">
+                  <Link href={ROUTES.SETTINGS} className="w-full">
+                    <IoSettingsOutline className="mr-2 h-4 w-4"/>
+                    <span>Settings</span>
+                  </Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           )}
@@ -203,7 +215,7 @@ export default function Sidebar() {
       </aside>
 
       {/* МОБИЛЬНОЕ МЕНЮ */}
-      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white flex justify-between items-center px-4 py-2 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-[#353535] flex justify-between items-center px-4 py-2 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
         <div className="flex gap-2 flex-1 items-center">
           {visibleNavItems.slice(0, 3).map((item) => {
             const path = item.href;
@@ -216,8 +228,8 @@ export default function Sidebar() {
                 className={cn(
                   "flex-1 flex items-center justify-center gap-2 h-10 rounded-full text-sm transition-colors",
                   isActive
-                    ? "bg-black/7 text-[#2E2E2E] font-medium"
-                    : "text-[#00000099] hover:bg-[#ECECED] hover:text-[#2E2E2E]"
+                    ? "bg-black/7 text-[#2E2E2E] font-medium dark:bg-[#454545] dark:text-[#ECECED]"
+                    : "text-[#00000099] hover:bg-[#ECECED] hover:text-[#2E2E2E] dark:text-[#ECECED] dark:hover:bg-[#454545]"
                 )}
               >
                 <div className={cn("shrink-0 transition-opacity", isActive ? "opacity-100" : "opacity-90")}>
@@ -257,7 +269,7 @@ export default function Sidebar() {
                     )}
                 </div>
                 
-                <span className="hidden sm:block text-sm font-medium text-[#2E2E2E] truncate max-w-[120px]">
+                <span className="hidden sm:block text-sm font-medium text-[#2E2E2E] truncate max-w-[120px] dark:text-[#ECECED]">
                   {fullName}
                 </span>
               </button>
@@ -288,6 +300,13 @@ export default function Sidebar() {
               <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 py-2.5">
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log out</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild className="cursor-pointer py-2.5">
+                <Link href={ROUTES.SETTINGS} className="w-full">
+                  <IoSettingsOutline className="mr-2 h-4 w-4"/>
+                  <span>Settings</span>
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
