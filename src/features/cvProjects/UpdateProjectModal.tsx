@@ -6,12 +6,13 @@ import Modal from "@/components/ui/Modal";
 import FloatingInput from "@/components/FloatingInput";
 import FloatingSelect from "@/components/FloatingSelect"
 import OvalButton from "@/components/button/OvalButton";
-import { Project, UpdateProjectInput } from "./types";
+import { Project, UpdateProjectInput, CvProject } from "./types";
 
 interface UpdateProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  projectToEdit: Project | null;
+  projectToEdit?: Project | null;
+  cvProject?: CvProject | null;
   onUpdate: (projectId: string, input: UpdateProjectInput) => void;
   availableEnvironments: string[];
 }
@@ -27,13 +28,17 @@ const formatDateForInput = (dateStr?: string | null) => {
   }
 };
 
-export function UpdateProjectModal({ isOpen, onClose, projectToEdit, onUpdate, availableEnvironments }: UpdateProjectModalProps) {
+
+
+export function UpdateProjectModal({ isOpen, onClose, projectToEdit, cvProject, onUpdate, availableEnvironments }: UpdateProjectModalProps) {
+    const hasData = !!projectToEdit || !!cvProject;
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Update project" className="max-w-2xl">
-      {projectToEdit ? (
+      {hasData ? (
         <ProjectFormContent 
-          key={projectToEdit.id} 
-          project={projectToEdit} 
+          key={projectToEdit?.id || cvProject?.project.id} 
+          project={projectToEdit || (cvProject?.project as Project)} 
+          cvProject={cvProject || undefined}
           onUpdate={onUpdate} 
           onClose={onClose}
           availableEnvironments={availableEnvironments}
@@ -46,22 +51,29 @@ export function UpdateProjectModal({ isOpen, onClose, projectToEdit, onUpdate, a
 }
 
 function ProjectFormContent({ 
-  project, 
+  project,
+  cvProject,
   onUpdate, 
   onClose,
   availableEnvironments
 }: { 
-  project: Project; 
+  project: Project;
+  cvProject?: CvProject;
   onUpdate: (projectId: string, input: UpdateProjectInput) => void; 
   onClose: () => void;
   availableEnvironments: string[];
 }) {
-  const [name, setName] = useState(project.name || "");
-  const [domain, setDomain] = useState(project.domain || "");
-  const [startDate, setStartDate] = useState(formatDateForInput(project.start_date));
-  const [endDate, setEndDate] = useState(formatDateForInput(project.end_date));
-  const [description, setDescription] = useState(project.description || "");
-  const [environment, setEnvironment] = useState<string[]>(project.environment || []);
+  const baseProject = cvProject ? cvProject.project : project;
+  const [name, setName] = useState(baseProject.name || "");
+  const [domain, setDomain] = useState(baseProject.domain || "");
+  const [startDate, setStartDate] = useState(
+    formatDateForInput(cvProject?.start_date || project?.start_date)
+  );
+  const [endDate, setEndDate] = useState(
+    formatDateForInput(cvProject?.end_date || project?.end_date)
+  );
+  const [description, setDescription] = useState(baseProject?.description || "");
+  const [environment, setEnvironment] = useState<string[]>(baseProject?.environment || []);
   const [currentEnv, setCurrentEnv] = useState("");
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,26 +1,23 @@
-// 1. Базовая сущность проекта из БД
 export interface Project {
   id: string;
-  created_at: string; // ДОБАВЛЕНО: присутствовало во фрагменте, но не в типе
+  created_at: string;
   name: string;
   internal_name: string;
   domain: string;
   start_date: string;
-  end_date?: string | null; // Apollo может вернуть null, если дата не указана
+  end_date?: string | null;
   description: string;
   environment: string[];
 }
 
-// 2. Сущность проекта внутри CV
 export interface CvProject {
   project: Project;
-  start_date: string; // ИСПРАВЛЕНО: camelCase (startDate) заменен на snake_case, как в ответе GraphQL
-  end_date?: string | null; // ИСПРАВЛЕНО: аналогично
+  start_date: string;
+  end_date?: string | null;
   roles: string[];
   responsibilities: string[]; 
 }
 
-// 3. Входные типы для мутаций (согласно структуре API)
 export interface AddCvProjectInput {
   cvId: string;
   projectId: string;
@@ -37,7 +34,6 @@ export interface RemoveCvProjectInput {
   projectId: string;
 }
 
-// 4. Ответы для Apollo
 export interface GetProjectsResponse {
   projects: Project[];
 }
@@ -71,15 +67,14 @@ export interface GetCvProjectsResponse {
   };
 }
 
-// types.ts (примерное содержимое)
 export interface UpdateProjectInput {
-  projectId: string; // Входящий ID
+  projectId: string;
   name: string;
   domain: string;
   start_date: string;
   end_date?: string;
   description: string;
-  environment: string[]; // Из макета видно, что это стек, а не 'split' строка
+  environment: string[];
 }
 
 export interface CreateProjectInput {

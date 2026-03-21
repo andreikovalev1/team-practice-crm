@@ -8,11 +8,11 @@ import { useProjectsLogic } from "./useProjectsLogic";
 import { CvProject, GetCvProjectsResponse } from "./types";
 import { GET_CV_PROJECTS } from "./graphql";
 import { AddProjectModal } from "./AddProjectModal";
+import { UpdateProjectModal } from "./UpdateProjectModal";
 
 interface CvProjectsContainerProps {
   cvId: string;
   isReadOnly?: boolean;
-  // ❗ Я убрал ownerId отсюда, он больше не нужен
 }
 
 export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsContainerProps) {
@@ -20,11 +20,18 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   
   const projectsFromStore = useCvStore((state) => state.cvs[cvId]?.projects);
-  // ❗ Пробуем достать ownerId из стора (если данные уже были закэшированы)
+  const [editingProject, setEditingProject] = useState<CvProject | null>(null);
   const storeOwnerId = useCvStore((state) => state.cvs[cvId]?.userId);
   
   const setCvProjects = useCvStore((state) => state.setCvProjects);
-  const { handleRemoveProject, handleAddProject, isMutating } = useProjectsLogic(cvId);
+  
+  // ИЗМЕНЕНО: Достаем handleUpdateProject
+  const { 
+    handleRemoveProject, 
+    handleAddProject, 
+    handleUpdateProject, 
+    isMutating 
+  } = useProjectsLogic(cvId);
   
   const { data, loading, error } = useQuery<GetCvProjectsResponse>(GET_CV_PROJECTS, {
     variables: { cvId },
@@ -33,7 +40,6 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
 
   useEffect(() => {
     if (data?.cv?.projects) {
-      // Сохраняем и projects, и userId
       setCvProjects(cvId, data.cv.projects, data.cv.user?.id);
     }
   }, [data, cvId, setCvProjects]);
@@ -46,11 +52,12 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
     return <div className="py-20 text-center text-red-500">Error loading projects: {error.message}</div>;
   }
 
-  // ❗ Вот тут мы вычисляем реального владельца. 
-  // Либо из свежего ответа GraphQL, либо из кэша стора.
   const actualOwnerId = data?.cv?.user?.id || storeOwnerId;
-
   const displayProjects = projectsFromStore || [];
+  const allEnvironments: string[] = Array.from(
+    new Set(displayProjects.flatMap(p => p.project?.environment || []))
+  ).sort();
+
   const filteredProjects = displayProjects.filter((p) => {
     const name = p.project?.name || "";
     const domain = p.project?.domain || "";
@@ -62,7 +69,7 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
     if (confirm(`Remove ${cvProj.project.name}?`)) {
       await handleRemoveProject(cvProj.project.id);
     }
-  };
+  }
 
   return (
     <>
@@ -73,8 +80,7 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
         onSearchChange={setSearchTerm}
         onAddClick={() => setIsAddModalOpen(true)}
         onDeleteProject={onDelete}
-        onEditProject={(p) => console.log("Open Edit Modal", p)}
-        // ❗ Передаем вычисленный ID в таблицу
+        onEditProject={(p) => setEditingProject(p)}
         ownerId={actualOwnerId}
       />
 
@@ -83,6 +89,25 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
         onClose={() => setIsAddModalOpen(false)}
         onAdd={handleAddProject}
       />
+
+      {editingProject && (
+        <UpdateProjectModal 
+            isOpen={!!editingProject}
+            onClose={() => setEditingProject(null)}
+            cvProject={editingProject}
+            onUpdate={(id, input) => {
+              handleUpdateProject({ 
+                projectId: id,
+                start_date: input.start_date,
+                end_date: input.end_date,
+                roles: editingProject.roles || [],
+                responsibilities: editingProject.responsibilities || []
+              }); 
+              setEditingProject(null);
+            }}
+            availableEnvironments={allEnvironments}
+        />
+      )}
     </>
   );
 }
