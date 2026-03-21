@@ -47,6 +47,10 @@ export default function Breadcrumbs() {
     breadcrumbs.push({ label: "Languages" })
   }
 
+  if (pathname === ROUTES.SETTINGS) {
+    breadcrumbs.push({ label: "Settings" })
+  }
+
   if (pathname === ROUTES.CVS) {
     breadcrumbs.push({ label: "CVs" })
   }

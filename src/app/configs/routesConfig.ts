@@ -4,6 +4,7 @@ export const ROUTES = {
     REGISTER: '/auth/register',
     RESET: '/auth/reset',
     NEWPASSWORD: '/auth/new_password',
+    SETTINGS: '/settings',
     PROFILE: (userId: string) => `/users/${userId}/profile`,
     USERSKILLS: (userId: string) => `/users/${userId}/skills`,
     USERLANGUAGES: (userId: string) => `/users/${userId}/languages`,
