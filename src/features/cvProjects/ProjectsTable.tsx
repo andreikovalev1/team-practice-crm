@@ -18,6 +18,7 @@ interface ProjectsTableProps {
   onAddClick: () => void;
   onDeleteProject: (p: CvProject) => void;
   onEditProject: (p: CvProject) => void;
+  isAdminMode?: boolean;
 }
 
 type SortKey = "name" | "domain" | "start_date" | "end_date";
@@ -27,10 +28,10 @@ type SortConfigType = {
 } | null;
 
 export function ProjectsTable({ 
-  projects, isReadOnly, searchTerm, onSearchChange, onAddClick, ownerId, onDeleteProject, onEditProject 
+  projects, isReadOnly, searchTerm, onSearchChange, onAddClick, ownerId, isAdminMode, onDeleteProject, onEditProject 
 }: ProjectsTableProps) {
   const { isOwnProfile } = useIsOwnProfile(ownerId);
-  const canModify = !isReadOnly && isOwnProfile;
+  const canModify = !isReadOnly && (isOwnProfile || isAdminMode);
   const [sortConfig, setSortConfig] = useState<SortConfigType>(null);
   
   const handleSort = (key: SortKey) => {
@@ -122,7 +123,9 @@ export function ProjectsTable({
             className="flex items-center justify-center w-10 h-10 md:w-auto md:px-4 md:py-2 text-red-600 bg-red-50 hover:bg-red-100 md:bg-transparent md:hover:bg-red-50 transition-colors rounded-full font-bold text-sm uppercase tracking-wider shrink-0"
           >
             <Plus size={20} className="shrink-0" /> 
-            <span className="hidden md:inline md:ml-2">Add Project</span>
+            <span className="hidden md:inline md:ml-2">
+                {isAdminMode ? "Create Project" : "Add Project"}
+            </span>
           </button>
         )}
       </div>

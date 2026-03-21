@@ -47,6 +47,7 @@ export default function Header() {
     if (pathname === ROUTES.SKILLS) return "Create skill";
     if (pathname === ROUTES.POSITIONS) return "Create position"
     if (pathname === ROUTES.DEPARTMENTS) return "Create department"
+    if (pathname === ROUTES.PROJECTS) return "Create project"
     return "Create user";
   };
 

@@ -37,6 +37,32 @@ export const GET_PROJECT_BY_ID = gql`
   ${PROJECT_FIELDS}
 `;
 
+export const CREATE_PROJECT = gql`
+  mutation CreateProject($project: CreateProjectInput!) {
+    createProject(project: $project) {
+      ...ProjectFields
+    }
+  }
+  ${PROJECT_FIELDS}
+`;
+
+export const UPDATE_PROJECT = gql`
+  mutation UpdateProject($project: UpdateProjectInput!) {
+    updateProject(project: $project) {
+      ...ProjectFields
+    }
+  }
+  ${PROJECT_FIELDS}
+`;
+
+export const DELETE_PROJECT = gql`
+  mutation DeleteProject($project: DeleteProjectInput!) {
+    deleteProject(project: $project) {
+      affected
+    }
+  }
+`;
+
 // --- Мутации для CV ---
 
 // Добавление проекта в CV

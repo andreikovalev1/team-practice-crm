@@ -10,5 +10,6 @@ export const NAV_ITEMS = [
   { name: "Departments", href: ROUTES.DEPARTMENTS, icon: EmployeesIcon, isAdminOnly: true },
   { name: "Positions", href: ROUTES.POSITIONS, icon: EmployeesIcon, isAdminOnly: true },
   { name: "Languages", href: ROUTES.LANGUAGES, icon: LanguagesIcon },
+  { name: "Projects", href: ROUTES.PROJECTS, icon: LanguagesIcon, isAdminOnly: true },
   { name: "CVs", href: ROUTES.CVS, icon: CVsIcon },
 ];

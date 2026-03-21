@@ -70,3 +70,14 @@ export interface GetCvProjectsResponse {
     };
   };
 }
+
+// types.ts (примерное содержимое)
+export interface UpdateProjectInput {
+  projectId: string; // Входящий ID
+  name: string;
+  domain: string;
+  start_date: string;
+  end_date?: string;
+  description: string;
+  environment: string[]; // Из макета видно, что это стек, а не 'split' строка
+}

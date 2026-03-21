@@ -20,4 +20,5 @@ export const ROUTES = {
     // Для админа
     POSITIONS: '/positions',
     DEPARTMENTS: '/departments',
+    PROJECTS: '/projects',
 }
