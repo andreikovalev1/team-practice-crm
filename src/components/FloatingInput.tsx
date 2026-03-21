@@ -29,7 +29,7 @@ export default function FloatingInput({
           absolute left-3 top-1/2
           -translate-y-1/2
           bg-white px-1
-          text-sm text-gray-500 md:text-base
+          text-sm text-gray-500 dark:text-[#757575] md:text-base
           origin-left
           transition-all duration-200
           peer-focus:-translate-y-8

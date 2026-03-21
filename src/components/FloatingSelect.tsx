@@ -78,7 +78,7 @@ export default function FloatingSelect({
       <label
         id={`${selectId}-label`}
         className={`
-          absolute left-3 bg-white px-1 transition-all duration-200 pointer-events-none z-5 dark:bg-[#353535]
+          absolute left-3 bg-white dark:text-[#757575] px-1 transition-all duration-200 pointer-events-none z-5 dark:bg-[#353535]
           ${isOpen || value ? "-top-3 text-sm" : "top-3.5 text-sm md:text-base"}
           ${isFocused ? "text-[#C10007]" : "text-gray-500"}
         `}

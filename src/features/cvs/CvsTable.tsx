@@ -10,7 +10,7 @@ import { usePathname } from "next/navigation";
 interface CvsTableProps {
   cvs: CvForTable[];
   isReadOnly: boolean;
-  onDeleteClick: (cv: CvForTable) => void;
+  onDeleteClick?: (cv: CvForTable) => void;
   sortDirection: "asc" | "desc";
   onSortToggle: () => void;
   searchTerm?: string;
