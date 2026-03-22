@@ -21,7 +21,7 @@ export default function FloatingInput({
         {...props}
         id={inputId}
         placeholder=" "
-        className={`peer w-full border border-gray-300 bg-transparent px-3 py-3 text-sm text-gray-900 focus:border-red-700 focus:outline-none focus:ring-0 transition-colors ${className}`}
+        className={`peer w-full border border-gray-300 bg-transparent px-3 py-3 text-sm text-gray-900 focus:border-red-700 focus:outline-none focus:ring-0 transition-colors dark:text-[#ECECED] ${className}`}
       />
       <label
       htmlFor={inputId}
@@ -29,7 +29,7 @@ export default function FloatingInput({
           absolute left-3 top-1/2
           -translate-y-1/2
           bg-white px-1
-          text-sm text-gray-500 md:text-base
+          text-sm text-gray-500 dark:text-[#757575] md:text-base
           origin-left
           transition-all duration-200
           peer-focus:-translate-y-8
@@ -38,7 +38,8 @@ export default function FloatingInput({
           peer-focus:text-red-700
           peer-not-placeholder-shown:text-xs
           pointer-events-none
-        "
+          dark:bg-[#353535]
+          "
       >
         {label}
       </label>

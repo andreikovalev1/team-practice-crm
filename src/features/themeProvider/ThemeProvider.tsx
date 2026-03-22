@@ -7,12 +7,8 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   const theme = useSettingsStore((state) => state.theme);
 
   useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [theme]);
+    document.documentElement.classList.toggle("dark", theme === "dark")
+  }, [theme])
 
   return <>{children}</>;
 }

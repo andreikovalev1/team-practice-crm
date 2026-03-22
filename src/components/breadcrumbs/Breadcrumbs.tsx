@@ -109,7 +109,7 @@ export default function Breadcrumbs() {
   }
 
   return (
-    <div className="flex items-center gap-2 text-sm text-gray-500 md:text-base">
+    <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-[#ECECED] md:text-base">
 
     {breadcrumbs.map((crumb, index) => {
       const isLast = index === breadcrumbs.length - 1;
@@ -129,7 +129,7 @@ export default function Breadcrumbs() {
               className={
                 isRed
                   ? "text-red-700"
-                  : "text-gray-500 hover:text-red-700 transition-colors"
+                  : "text-gray-500 dark:text-[#ECECED] hover:text-red-700 transition-colors"
               }
             >
               {crumb.label}

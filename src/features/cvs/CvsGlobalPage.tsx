@@ -8,6 +8,7 @@ import useDebounce from "@/components/search/useDebounce";
 import { useMemo, useState } from "react";
 import { CvForTable, GlobalCVs } from "./types";
 import UpdateCVModal from "./UpdateCvModal";
+import DeleteCvModal from "./DeleteCvModal"
 
 export function CvsGlobalPage() {
   const isAdmin = useAdmin();
@@ -62,6 +63,14 @@ export function CvsGlobalPage() {
           onClose={() => setIsModalOpen(false)}
           cv={selectedCv}
         />
+
+        {selectedCv && (
+          <DeleteCvModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            cv={selectedCv}
+          />
+        )}
       </>
       )}
     </div>

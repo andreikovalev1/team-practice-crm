@@ -200,7 +200,7 @@ export default function Sidebar() {
           )}>
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="flex items-center justify-center w-10 h-10 transition-colors text-gray-400 hover:bg-gray-100 rounded-lg"
+              className="flex items-center justify-center w-10 h-10 transition-colors text-gray-400 hover:bg-gray-100 dark:hover:bg-[#454545] rounded-lg"
             >
               <ChevronLeft 
                 size={20} 

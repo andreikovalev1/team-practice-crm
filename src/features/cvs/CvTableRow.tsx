@@ -16,7 +16,7 @@ interface CvTableRowProps {
   userId: string;
   userEmail: string;
   isReadOnly: boolean;
-  onDeleteClick: (cv: Cv) => void;
+  onDeleteClick?: (cv: Cv) => void;
   onUpdateClick: (cv: Cv) => void;
 }
 
@@ -26,7 +26,7 @@ export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick, onUpdateC
   return (
     <tbody 
       onClick={() => router.push(ROUTES.CV_DETAILS(cv.id))}
-      className="border-b border-gray-200 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 cursor-pointer transition-colors group"
+      className="border-b border-gray-200 hover:bg-zinc-50/50 dark:hover:bg-[#454545] cursor-pointer transition-colors group"
     >
       <tr className="[&>td]:py-6 [&>td]:px-4 text-sm md:text-base">
         <td className="align-top font-medium text-gray-900 dark:text-gray-100 pr-2 break-words">
@@ -43,7 +43,7 @@ export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick, onUpdateC
           {!isReadOnly && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 focus:outline-none transition-colors ml-auto">
+                <button className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-[#ECECED] focus:outline-none transition-colors ml-auto">
                   <MoreVertical className="h-5 w-5 text-gray-500" />
                 </button>
               </DropdownMenuTrigger>
@@ -60,8 +60,8 @@ export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick, onUpdateC
                 </DropdownMenuItem>
 
                 <DropdownMenuItem 
-                  onClick={() => onDeleteClick(cv)}
-                  className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/30 py-2.5"
+                  onClick={() => onDeleteClick?.(cv)}
+                  className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 py-2.5"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
                   <span>Delete CV</span>

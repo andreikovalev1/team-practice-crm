@@ -26,17 +26,38 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <ThemeProvider>
+    <html lang="en" suppressHydrationWarning>
+
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const theme = localStorage.getItem('settings-storage');
+                  const parsed = theme ? JSON.parse(theme) : null;
+                  const currentTheme = parsed?.state?.theme;
+
+                  if (currentTheme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>
-          {children}
-          <Toaster position="top-center" />
-        </Providers>
+        <ThemeProvider>
+          <Providers>
+            {children}
+            <Toaster position="top-center" />
+          </Providers>
+        </ThemeProvider>
       </body>
-      </ThemeProvider>
     </html>
   );
 }

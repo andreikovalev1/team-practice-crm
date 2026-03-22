@@ -116,7 +116,7 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
           </thead>
           <tbody>
             {displayedEmployees.map((employee) => (
-              <tr key={employee.id} className="border-t border-zinc-200 hover:bg-zinc-50 transition">
+              <tr key={employee.id} className="border-t border-zinc-200 hover:bg-zinc-50 dark:hover:bg-[#454545] transition">
                 <td className="px-4 py-4">
                   <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gray-300 flex items-center justify-center">
                     {employee.profile?.avatar ? (
