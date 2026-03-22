@@ -74,7 +74,7 @@ export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick, onUpdateC
 
       <tr className="text-sm md:hidden md:text-base [&>td]:pb-5">
         <td colSpan={3} className="px-4">
-          <div className="text-gray-500 dark:text-gray-400 line-clamp-3 leading-relaxed break-words whitespace-normal">
+          <div className="text-gray-500 dark:text-gray-300 line-clamp-3 leading-relaxed break-words whitespace-normal">
             {cv.description}
           </div>
         </td>
@@ -82,7 +82,7 @@ export function CvTableRow({ cv, userEmail, isReadOnly, onDeleteClick, onUpdateC
 
       <tr className="text-sm hidden md:table-row md:text-base [&>td]:pb-5">
         <td colSpan={4} className="px-4">
-          <div className="text-gray-500 dark:text-gray-400 line-clamp-3 leading-relaxed break-all whitespace-normal">
+          <div className="text-gray-500 dark:text-gray-300 line-clamp-3 leading-relaxed break-all whitespace-normal">
             {cv.description}
           </div>
         </td>

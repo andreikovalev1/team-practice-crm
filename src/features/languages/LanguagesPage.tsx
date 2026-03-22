@@ -93,7 +93,7 @@ export function LanguagesPage() {
               setSelectedLanguages([]);
             }}
             disabled={isRemoveMode}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-500 font-medium text-sm tracking-wide uppercase transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 active:scale-95 disabled:opacity-30 disabled:hover:bg-transparent disabled:active:scale-100 whitespace-nowrap"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-500 dark:text-[#757575] font-medium text-sm tracking-wide uppercase transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 active:scale-95 disabled:opacity-30 disabled:hover:bg-transparent disabled:active:scale-100 whitespace-nowrap"
           >
             <Plus size={18} />
             Add<span className="hidden sm:inline"> language</span>

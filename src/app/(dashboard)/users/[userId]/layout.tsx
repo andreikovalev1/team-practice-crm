@@ -40,19 +40,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Tabs value={currentTab} onValueChange={handleChangeTab}>
           <div className="px-4">
             <TabsList variant="line">
-              <TabsTrigger value="profile" className="uppercase">
+              <TabsTrigger value="profile" className="uppercase cursor-pointer">
                 Profile
               </TabsTrigger>
 
-              <TabsTrigger value="skills" className="uppercase">
+              <TabsTrigger value="skills" className="uppercase cursor-pointer">
                 Skills
               </TabsTrigger>
 
-              <TabsTrigger value="languages" className="uppercase">
+              <TabsTrigger value="languages" className="uppercase cursor-pointer">
                 Languages
               </TabsTrigger>
 
-              <TabsTrigger value="cvs" className="uppercase">
+              <TabsTrigger value="cvs" className="uppercase cursor-pointer">
                 CVs
               </TabsTrigger>
             </TabsList>

@@ -62,9 +62,9 @@ export function CreateCvModal({ isOpen, onClose, onSubmit, isCreating }: CreateC
             onChange={(e) => setDescription(e.target.value)}
             placeholder=" "
             rows={4}
-            className="peer w-full border border-gray-300 bg-transparent px-3 py-3 text-sm text-gray-900 focus:border-red-700 focus:outline-none transition-colors resize-none"
+            className="peer w-full border dark:border-[#757575] dark:focus:border-red-700 border-gray-300 bg-transparent px-3 py-3 text-sm text-gray-900 focus:border-red-700 focus:outline-none transition-colors resize-none"
           />
-          <label className="absolute left-3 top-3 bg-white px-1 text-sm text-gray-500 transition-all duration-200 peer-focus:-translate-y-5 peer-not-placeholder-shown:-translate-y-5 peer-focus:text-xs peer-focus:text-red-700 peer-not-placeholder-shown:text-xs pointer-events-none">
+          <label className="absolute left-3 top-3 bg-white dark:bg-[#353535] px-1 text-sm text-gray-500 dark:text-[#757575] transition-all duration-200 dark:peer-focus:text-red-700 peer-focus:-translate-y-5 peer-not-placeholder-shown:-translate-y-5 peer-focus:text-xs peer-focus:text-red-700 peer-not-placeholder-shown:text-xs pointer-events-none">
             Description
           </label>
         </div>

@@ -119,7 +119,7 @@ export default function Breadcrumbs() {
         isLast;
 
       return (
-        <div key={crumb.label} className="flex items-center gap-2">
+        <div key={`${crumb.label} ${index}`} className="flex items-center gap-2">
 
           {index > 0 && <span>{">"}</span>}
 

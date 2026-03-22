@@ -62,7 +62,7 @@ export function LanguageItem({
       </span>
 
       {/* НАЗВАНИЕ ЯЗЫКА */}
-      <span className="text-gray-400 font-medium truncate flex-1 min-w-0 select-none text-sm">
+      <span className="text-gray-400 dark:text-[#757575] font-medium truncate flex-1 min-w-0 select-none text-sm">
         {language.name}
       </span>
     </div>

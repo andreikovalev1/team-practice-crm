@@ -65,11 +65,11 @@ export default function CvPreviewPage() {
           <h1 className="text-4xl font-normal">{`${cv?.user?.profile?.first_name} ${cv?.user?.profile?.last_name}`}</h1>
           <p className="text-base uppercase">{cv?.user?.position_name}</p>
         </div>
-          <button
+          {/* <button
             className="flex items-center gap-2 px-5 py-2 text-[#c53030] border-2 border-[#c53030] rounded-full font-medium text-sm uppercase cursor-pointer"
           >
             <span className="text-base leading-none mb-1">Export PDF</span>
-          </button>
+          </button> */}
       </div>
 
       {/* Education & Summary */}
@@ -163,7 +163,7 @@ export default function CvPreviewPage() {
       ))}
 
       {/* Skills */}
-      <div className="mt-10 px-6">
+      <div className="mt-10">
         <h1 className="text-4xl font-normal mb-8">Professional skills</h1>
 
         <div className="overflow-x-auto">

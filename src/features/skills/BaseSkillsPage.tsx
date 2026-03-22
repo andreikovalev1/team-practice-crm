@@ -80,9 +80,9 @@ export function BaseSkillsPage({ logic, isReadOnly }: BaseSkillsPageProps) {
               setSelectedSkills([]);
           }}
           disabled={isRemoveMode}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-500 font-medium text-sm tracking-wide uppercase transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 active:scale-95 disabled:opacity-30 whitespace-nowrap md:text-base"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-500 dark:text-[#757575] font-medium text-sm tracking-wide uppercase transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 active:scale-95 disabled:opacity-30 whitespace-nowrap md:text-base"
         >
-          <Plus size={18} /> Add <span className="hidden sm:inline">skill</span>
+          <Plus size={18} /> Add <span className="hidden sm:inline dark:text-[#757575]">skill</span>
         </button>
         
         {userSkillsCount > 0 && (
