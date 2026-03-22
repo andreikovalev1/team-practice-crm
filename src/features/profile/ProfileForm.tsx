@@ -5,14 +5,16 @@ import { Upload, Trash2 } from "lucide-react";
 import { User } from "@/types/user.types";
 import FloatingInput from "@/components/FloatingInput";
 import FloatingSelect from "@/components/FloatingSelect";
-import { useProfileFormLogic } from "./useProfileForm";
+import { useProfileFormLogic } from "./useProfileFormLogic";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { useProfileUser } from "./useProfileUser";
 
-export default function ProfileForm() {
+import { useAdmin } from "@/lib/useAdmin";
 
+export default function ProfileForm() {
   const { isClient, profileUser, isOwnProfile, loading } = useProfileUser();
+  const isAdmin = useAdmin();
 
   if (!isClient || loading) {
     return <div className="p-10 text-center">Loading...</div>;
@@ -23,14 +25,15 @@ export default function ProfileForm() {
   }
 
   return (
-    <ProfileFormContent key={profileUser.id} user={profileUser} isReadOnly={!isOwnProfile} />
+    <ProfileFormContent key={profileUser.id} user={profileUser} isReadOnly={!isOwnProfile && !isAdmin} isAdmin={isAdmin} isOwnProfile={isOwnProfile}/>
   );
 }
 
-function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: boolean }) {
+function ProfileFormContent({ user, isReadOnly, isOwnProfile, isAdmin }: {   user: User; isReadOnly: boolean; isOwnProfile: boolean; isAdmin: boolean; }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const logic = useProfileFormLogic(user, isReadOnly);
   const [isDragging, setIsDragging] = useState(false);
+  const isEditingForeignProfile = isAdmin && !isOwnProfile;
 
   const handleFile = (file: File) => {
     const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
@@ -148,22 +151,22 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 text-gray-900 font-medium hover:text-red-700 transition-colors"
+              className="flex dark:text-[#ECECED] items-center gap-2 text-gray-900 font-medium hover:text-red-700 transition-colors"
             >
               <Upload size={18} /> Upload avatar
             </button>
-            <span className="text-gray-400 text-xs mt-1">png, jpg or gif no more than 0.5MB</span>
+            <span className="text-gray-400 dark:text-[#757575] text-xs mt-1">png, jpg or gif no more than 0.5MB</span>
             <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
           </div>
         )}
       </div>
 
       <div className="mb-10 text-center">
-        <h2 className="text-xl md:text-2xl font-medium text-gray-900 mb-1">
+        <h2 className="text-xl md:text-2xl font-medium text-gray-900 mb-1 dark:text-[#ECECED]">
           {logic.firstName} {logic.lastName}
         </h2>
-        <p className="text-gray-500 text-sm mb-1">{user.email}</p>
-        <p className="text-gray-400 text-xs">A member since {formattedDate}</p>
+        <p className="text-gray-500 text-sm mb-1 dark:text-[#757575]">{user.email}</p>
+        <p className="text-gray-400 text-xs dark:text-[#ECECED]">A member since {formattedDate}</p>
       </div>
 
       <div className="w-full md:max-w-[700px] grid grid-cols-1 gap-y-6 md:grid-cols-2 md:gap-x-6 md:gap-y-9">  
@@ -171,13 +174,13 @@ function ProfileFormContent({ user, isReadOnly }: { user: User; isReadOnly: bool
           label="First Name"
           value={logic.firstName}
           onChange={(e) => logic.setFirstName(e.target.value)}
-          disabled={isReadOnly}
+          disabled={isReadOnly || isEditingForeignProfile}
         />
         <FloatingInput
           label="Last Name"
           value={logic.lastName}
           onChange={(e) => logic.setLastName(e.target.value)}
-          disabled={isReadOnly}
+          disabled={isReadOnly || isEditingForeignProfile}
         />
         <FloatingSelect
           label="Department"

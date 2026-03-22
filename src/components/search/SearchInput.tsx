@@ -18,12 +18,15 @@ export default function SearchInput({
 }: SearchInputProps) {
   return (
     <div
-      className={`w-[320px] h-10 rounded-[40px] border border-gray-300 bg-white flex items-center px-4 ${className}`}
+      className={`w-full max-w-[220px] h-10 rounded-[40px] 
+                  border border-gray-300 bg-white dark:border-white dark:bg-[#353535] 
+                  flex items-center px-4 ${className}`}
     >
-      <IoIosSearch className="text-zinc-400 mr-2" size={18} />
+      <IoIosSearch className="text-zinc-400 dark:text-gray-300 mr-2" size={18} />
 
       <Input
-        className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-full w-full"
+        className="bg-transparent border-0 shadow-none focus:ring-0 focus:outline-none p-0 h-full w-full text-gray-900 dark:text-gray-100
+                  dark:bg-transparent "
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}

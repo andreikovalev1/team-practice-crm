@@ -23,7 +23,6 @@ const GLOBAL_SKILL: GlobalSkill[] = [];
 const CATEGORY_SKILLS: SkillCategory[] = [];
 
 export function useSkillsLogic(userId: string | undefined) {
-  // --- ЗАПРОСЫ ---
   const { data: profileData, loading: profileLoading } = useQuery<GetProfileSkillsResponse>(
     GET_PROFILE_SKILLS_QUERY,
     { variables: { userId }, skip: !userId }
@@ -39,7 +38,6 @@ export function useSkillsLogic(userId: string | undefined) {
   const categoriesList = categoriesData?.skillCategories || CATEGORY_SKILLS;
   const allGlobalSkills = globalSkillsData?.skills || GLOBAL_SKILL;
 
-  // --- МУТАЦИИ ---
   const [addSkillMutation, { loading: isAdding }] = useMutation(ADD_PROFILE_SKILL_MUTATION, {
     refetchQueries: [{ query: GET_PROFILE_SKILLS_QUERY, variables: { userId } }],
   });
@@ -52,11 +50,9 @@ export function useSkillsLogic(userId: string | undefined) {
     refetchQueries: [{ query: GET_PROFILE_SKILLS_QUERY, variables: { userId } }],
   });
 
-  // --- ФУНКЦИИ ДЛЯ UI ---
   const handleAddSkill = async (name: string, categoryName: string, mastery: string) => {
     if (!userId) return;
     
-    // ИЩЕМ ID КАТЕГОРИИ ПО ЕЕ ИМЕНИ! (решение проблемы с 'Other')
     const categoryObj = categoriesList.find(c => c.name === categoryName);
     const categoryId = categoryObj ? categoryObj.id : "";
 
@@ -133,3 +129,5 @@ export function useSkillsLogic(userId: string | undefined) {
     updateMastery: handleUpdateMastery,
   };
 }
+
+export type UseSkillsLogicReturn = ReturnType<typeof useSkillsLogic>;

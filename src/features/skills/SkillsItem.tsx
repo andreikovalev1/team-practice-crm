@@ -53,19 +53,16 @@ export function SkillsItem({
     <div
       className={cn(
         "flex items-center gap-4 p-2 rounded-md transition-colors",
-        // Добавляем эффект наведения, если можно редактировать или удалять
         isRemoveMode ? "hover:bg-red-50 cursor-pointer" : !isReadOnly && "hover:bg-gray-100 cursor-pointer"
       )}
       onClick={() => {
         if (isRemoveMode) {
           onToggleSelect?.(skill.name);
         } else if (!isReadOnly) {
-          // Открываем модалку редактирования
           onEditClick?.(skill);
         }
       }}
     >
-      {/* ЧЕКБОКС */}
       {isRemoveMode && (
         <input
           type="checkbox"
@@ -76,7 +73,6 @@ export function SkillsItem({
         />
       )}
 
-      {/* ПОЛОСКА (теперь она глупая и просто рисует цвет) */}
       <div className="flex-none w-24">
         <div className={cn("w-full h-[4px] overflow-hidden relative", trackColorClass)}>
           <div
@@ -89,7 +85,7 @@ export function SkillsItem({
         </div>
       </div>
 
-      <span className="text-gray-500 text-md font-medium truncate flex-1 min-w-0 select-none">
+      <span className="text-gray-500 dark:text-[#757575] text-sm font-medium truncate flex-1 min-w-0 select-none md:text-base">
         {skill.name}
       </span>
     </div>

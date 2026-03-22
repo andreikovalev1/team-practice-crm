@@ -24,7 +24,7 @@ export function SkillsList({
     <div className="space-y-10">
       {Object.entries(groupedSkills).map(([category, skills]) => (
         <div key={category}>
-          <h3 className="text-gray-800 font-medium mb-4">{category}</h3>
+          <h3 className="text-gray-800 dark:text-[#ECECED] text-sm font-medium mb-4 md:text-base">{category}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8">
             {skills.map((skill, index) => (
               <SkillsItem 

@@ -45,7 +45,7 @@ export function LanguageItem({
         }
       }}
     >
-      {/* ЧЕКБОКС */}
+
       {isRemoveMode && (
         <input
           type="checkbox"
@@ -56,13 +56,11 @@ export function LanguageItem({
         />
       )}
 
-      {/* УРОВЕНЬ ВЛАДЕНИЯ */}
       <span className={cn("font-medium w-12 shrink-0 select-none text-sm", colorClass)}>
         {language.proficiency}
       </span>
 
-      {/* НАЗВАНИЕ ЯЗЫКА */}
-      <span className="text-gray-400 font-medium truncate flex-1 min-w-0 select-none text-sm">
+      <span className="text-gray-400 dark:text-[#757575] font-medium truncate flex-1 min-w-0 select-none text-sm">
         {language.name}
       </span>
     </div>

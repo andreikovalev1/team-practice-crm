@@ -32,8 +32,6 @@ export interface GetSkillCategoriesResponse {
   skillCategories: SkillCategory[];
 }
 
-// --- ТИПЫ ДЛЯ МУТАЦИЙ (INPUTS) ---
-
 export interface AddProfileSkillInput {
   userId: string;
   name: string;

@@ -1,87 +1,80 @@
-import { render, screen } from "@testing-library/react"
-import Breadcrumbs from "./Breadcrumbs"
+import { render, screen } from "@testing-library/react";
+import { usePathname } from "next/navigation";
+import { ROUTES } from "@/app/configs/routesConfig";
+import Breadcrumbs from "./Breadcrumbs";
+import { useIsOwnProfile } from "@/features/profile/useIsOwnProfile";
+import { useQuery } from "@apollo/client/react";
 
-jest.mock("next/navigation", () => ({
-  usePathname: jest.fn(),
-}))
+jest.mock("next/navigation");
+jest.mock("@/features/profile/useIsOwnProfile");
+jest.mock("@apollo/client/react");
 
-jest.mock("@/features/profile/useIsOwnProfile", () => ({
-  useIsOwnProfile: jest.fn(),
-}))
-
-jest.mock("@apollo/client/react", () => ({
-  useQuery: jest.fn(),
-}))
-
+const mockedUsePathname = jest.mocked(usePathname);
+const mockedUseIsOwnProfile = jest.mocked(useIsOwnProfile);
+const mockedUseQuery = jest.mocked(useQuery);
 
 describe("Breadcrumbs", () => {
-  const { usePathname } = require("next/navigation")
-  const { useIsOwnProfile } = require("@/features/profile/useIsOwnProfile")
-  const { useQuery } = require("@apollo/client/react")
-
   beforeEach(() => {
-    jest.clearAllMocks()
-  })
+    jest.clearAllMocks();
+  });
 
-  it("рендерит Employees по умолчанию", () => {
-    usePathname.mockReturnValue("/")
-    useIsOwnProfile.mockReturnValue({
+  it.each([
+    [ROUTES.SKILLS, "Skills"],
+    [ROUTES.LANGUAGES, "Languages"],
+    [ROUTES.CVS, "CVs"],
+  ])("на пути %s рендерит только %s", (path, expectedLabel) => {
+    mockedUsePathname.mockReturnValue(path);
+    mockedUseIsOwnProfile.mockReturnValue({
       user: null,
-      profileUserId: null,
-      isOwnProfile: false,
-    })
-    useQuery.mockReturnValue({
-      data: null,
-    })
-
-    render(<Breadcrumbs />)
-    expect(screen.getByText("Employees")).toBeInTheDocument()
-  })
-
-  it("добавляет имя профиля если это профиль пользователя", () => {
-    usePathname.mockReturnValue("/users/1/profile")
-    useIsOwnProfile.mockReturnValue({
-      user: null,
-      profileUserId: "1",
-      isOwnProfile: false,
-    })
-    useQuery.mockReturnValue({
-      data: {
-        user: {
-          profile: {
-            first_name: "Valeria",
-            last_name: "Kovalenko",
-          },
-        },
-      },
-    })
-
-    render(<Breadcrumbs />)
-    expect(screen.getByText("Employees")).toBeInTheDocument()
-    expect(screen.getByText("Valeria Kovalenko")).toBeInTheDocument()
-  })
-
-  it("добавляет Skills если путь содержит skills", () => {
-    usePathname.mockReturnValue("/users/1/skills")
-
-    useIsOwnProfile.mockReturnValue({
-      user: {
-        profile: {
-          first_name: "Valeria",
-          last_name: "Kovalenko",
-        },
-      },
       profileUserId: "1",
       isOwnProfile: true,
-    })
+    });
+    
+    mockedUseQuery.mockReturnValue({ 
+      data: undefined, 
+      loading: false 
+    } as unknown as ReturnType<typeof useQuery>);
 
-    useQuery.mockReturnValue({
-      data: null,
-    })
+    render(<Breadcrumbs />);
+    expect(screen.getByText(expectedLabel)).toBeInTheDocument();
+  });
 
-    render(<Breadcrumbs />)
-    expect(screen.getByText("Employees")).toBeInTheDocument()
-    expect(screen.getByText("Valeria Kovalenko")).toBeInTheDocument()
-    expect(screen.getByText("Skills")).toBeInTheDocument()
-  })
-})
+  it("рендерит цепочку для профиля пользователя", () => {
+    mockedUsePathname.mockReturnValue("/users/1/profile");
+    mockedUseIsOwnProfile.mockReturnValue({
+      user: { id: "1", email: "mail@.ru", role: "Employee", profile: { first_name: "Valeria", last_name: "Kovalenko" } },
+      profileUserId: "1",
+      isOwnProfile: true,
+    });
+    
+    mockedUseQuery.mockReturnValue({ 
+      data: undefined, 
+      loading: false 
+    } as unknown as ReturnType<typeof useQuery>);
+
+    render(<Breadcrumbs />);
+
+    expect(screen.getByText("Employees")).toBeInTheDocument();
+    expect(screen.getByText("Valeria Kovalenko")).toBeInTheDocument();
+  });
+
+  it("рендерит вложенный путь: Employees > Name > Skills", () => {
+    mockedUsePathname.mockReturnValue("/users/1/skills");
+    mockedUseIsOwnProfile.mockReturnValue({
+      user: { id: "1", email: "mail@.ru", role: "Employee", profile: { first_name: "Valeria", last_name: "Kovalenko" } },
+      profileUserId: "1",
+      isOwnProfile: true,
+    });
+    
+    mockedUseQuery.mockReturnValue({ 
+      data: undefined, 
+      loading: false 
+    } as unknown as ReturnType<typeof useQuery>);
+
+    render(<Breadcrumbs />);
+
+    expect(screen.getByText("Employees")).toBeInTheDocument();
+    expect(screen.getByText("Valeria Kovalenko")).toBeInTheDocument();
+    expect(screen.getByText("Skills")).toBeInTheDocument();
+  });
+});

@@ -1,3 +1,5 @@
+'use client';
+
 import {
   ApolloClient,
   InMemoryCache,
@@ -24,34 +26,25 @@ const httpLink = new HttpLink({
 
 const getCookie = (name: string): string | null => {
   if (typeof document === "undefined") return null;
-
-  const match = document.cookie.match(
-    new RegExp(`(^|; )${name}=([^;]*)`)
-  );
-
+  const match = document.cookie.match(new RegExp(`(^|; )${name}=([^;]*)`));
   return match ? decodeURIComponent(match[2]) : null;
 };
 
 const setCookie = (name: string, value: string, maxAge: number) => {
   if (typeof document === "undefined") return;
-
-  document.cookie = `${name}=${encodeURIComponent(
-    value
-  )}; path=/; max-age=${maxAge}`;
+  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAge}`;
 };
 
 const clearAuth = () => {
   if (typeof document === "undefined") return;
-
   document.cookie = "auth_token=; Max-Age=0; path=/";
   document.cookie = "refresh_token=; Max-Age=0; path=/";
   localStorage.removeItem("auth-storage");
-  window.location.href = "/login";
+  window.location.href = "/auth/login";
 };
 
 const authLink = setContext((_, { headers }) => {
   const token = getCookie("auth_token");
-
   return {
     headers: {
       ...headers,
@@ -65,9 +58,7 @@ let refreshPromise: Promise<string> | null = null;
 const refreshToken = async (): Promise<string> => {
   const refresh = getCookie("refresh_token");
 
-  if (!refresh) {
-    throw new Error("No refresh token");
-  }
+  if (!refresh) throw new Error("No refresh token");
 
   const response = await fetch(graphqlUrl, {
     method: "POST",
@@ -88,13 +79,10 @@ const refreshToken = async (): Promise<string> => {
   });
 
   const json = await response.json();
-
   const newAccessToken = json.data?.updateToken?.access_token;
   const newRefreshToken = json.data?.updateToken?.refresh_token;
 
-  if (!newAccessToken) {
-    throw new Error("Failed to refresh token");
-  }
+  if (!newAccessToken) throw new Error("Failed to refresh token");
 
   setCookie("auth_token", newAccessToken, 60 * 60);
   if (newRefreshToken) {
@@ -109,7 +97,9 @@ const errorLink = onError(({ error, operation, forward }) => {
 
   if (
     operation.operationName === "Login" ||
-    operation.operationName === "login"
+    operation.operationName === "login" ||
+    operation.operationName === "Register" ||
+    operation.operationName === "register"
   ) {
     return;
   }
@@ -120,7 +110,6 @@ const errorLink = onError(({ error, operation, forward }) => {
     isUnauthorized = error.errors.some((err) => {
       const message = err.message?.toLowerCase() || "";
       const code = err.extensions?.code;
-
       return (
         code === "UNAUTHENTICATED" ||
         message.includes("unauthorized") ||
@@ -153,7 +142,6 @@ const errorLink = onError(({ error, operation, forward }) => {
             Authorization: `Bearer ${newAccessToken}`,
           },
         }));
-
         forward(operation).subscribe(observer);
       })
       .catch((refreshError) => {
@@ -166,6 +154,11 @@ const errorLink = onError(({ error, operation, forward }) => {
 const client = new ApolloClient({
   link: from([errorLink, authLink, httpLink]),
   cache: new InMemoryCache(),
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: "cache-and-network",
+    },
+  },
 });
 
 export default client;

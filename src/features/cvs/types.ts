@@ -1,17 +1,40 @@
-// --- БАЗОВЫЕ ТИПЫ ---
+import type { User } from "@/types/user.types";
+
+export interface GlobalCVs {
+  id: string;
+  name: string;
+  description: string;
+  education?: string;
+  user?: User;
+}
+
 export interface Cv {
   id: string;
   name: string;
   description: string;
   education?: string;
-  // Позже мы добавим сюда projects, skills и languages
+  user?: User,
+
 }
 
-// --- ОТВЕТЫ НА ЗАПРОСЫ (QUERIES) ---
+export interface CvForTable {
+  id: string;
+  name: string;
+  description: string;
+  education?: string;
+  userId?: string;    
+  userEmail?: string; 
+}
+
+export interface GetGlobalCVsResponse {
+  cvs: GlobalCVs[];
+}
+
 export interface GetUserCvsResponse {
   user: {
     id: string;
-    cvs: Cv[]; // Массив резюме пользователя
+    email: string;
+    cvs: Cv[];
   };
 }
 
@@ -19,9 +42,6 @@ export interface GetCvByIdResponse {
   cv: Cv;
 }
 
-// --- ТИПЫ ДЛЯ МУТАЦИЙ (INPUTS И RESPONSES) ---
-
-// 1. Create
 export interface CreateCvInput {
   name: string;
   description: string;
@@ -32,7 +52,6 @@ export interface CreateCvResponse {
   createCv: Cv;
 }
 
-// 2. Update
 export interface UpdateCvInput {
   cvId: string;
   name: string;
@@ -43,10 +62,10 @@ export interface UpdateCvResponse {
   updateCv: Cv;
 }
 
-// 3. Delete
 export interface DeleteCvInput {
   cvId: string;
 }
+
 export interface DeleteCvResponse {
   deleteCv: {
     affected: number;

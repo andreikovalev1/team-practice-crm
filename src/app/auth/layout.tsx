@@ -26,11 +26,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             }}
           >
             <TabsList variant="line">
-              <TabsTrigger value="login" className="uppercase">
+              <TabsTrigger value="login" className="uppercase cursor-pointer">
                 Log in
               </TabsTrigger>
 
-              <TabsTrigger value="register" className="uppercase">
+              <TabsTrigger value="register" className="uppercase cursor-pointer">
                 Sign up
               </TabsTrigger>
             </TabsList>

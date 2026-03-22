@@ -23,6 +23,36 @@ export const GET_GLOBAL_LANGUAGES_QUERY = gql`
   }
 `;
 
+export const UPDATE_LANGUAGE_MUTATION = gql`
+  mutation UpdateLanguage($language: UpdateLanguageInput!) {
+    updateLanguage(language: $language) {
+      id
+      name
+      native_name
+      iso2
+    }
+  }
+`;
+
+export const DELETE_LANGUAGE_MUTATION = gql`
+  mutation DeleteLanguage($language: DeleteLanguageInput!) {
+    deleteLanguage(language: $language) {
+      affected
+    }
+  }
+`;
+
+export const CREATE_LANGUAGE_MUTATION = gql`
+  mutation CreateLanguage($language: CreateLanguageInput!) {
+    createLanguage(language: $language) {
+      id
+      name
+      native_name
+      iso2
+    }
+  }
+`;
+
 export const ADD_PROFILE_LANGUAGE_MUTATION = gql`
   mutation AddProfileLanguage($language: AddProfileLanguageInput!) {
     addProfileLanguage(language: $language) {

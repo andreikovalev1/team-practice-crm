@@ -29,8 +29,7 @@ export function UpdateSkillModal({
   onUpdate, 
   isUpdating = false 
 }: UpdateSkillModalProps) {
-  
-  // Берем начальное значение прямо из пропса, useEffect больше не нужен!
+
   const [mastery, setMastery] = useState(skill?.mastery || "");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,7 +40,6 @@ export function UpdateSkillModal({
       await onUpdate(skill.name, skill.categoryId, mastery);
       onClose();
     } catch {
-      // Ошибка обрабатывается в хуке
     }
   };
 

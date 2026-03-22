@@ -8,11 +8,12 @@ import { LanguagesList } from "./LanguagesList";
 import { AddLanguageModal } from "./AddLanguageModal";
 import { UpdateLanguageModal } from "./UpdateLanguageModal";
 import { ProfileLanguage } from "./types";
+import { useAdmin } from "@/lib/useAdmin";
 
 export function LanguagesPage() {
-  const { profileUserId, isOwnProfile } = useIsOwnProfile(); // добавить user в деструктуризацию при добавлении админки
-//   const isAdmin = user?.role === "admin";
-  const isReadOnly = !isOwnProfile; // будет добавлено, когда добавится админка: && !isAdmin
+  const { profileUserId, isOwnProfile } = useIsOwnProfile();
+  const isAdmin = useAdmin();
+  const isReadOnly = !isOwnProfile && !isAdmin;
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isRemoveMode, setIsRemoveMode] = useState(false);
@@ -65,7 +66,6 @@ export function LanguagesPage() {
         </div>
       )}
 
-      {/* КНОПКИ УПРАВЛЕНИЯ */}
       {!isReadOnly && (
         <div className="flex items-center justify-end gap-2 mt-16 pt-6 h-10">
           
@@ -92,7 +92,7 @@ export function LanguagesPage() {
               setSelectedLanguages([]);
             }}
             disabled={isRemoveMode}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-500 font-medium text-sm tracking-wide uppercase transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 active:scale-95 disabled:opacity-30 disabled:hover:bg-transparent disabled:active:scale-100 whitespace-nowrap"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-500 dark:text-[#757575] font-medium text-sm tracking-wide uppercase transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 active:scale-95 disabled:opacity-30 disabled:hover:bg-transparent disabled:active:scale-100 whitespace-nowrap"
           >
             <Plus size={18} />
             Add<span className="hidden sm:inline"> language</span>
@@ -123,7 +123,6 @@ export function LanguagesPage() {
         </div>
       )}
 
-      {/* МОДАЛКИ */}
       <AddLanguageModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}

@@ -2,18 +2,29 @@
 
 import { useUserStore } from "@/store/useUserStore";
 import { useParams } from "next/navigation";
+import { useState, useEffect } from "react";
 
-export function useIsOwnProfile() {
+export function useIsOwnProfile(explicitOwnerId?: string) {
   const { user } = useUserStore();
   const params = useParams();
+  const [isMounted, setIsMounted] = useState(false);
 
-  const profileUserId = params?.userId as string | undefined;
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
 
-  const isOwnProfile = !!user && (!profileUserId || profileUserId === user.id);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const targetId = explicitOwnerId || (params?.userId as string | undefined);
+  const isOwnProfile = isMounted && !!user && (
+    targetId ? String(targetId) === String(user.id) : true
+  );
 
   return {
     user,
-    profileUserId,
+    profileUserId: targetId,
     isOwnProfile,
   };
 }

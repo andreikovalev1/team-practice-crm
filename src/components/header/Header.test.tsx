@@ -1,103 +1,95 @@
-import { render, screen } from "@testing-library/react"
-import Header from "./Header"
-import userEvent from "@testing-library/user-event"
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import Header from "./Header";
+import { usePathname } from "next/navigation";
+import { useSearchStore } from "@/store/useSearchStore";
+import { useAdmin } from "@/lib/useAdmin";
+import { ROUTES } from "@/app/configs/routesConfig";
 
-jest.mock("@/store/useSearchStore", () => ({
-  useSearchStore: jest.fn(),
-}))
+jest.mock("@/store/useSearchStore");
+jest.mock("next/navigation");
+jest.mock("@/lib/useAdmin");
+jest.mock("@/components/breadcrumbs/Breadcrumbs", () => {
+  return function MockBreadcrumbs() {
+    return <div data-testid="breadcrumbs">Breadcrumbs</div>;
+  };
+});
+jest.mock("@/features/employee/CreateUserModal", () => {
+  return function MockCreateUserModal() {
+    return <div data-testid="modal-user" />;
+  };
+});
+jest.mock("@/features/languages/CreateLanguageModal", () => {
+  return function MockCreateLanguageModal() {
+    return <div data-testid="modal-lang" />;
+  };
+});
+jest.mock("@/features/skills/CreateSkillModal", () => {
+  return function MockCreateSkillModal() {
+    return <div data-testid="modal-skill" />;
+  };
+});
 
-jest.mock("next/navigation", () => ({
-  usePathname: jest.fn(),
-}))
-
-jest.mock("@/components/breadcrumbs/Breadcrumbs", () => () => (
-  <div data-testid="breadcrumbs">Breadcrumbs</div>
-))
-
-jest.mock("@/components/search/SearchInput", () => ({
-  __esModule: true,
-  default: ({ value, onChange }: any) => (
-    <input
-      data-testid="search-input"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
-  ),
-}))
+const mockedUsePathname = jest.mocked(usePathname);
+const mockedUseSearchStore = jest.mocked(useSearchStore);
+const mockedUseAdmin = jest.mocked(useAdmin);
 
 describe("Header", () => {
-  const { usePathname } = require("next/navigation")
-  const { useSearchStore } = require("@/store/useSearchStore")
+  const setSearch = jest.fn();
+
   beforeEach(() => {
-    jest.clearAllMocks()
-  })
+    jest.clearAllMocks();
+    mockedUseAdmin.mockReturnValue(false);
+    mockedUsePathname.mockReturnValue(ROUTES.HOME);
+    mockedUseSearchStore.mockImplementation((selector) =>
+      selector({ search: "", setSearch })
+    );
+  });
 
   it("рендерит всегда Breadcrumbs", () => {
-    usePathname.mockReturnValue("/")
-    useSearchStore.mockImplementation((selector: any) =>
-      selector({
-        search: "",
-        setSearch: jest.fn(),
-      })
-    )
+    render(<Header />);
+    expect(screen.getByTestId("breadcrumbs")).toBeInTheDocument();
+  });
 
-    render(<Header />)
-    expect(screen.getByTestId("breadcrumbs")).toBeInTheDocument()
-  })
+  it("вызывает setSearch при вводе в поиск", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const input = screen.getByPlaceholderText(/search/i);
+    await user.type(input, "hello");
+    expect(setSearch).toHaveBeenCalled();
+  });
+});
 
-  it("показывает SearchInput если pathname = '/'", () => {
-    usePathname.mockReturnValue("/")
-    const setSearchMock = jest.fn()
-    useSearchStore.mockImplementation((selector: any) =>
-      selector({
-        search: "test",
-        setSearch: setSearchMock,
-      })
-    )
+describe("Отображение поиска (SearchInput)", () => {
+  it.each([
+    [ROUTES.HOME],
+    [ROUTES.CVS],
+    [ROUTES.SKILLS],
+    [ROUTES.LANGUAGES],
+  ])("показывает поиск на странице %s", (path) => {
+    mockedUsePathname.mockReturnValue(path);
+    render(<Header />);
+    expect(screen.getByPlaceholderText(/search/i)).toBeInTheDocument();
+  });
 
-    render(<Header />)
-    expect(screen.getByTestId("search-input")).toBeInTheDocument()
-  })
+  it("скрывает поиск на других страницах", () => {
+    mockedUsePathname.mockReturnValue("/users/625/skills");
+    render(<Header />);
+    expect(screen.queryByPlaceholderText(/search/i)).not.toBeInTheDocument();
+  });
+});
 
-  it("показывает SearchInput если pathname содержит cvs", () => {
-    usePathname.mockReturnValue("/employees/cvs")
-    useSearchStore.mockImplementation((selector: any) =>
-      selector({
-        search: "",
-        setSearch: jest.fn(),
-      })
-    )
+describe("Кнопка создания (Create Button)", () => {
+  beforeEach(() => {
+    mockedUseAdmin.mockReturnValue(true);
+  });
 
-    render(<Header />)
-    expect(screen.getByTestId("search-input")).toBeInTheDocument()
-  })
-
-  it("НЕ показывает SearchInput если условие false", () => {
-    usePathname.mockReturnValue("/employees")
-    useSearchStore.mockImplementation((selector: any) =>
-      selector({
-        search: "",
-        setSearch: jest.fn(),
-      })
-    )
-
-    render(<Header />)
-    expect(screen.queryByTestId("search-input")).not.toBeInTheDocument()
-  })
-
-  it("вызывает setSearch при вводе", async () => {
-    usePathname.mockReturnValue("/")
-    const setSearchMock = jest.fn()
-    useSearchStore.mockImplementation((selector: any) =>
-      selector({
-        search: "",
-        setSearch: setSearchMock,
-      })
-    )
-
-    render(<Header />)
-    const input = screen.getByTestId("search-input")
-    await userEvent.type(input, "hello")
-    expect(setSearchMock).toHaveBeenCalled()
-  })
-})
+  it("открывает модалку при клике", async () => {
+    const user = userEvent.setup();
+    mockedUsePathname.mockReturnValue(ROUTES.HOME);
+    render(<Header />);
+    const btn = screen.getByRole("button", { name: /\+ create user/i });
+    await user.click(btn);
+    expect(screen.getByTestId("modal-user")).toBeInTheDocument();
+  });
+});
