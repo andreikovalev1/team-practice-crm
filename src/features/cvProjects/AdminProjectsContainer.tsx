@@ -11,7 +11,6 @@ import { DeleteProjectModal } from "./DeleteProjectModal";
 import { useModalStore } from "@/store/useModalStore";
 import toast from "react-hot-toast";
 
-// Интерфейс для аргументов создания, если он не импортирован из типов
 interface CreateProjectFormInput {
   name: string;
   domain: string;
@@ -26,13 +25,9 @@ export function AdminProjectsContainer() {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  
   const isCreateModalOpen = useModalStore((state) => state.isProjectCreateOpen);
   const closeCreateModal = useModalStore((state) => state.closeProjectCreate);
-
   const { data, loading, error } = useQuery<{ projects: Project[] }>(GET_ALL_PROJECTS);
-
-  // --- Мутации с типизированными коллбэками ---
 
   const [createProject] = useMutation<{ createProject: Project }, { project: CreateProjectInput }>(CREATE_PROJECT, {
     refetchQueries: [{ query: GET_ALL_PROJECTS }],
@@ -132,7 +127,6 @@ export function AdminProjectsContainer() {
         isAdminMode={true}
       />
 
-      {/* Модалки */}
       <DeleteProjectModal 
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
