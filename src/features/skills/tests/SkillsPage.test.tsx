@@ -1,12 +1,10 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-// ВАЖНО: Импортируем из правильного файла (замени путь на актуальный, если он другой)
 import { SkillsPage } from "../SkillsPage"; 
 import { User } from "@/types/user.types";
 import * as ProfileHook from "@/features/profile/useIsOwnProfile";
 import * as LogicHook from "../useSkillsLogic";
 import * as AdminHook from "@/lib/useAdmin";
 
-// Мокаем все хуки
 jest.mock("@/features/profile/useIsOwnProfile");
 jest.mock("../useSkillsLogic");
 jest.mock("@/lib/useAdmin");
@@ -25,19 +23,16 @@ describe("SkillsPage Компонент", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // Дефолтный мок для профиля
     jest.spyOn(ProfileHook, "useIsOwnProfile").mockReturnValue({
       user: mockAuthorizedUser,
       profileUserId: "user-123",
       isOwnProfile: true,
     });
 
-    // Дефолтный мок для useAdmin (иначе компонент упадет при рендере)
     jest.spyOn(AdminHook, "useAdmin").mockReturnValue(false);
   });
 
   it("показывает состояние загрузки", () => {
-    // Используем ReturnType для строгой типизации возвращаемого значения
     jest.spyOn(LogicHook, "useSkillsLogic").mockReturnValue({
       loading: true,
       groupedSkills: {},
@@ -87,7 +82,6 @@ describe("SkillsPage Компонент", () => {
 
     render(<SkillsPage />);
     
-    // Используем regex, чтобы тест не падал из-за пробелов или регистра
     const addButton = screen.getByText(/Add/i); 
     fireEvent.click(addButton);
     expect(screen.getByText(/Add skill/i)).toBeInTheDocument();
@@ -113,7 +107,6 @@ describe("SkillsPage Компонент", () => {
   });
 
   it("скрывает кнопки в режиме read-only (не свой профиль и не админ)", () => {
-    // Имитируем чужой профиль
     jest.spyOn(ProfileHook, "useIsOwnProfile").mockReturnValue({
       user: mockAuthorizedUser,
       profileUserId: "user-456",
@@ -145,7 +138,6 @@ describe("SkillsPage Компонент", () => {
       isOwnProfile: false,
     });
 
-    // Делаем пользователя админом
     jest.spyOn(AdminHook, "useAdmin").mockReturnValue(true);
 
     jest.spyOn(LogicHook, "useSkillsLogic").mockReturnValue({
@@ -162,7 +154,6 @@ describe("SkillsPage Компонент", () => {
 
     render(<SkillsPage />);
     
-    // Админ должен видеть кнопки редактирования
     expect(screen.getByText(/Add/i)).toBeInTheDocument();
   });
 });

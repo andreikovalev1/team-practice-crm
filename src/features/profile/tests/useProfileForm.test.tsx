@@ -2,11 +2,9 @@ import { renderHook, act } from "@testing-library/react";
 import { useProfileFormLogic } from "../useProfileFormLogic";
 import { useUserStore } from "@/store/useUserStore";
 import { User } from "@/types/user.types";
-// 1. Импортируем хуки Apollo, чтобы замокать их
 import { useQuery, useMutation } from "@apollo/client/react"; 
 
 jest.mock("@/store/useUserStore");
-// 2. Мокаем библиотеку Apollo
 jest.mock("@apollo/client/react", () => ({
   useQuery: jest.fn(),
   useMutation: jest.fn(),
@@ -38,13 +36,11 @@ describe("useProfileFormLogic", () => {
       logout: jest.fn()
     });
 
-    // 1. Используем ReturnType для useQuery
     jest.mocked(useQuery).mockReturnValue({ 
       data: undefined, 
       loading: false 
     } as unknown as ReturnType<typeof useQuery>);
 
-    // 2. Используем ReturnType для useMutation
     jest.mocked(useMutation).mockReturnValue([
       jest.fn(), 
       { loading: false }

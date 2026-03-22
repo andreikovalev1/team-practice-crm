@@ -4,7 +4,6 @@ import { useProfileUser } from "../useProfileUser";
 import { useProfileFormLogic } from "../useProfileFormLogic";
 import { User } from "@/types/user.types";
 
-// Мокаем хуки
 jest.mock("../useProfileUser");
 jest.mock("../useProfileFormLogic");
 
@@ -16,7 +15,6 @@ describe("ProfileForm UI Component", () => {
     created_at: "1672531200000",
   };
 
-  // Дефолтный мок для логики формы
   const defaultLogicMock = {
     firstName: "John",
     lastName: "Doe",
@@ -49,16 +47,14 @@ describe("ProfileForm UI Component", () => {
       isClient: true,
       loading: false,
       profileUser: mockUser,
-      isOwnProfile: true, // Свой профиль
+      isOwnProfile: true, 
     });
 
     render(<ProfileForm />);
 
-    // Проверяем, что имя отрендерилось в заголовке
     expect(screen.getByText("John Doe")).toBeInTheDocument();
     expect(screen.getByText("test@test.com")).toBeInTheDocument();
     
-    // Кнопка Update должна быть на экране
     expect(screen.getByRole("button", { name: /Update/i })).toBeInTheDocument();
   });
 
@@ -67,17 +63,15 @@ describe("ProfileForm UI Component", () => {
       isClient: true,
       loading: false,
       profileUser: mockUser,
-      isOwnProfile: false, // Чужой профиль!
+      isOwnProfile: false,
     });
 
     render(<ProfileForm />);
 
     const firstNameInput = screen.getByLabelText(/First Name/i);
     
-    // Инпуты должны быть заблокированы
     expect(firstNameInput).toBeDisabled();
     
-    // Кнопки Update быть не должно
     expect(screen.queryByRole("button", { name: /Update/i })).not.toBeInTheDocument();
   });
 
@@ -89,7 +83,6 @@ describe("ProfileForm UI Component", () => {
       isOwnProfile: true,
     });
 
-    // Делаем форму "грязной" (isDirty = true), чтобы кнопка стала активной
     (useProfileFormLogic as jest.Mock).mockReturnValue({
       ...defaultLogicMock,
       isDirty: true,

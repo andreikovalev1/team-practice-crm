@@ -30,7 +30,6 @@ describe("Breadcrumbs", () => {
       isOwnProfile: true,
     });
     
-    // Заменили as any на строгое приведение типов
     mockedUseQuery.mockReturnValue({ 
       data: undefined, 
       loading: false 
@@ -48,7 +47,6 @@ describe("Breadcrumbs", () => {
       isOwnProfile: true,
     });
     
-    // Заменили as any на строгое приведение типов
     mockedUseQuery.mockReturnValue({ 
       data: undefined, 
       loading: false 
@@ -68,7 +66,6 @@ describe("Breadcrumbs", () => {
       isOwnProfile: true,
     });
     
-    // Заменили as any на строгое приведение типов
     mockedUseQuery.mockReturnValue({ 
       data: undefined, 
       loading: false 

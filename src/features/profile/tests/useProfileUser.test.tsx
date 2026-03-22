@@ -1,10 +1,8 @@
 import { renderHook } from "@testing-library/react";
 import { useProfileUser } from "../useProfileUser";
 import { useIsOwnProfile } from "../useIsOwnProfile";
-// 1. Импортируем хук из Apollo
 import { useQuery } from "@apollo/client/react";
 
-// 2. Говорим Jest полностью перехватить библиотеку
 jest.mock("@apollo/client/react", () => ({
   useQuery: jest.fn(),
 }));
@@ -28,8 +26,6 @@ describe("useProfileUser", () => {
       data: { user: mockOtherUser },
       loading: false,
     });
-
-    // 4. Нам больше не нужен wrapper с MockedProvider!
     const { result } = renderHook(() => useProfileUser());
 
     expect(result.current.loading).toBe(false);

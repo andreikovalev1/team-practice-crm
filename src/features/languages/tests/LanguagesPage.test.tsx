@@ -10,7 +10,7 @@ jest.mock("../useLanguagesLogic");
 const mockAuthorizedUser: User = {
   id: "user-123",
   email: "test@test.com",
-//   role: "employee", // Не админ
+  role: 'Employee',
 };
 
 describe("Компонент LanguagesPage", () => {

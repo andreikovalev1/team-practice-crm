@@ -5,11 +5,9 @@ import { useMutation, useQuery } from "@apollo/client/react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-// 1. Мокаем все хуки и библиотеки
 jest.mock("@apollo/client/react");
 jest.mock("next/navigation", () => ({ useRouter: jest.fn() }));
 
-// 2. ПРАВИЛЬНЫЙ мок для тостов, чтобы toast.loading не ломал тест
 jest.mock("react-hot-toast", () => ({
   __esModule: true,
   default: {
@@ -40,13 +38,11 @@ describe("CreateSkillModal", () => {
       loading: false,
     });
     
-    // Мутация возвращает функцию вызова и стейт загрузки
     mockedUseMutation.mockReturnValue([mockCreateSkill, { loading: false }]);
   });
 
   it("блокирует кнопку Create, если поля не заполнены", () => {
     render(<CreateSkillModal isOpen={true} onClose={mockClose} />);
-    // Ищем кнопку по точному тексту, так как компонент OvalButton может рендериться по-разному
     expect(screen.getByRole("button", { name: "Create" })).toBeDisabled();
   });
 
@@ -54,36 +50,30 @@ describe("CreateSkillModal", () => {
     const user = userEvent.setup();
     render(<CreateSkillModal isOpen={true} onClose={mockClose} />);
     
-    // 3. Вводим название скилла
     const nameInput = screen.getByLabelText(/skill name/i);
     await user.type(nameInput, "React");
     
-    // 4. Ищем кастомный селект по тексту лейбла (а не по роли combobox)
     const selectTrigger = screen.getByText("Placeholder");
     await user.click(selectTrigger);
-    
-    // 5. Выбираем опцию
+
     const categoryOption = await screen.findByText("Frontend");
     await user.click(categoryOption);
     
-    // 6. Жмем кнопку сабмита
     const submitBtn = screen.getByRole("button", { name: "Create" });
-    expect(submitBtn).not.toBeDisabled(); // Кнопка должна разблокироваться
+    expect(submitBtn).not.toBeDisabled();
     await user.click(submitBtn);
     
-    // 7. Оборачиваем проверку в waitFor, так как handleSubmit асинхронный
     await waitFor(() => {
       expect(mockCreateSkill).toHaveBeenCalledWith({
         variables: {
           skill: {
             name: "React",
-            categoryId: "cat1", // Проверяем, что подставился правильный ID, а не имя
+            categoryId: "cat1",
           },
         },
       });
     });
 
-    // Опционально: можно проверить, что модалка закрылась
     expect(mockClose).toHaveBeenCalled();
   });
 });

@@ -10,7 +10,6 @@ const mockUser: User = {
 
 describe("useUserStore", () => {
   beforeEach(() => {
-    // Сбрасываем состояние к дефолтному
     useUserStore.setState({ user: null, isLoggedIn: false });
   });
 
@@ -29,9 +28,7 @@ describe("useUserStore", () => {
   });
 
   it("должен разлогинивать пользователя", () => {
-    // Сначала логиним
     useUserStore.getState().setLogin(mockUser);
-    // Затем разлогиниваем
     useUserStore.getState().logout();
     
     const state = useUserStore.getState();
