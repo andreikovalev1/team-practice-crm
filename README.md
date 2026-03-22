@@ -4,9 +4,9 @@
 
 ## Live Demo
 
-[![Netlify Status](https://img.shields.io/badge/Netlify-Deploy-00C7B7?style=for-the-badge&logo=netlify)](https://coruscating-frangipane-1ded2e.netlify.app)
+[![Netlify Status](https://img.shields.io/badge/Netlify-Deploy-00C7B7?style=for-the-badge&logo=netlify)](https://crm-system-top.netlify.app/)
 
-**[ Открыть приложение](https://coruscating-frangipane-1ded2e.netlify.app)**
+**[🔗 Открыть приложение](https://crm-system-top.netlify.app/)**
 
 ## Краткая функциональность
 
