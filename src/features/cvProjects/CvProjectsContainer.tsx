@@ -9,6 +9,7 @@ import { CvProject, GetCvProjectsResponse } from "./types";
 import { GET_CV_PROJECTS } from "./graphql";
 import { AddProjectModal } from "./AddProjectModal";
 import { UpdateProjectModal } from "./UpdateProjectModal";
+import { DeleteProjectModal } from "./DeleteProjectModal";
 
 interface CvProjectsContainerProps {
   cvId: string;
@@ -18,14 +19,14 @@ interface CvProjectsContainerProps {
 export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsContainerProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  
+  const [projectToDelete, setProjectToDelete] = useState<CvProject | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const projectsFromStore = useCvStore((state) => state.cvs[cvId]?.projects);
   const [editingProject, setEditingProject] = useState<CvProject | null>(null);
   const storeOwnerId = useCvStore((state) => state.cvs[cvId]?.userId);
   
   const setCvProjects = useCvStore((state) => state.setCvProjects);
   
-  // ИЗМЕНЕНО: Достаем handleUpdateProject
   const { 
     handleRemoveProject, 
     handleAddProject, 
@@ -65,11 +66,19 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
     return name.toLowerCase().includes(term) || domain.toLowerCase().includes(term);
   });
 
-  const onDelete = async (cvProj: CvProject) => {
-    if (confirm(`Remove ${cvProj.project.name}?`)) {
-      await handleRemoveProject(cvProj.project.id);
+  const handleDeleteClick = (cvProj: CvProject) => {
+    setProjectToDelete(cvProj);
+    setIsDeleteModalOpen(true);
+  };
+
+  // ❗ 4. А эта функция сработает, когда юзер нажмет CONFIRM внутри модалки
+  const handleConfirmDelete = async () => {
+    if (projectToDelete) {
+      await handleRemoveProject(projectToDelete.project.id);
+      setIsDeleteModalOpen(false); // Закрываем модалку
+      setProjectToDelete(null);    // Очищаем выбранный проект
     }
-  }
+  };
 
   return (
     <>
@@ -79,7 +88,7 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         onAddClick={() => setIsAddModalOpen(true)}
-        onDeleteProject={onDelete}
+        onDeleteProject={handleDeleteClick}
         onEditProject={(p) => setEditingProject(p)}
         ownerId={actualOwnerId}
       />
@@ -108,6 +117,16 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
             availableEnvironments={allEnvironments}
         />
       )}
+
+      <DeleteProjectModal 
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setProjectToDelete(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        projectName={projectToDelete?.project?.name || "this project"} 
+      />
     </>
   );
 }
