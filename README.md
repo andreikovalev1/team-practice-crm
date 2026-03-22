@@ -2,6 +2,12 @@
 
 Современная CRM-система для управления резюме, проектами и сотрудниками, построенная на базе Next.js с использованием TypeScript и GraphQL.
 
+## Live Demo
+
+[![Netlify Status](https://img.shields.io/badge/Netlify-Deploy-00C7B7?style=for-the-badge&logo=netlify)](https://coruscating-frangipane-1ded2e.netlify.app)
+
+**[ Открыть приложение](https://coruscating-frangipane-1ded2e.netlify.app)**
+
 ## Краткая функциональность
 
 **Team Practice CRM** — это полнофункциональная система управления отношениями с клиентами, разработанная для:
