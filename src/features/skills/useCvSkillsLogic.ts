@@ -37,7 +37,6 @@ export function useCvSkillsLogic(cvId: string | undefined) {
     GET_SKILL_CATEGORIES_QUERY
   );
 
-  // Оборачиваем в useMemo, чтобы стабилизировать ссылки на массивы
   const cvSkills = useMemo(() => cvData?.cv?.skills || EMPTY_SKILLS, [cvData]);
   const categoriesList = useMemo(() => categoriesData?.skillCategories || [], [categoriesData]);
   const allGlobalSkills = useMemo(() => globalSkillsData?.skills || [], [globalSkillsData]);

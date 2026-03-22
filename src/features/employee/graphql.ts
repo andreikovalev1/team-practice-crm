@@ -24,8 +24,6 @@ export const CREATE_USER_MUTATION = gql`
       id
       email
       role
-      # Если бэкенд отдает что-то еще после создания (например, profile),
-      # можешь дописать эти поля сюда, чтобы Apollo сам обновил кэш.
     }
   }
 `;

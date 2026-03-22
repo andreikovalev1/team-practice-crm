@@ -2,7 +2,6 @@
 
 import { useMutation } from "@apollo/client/react";
 import toast from "react-hot-toast";
-// 1. Импортируем наш стор
 import { useCvStore } from "@/store/useCvStore"; 
 import { 
   ADD_CV_PROJECT, 
@@ -17,13 +16,11 @@ import {
 } from "./types";
 
 export function useProjectsLogic(cvId: string) {
-  // 2. Достаем нужные экшены из Zustand
   const setCvProjects = useCvStore((state) => state.setCvProjects);
   const removeCvProject = useCvStore((state) => state.removeCvProject);
 
   const [addCvProjectMut, { loading: isAdding }] = useMutation<CvProjectUpdateResponse>(ADD_CV_PROJECT, {
     onCompleted: (data) => {
-      // 3. После добавления обновляем весь список проектов в сторе
       if (data?.addCvProject?.projects) {
         setCvProjects(cvId, data.addCvProject.projects);
       }
@@ -34,7 +31,6 @@ export function useProjectsLogic(cvId: string) {
 
   const [updateCvProjectMut, { loading: isUpdating }] = useMutation<CvProjectUpdateResponse>(UPDATE_CV_PROJECT, {
     onCompleted: (data) => {
-      // 4. После обновления также синхронизируем стор
       if (data?.updateCvProject?.projects) {
         setCvProjects(cvId, data.updateCvProject.projects);
       }
@@ -56,7 +52,6 @@ export function useProjectsLogic(cvId: string) {
     onError: (err) => toast.error(`Failed to remove project: ${err.message}`),
   });
 
-  // Вспомогательные функции-обертки
   const handleAddProject = async (input: Omit<AddCvProjectInput, "cvId">) => {
     await addCvProjectMut({ variables: { project: { cvId, ...input } } });
   };

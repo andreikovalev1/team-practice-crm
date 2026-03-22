@@ -17,22 +17,18 @@ export default function CvPreviewPage() {
   const projectsFromStore = useCvStore((state) => state.cvs[cvId]?.projects);
   const setCvProjects = useCvStore((state) => state.setCvProjects);
 
-  // DETAILS
   const { data, loading: cvLoading } = useQuery<GetCvByIdResponse>(GET_CV_BY_ID_QUERY, {
     variables: { cvId },
     skip: !cvId,
   });
   const cv = data?.cv;
 
-  // LANGUAGES
   const {
     userLanguages
   } = useLanguagesLogic(cv?.user?.id);
 
-  // SKILLS
   const { groupedSkills, loading: skillsLoading } = useCvSkillsLogic(cvId);
 
-  // PROJECTS
   const { data: cvProjects, loading } = useQuery<GetCvProjectsResponse>(GET_CV_PROJECTS, {
     variables: { cvId },
     skip: !!projectsFromStore,
@@ -59,20 +55,13 @@ export default function CvPreviewPage() {
 
   return (
     <div className="max-w-5xl mx-auto p-8">
-      {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-4xl font-normal">{`${cv?.user?.profile?.first_name} ${cv?.user?.profile?.last_name}`}</h1>
           <p className="text-base uppercase">{cv?.user?.position_name}</p>
         </div>
-          {/* <button
-            className="flex items-center gap-2 px-5 py-2 text-[#c53030] border-2 border-[#c53030] rounded-full font-medium text-sm uppercase cursor-pointer"
-          >
-            <span className="text-base leading-none mb-1">Export PDF</span>
-          </button> */}
       </div>
 
-      {/* Education & Summary */}
       <div className="grid grid-cols-3 gap-4">
         <div className="border-r-2 border-[#c53030] pr-2 py-6">
           <h3 className="font-semibold mb-1">Education</h3>
@@ -108,7 +97,6 @@ export default function CvPreviewPage() {
         </div>
       </div>
 
-      {/* Projects */}
       <div className="mt-10">
         <h1 className="text-4xl font-normal mb-8">Projects</h1>
       </div>
@@ -162,7 +150,6 @@ export default function CvPreviewPage() {
         </div>
       ))}
 
-      {/* Skills */}
       <div className="mt-10">
         <h1 className="text-4xl font-normal mb-8">Professional skills</h1>
 

@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
 
-// Запрашиваем все отделы
 export const GET_DEPARTMENTS_QUERY = gql`
   query GetDepartments {
     departments {
@@ -10,7 +9,6 @@ export const GET_DEPARTMENTS_QUERY = gql`
   }
 `;
 
-// Запрашиваем все должности
 export const GET_POSITIONS_QUERY = gql`
   query GetPositions {
     positions {
@@ -20,7 +18,6 @@ export const GET_POSITIONS_QUERY = gql`
   }
 `;
 
-// Мутация для обновления профиля
 export const UPDATE_PROFILE_MUTATION = gql`
   mutation UpdateProfile($profile: UpdateProfileInput!) {
     updateProfile(profile: $profile) {
@@ -40,7 +37,6 @@ export const UPLOAD_AVATAR_MUTATION = gql`
   }
 `;
 
-// Мутация для обновления системных данных пользователя (отдел, должность)
 export const UPDATE_USER_MUTATION = gql`
   mutation UpdateUser($user: UpdateUserInput!) {
     updateUser(user: $user) {
@@ -51,7 +47,6 @@ export const UPDATE_USER_MUTATION = gql`
   }
 `;
 
-// Запрос пользователя по ID
 export const GET_USER_BY_ID_QUERY = gql`
   query GetUserById($userId: ID!) {
     user(userId: $userId) {

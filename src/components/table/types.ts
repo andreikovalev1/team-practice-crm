@@ -1,5 +1,5 @@
 export interface ColumnType<T> {
-    key: keyof T | string        // <- теперь можно любые строки, не только ключи объекта
+    key: keyof T | string
     label: string
     sortable?: boolean
     nestedItem?: (item: T) => React.ReactNode

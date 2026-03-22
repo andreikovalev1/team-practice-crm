@@ -106,9 +106,7 @@ export default function Sidebar() {
         </nav>
 
         <div className="mt-auto">
-          {/* ПРОФИЛЬ ДЕСКТОП С DROPDOWN */}
           {!isMounted ? (
-            // ❗ 1. На сервере рендерим только заглушку (скелетон)
             <div className={cn(
               "flex items-center w-full focus:outline-none transition-all duration-300 ease-in-out", 
               isCollapsed ? "justify-center px-0 py-2" : "px-2 py-2 text-left"
@@ -117,7 +115,6 @@ export default function Sidebar() {
               {!isCollapsed && <div className="ml-2 w-24 h-4 bg-gray-200 rounded animate-pulse" />}
             </div>
           ) : (
-            // ❗ 2. В браузере рендерим настоящий DropdownMenu
             <DropdownMenu>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -214,7 +211,6 @@ export default function Sidebar() {
         </div>
       </aside>
 
-      {/* МОБИЛЬНОЕ МЕНЮ */}
       <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-[#353535] flex justify-between items-center px-4 py-2 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
         <div className="flex gap-2 flex-1 items-center">
           {visibleNavItems.slice(0, 3).map((item) => {
@@ -244,14 +240,11 @@ export default function Sidebar() {
           })}
         </div>
         
-        {/* ПРОФИЛЬ МОБИЛКА С DROPDOWN */}
         {!isMounted ? (
-          // ❗ 3. Заглушка для мобилки
           <div className="flex items-center gap-2 pl-3 shrink-0">
             <div className="w-10 h-10 sm:w-10 sm:h-10 rounded-full bg-gray-200 animate-pulse shrink-0" />
           </div>
         ) : (
-          // ❗ 4. Настоящее меню для мобилки
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 pl-3 shrink-0 focus:outline-none cursor-pointer">

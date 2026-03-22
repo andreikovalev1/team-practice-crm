@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
 
-// --- Фрагменты для переиспользования ---
 export const PROJECT_FIELDS = gql`
   fragment ProjectFields on Project {
     id
@@ -15,9 +14,6 @@ export const PROJECT_FIELDS = gql`
   }
 `;
 
-// --- Запросы ---
-
-// 1. Получение ВСЕХ проектов (для админ-панели)
 export const GET_ALL_PROJECTS = gql`
   query GetAllProjects {
     projects {
@@ -27,7 +23,6 @@ export const GET_ALL_PROJECTS = gql`
   ${PROJECT_FIELDS}
 `;
 
-// 2. Детальная информация по одному проекту
 export const GET_PROJECT_BY_ID = gql`
   query GetProjectById($projectId: ID!) {
     project(projectId: $projectId) {
@@ -63,9 +58,6 @@ export const DELETE_PROJECT = gql`
   }
 `;
 
-// --- Мутации для CV ---
-
-// Добавление проекта в CV
 export const ADD_CV_PROJECT = gql`
   mutation AddCvProject($project: AddCvProjectInput!) {
     addCvProject(project: $project) {
@@ -85,7 +77,6 @@ export const ADD_CV_PROJECT = gql`
   ${PROJECT_FIELDS}
 `;
 
-// Обновление проекта в CV
 export const UPDATE_CV_PROJECT = gql`
   mutation UpdateCvProject($project: UpdateCvProjectInput!) {
     updateCvProject(project: $project) {
@@ -105,7 +96,6 @@ export const UPDATE_CV_PROJECT = gql`
    ${PROJECT_FIELDS} 
 `;
 
-// Удаление проекта из CV
 export const REMOVE_CV_PROJECT = gql`
   mutation RemoveCvProject($project: RemoveCvProjectInput!) {
     removeCvProject(project: $project) {

@@ -18,30 +18,25 @@ interface RefreshResponse {
 function isTokenInvalid(token: string): boolean {
   try {
     const parts = token.split('.');
-    // JWT должен состоять ровно из 3 частей
     if (parts.length !== 3 || !parts[0] || !parts[1] || !parts[2]) {
       return true;
     }
 
-    // Проверяем что каждая часть — валидный base64
     for (const part of parts) {
       atob(part.replace(/-/g, '+').replace(/_/g, '/'));
     }
 
-    // Проверяем exp в payload
     const decodedJson = atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'));
     const payload = JSON.parse(decodedJson) as TokenPayload;
 
     if (typeof payload.exp !== 'number') return true;
 
-    // Истекает через 10 секунд или раньше
     if (payload.exp * 1000 < Date.now() + 10_000) {
       return true;
     }
 
     return false;
   } catch {
-    // Любая ошибка парсинга = невалидный токен
     return true;
   }
 }
@@ -90,23 +85,19 @@ export async function proxy(request: NextRequest) {
   const authToken = request.cookies.get('auth_token')?.value;
   const refreshTokenValue = request.cookies.get('refresh_token')?.value;
 
-  // Нет refresh token — пропускаем
   if (!refreshTokenValue) {
     return NextResponse.next();
   }
 
-  // Токен есть и валиден — пропускаем
   if (authToken && !isTokenInvalid(authToken)) {
     return NextResponse.next();
   }
 
-  // Токен отсутствует, истёк или сломан — обновляем
   const graphqlUrl =
     process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:3001/api/graphql';
 
   const newTokens = await tryRefresh(refreshTokenValue, graphqlUrl);
 
-  // Refresh провалился — редирект на логин
   if (!newTokens.accessToken) {
     const response = NextResponse.redirect(
       new URL('/auth/login', request.url)
@@ -116,7 +107,6 @@ export async function proxy(request: NextRequest) {
     return response;
   }
 
-  // Refresh успешен — обновляем куки
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(
     'cookie',

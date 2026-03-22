@@ -66,7 +66,6 @@ export function LanguagesPage() {
         </div>
       )}
 
-      {/* КНОПКИ УПРАВЛЕНИЯ */}
       {!isReadOnly && (
         <div className="flex items-center justify-end gap-2 mt-16 pt-6 h-10">
           
@@ -124,7 +123,6 @@ export function LanguagesPage() {
         </div>
       )}
 
-      {/* МОДАЛКИ */}
       <AddLanguageModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}

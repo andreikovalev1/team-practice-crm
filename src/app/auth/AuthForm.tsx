@@ -63,15 +63,12 @@ export default function AuthForm({ mode }: AuthProp) {
           if (error) throw error 
 
           if (data?.login) {
-          // Достаем оба токена из ответа
           const { access_token, refresh_token, user } = data.login;
           
           setLogin(user);
           
-          // Сохраняем access_token (например, на 1 час)
           document.cookie = `auth_token=${access_token}; path=/; max-age=3600`;
           
-          // Сохраняем refresh_token (например, на 30 дней)
           document.cookie = `refresh_token=${refresh_token}; path=/; max-age=2592000`;
           
           router.push("/"); 

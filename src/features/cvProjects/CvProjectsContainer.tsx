@@ -71,12 +71,11 @@ export function CvProjectsContainer({ cvId, isReadOnly = false }: CvProjectsCont
     setIsDeleteModalOpen(true);
   };
 
-  // ❗ 4. А эта функция сработает, когда юзер нажмет CONFIRM внутри модалки
   const handleConfirmDelete = async () => {
     if (projectToDelete) {
       await handleRemoveProject(projectToDelete.project.id);
-      setIsDeleteModalOpen(false); // Закрываем модалку
-      setProjectToDelete(null);    // Очищаем выбранный проект
+      setIsDeleteModalOpen(false);
+      setProjectToDelete(null);    
     }
   };
 

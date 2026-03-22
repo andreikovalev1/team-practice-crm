@@ -110,7 +110,6 @@ export default async function Home() {
     redirect(ROUTES.LOGIN);
   }
 
-  // Попытка 1: запрос с текущим токеном
   if (token) {
     const result = await fetchUsers(token);
 
@@ -123,7 +122,6 @@ export default async function Home() {
     }
   }
 
-  // Попытка 2: refresh + повторный запрос
   if (refresh) {
     const newTokens = await refreshAccessToken(refresh);
 

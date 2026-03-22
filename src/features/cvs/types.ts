@@ -1,6 +1,5 @@
 import type { User } from "@/types/user.types";
 
-// --- Для глобальной таблицы ---
 export interface GlobalCVs {
   id: string;
   name: string;
@@ -9,7 +8,6 @@ export interface GlobalCVs {
   user?: User;
 }
 
-// --- Для обычного пользователя ---
 export interface Cv {
   id: string;
   name: string;
@@ -24,10 +22,10 @@ export interface CvForTable {
   name: string;
   description: string;
   education?: string;
-  userId?: string;    // будет undefined для Global без пользователя
-  userEmail?: string; // аналогично
+  userId?: string;    
+  userEmail?: string; 
 }
-// --- Ответы GraphQL ---
+
 export interface GetGlobalCVsResponse {
   cvs: GlobalCVs[];
 }
@@ -44,9 +42,6 @@ export interface GetCvByIdResponse {
   cv: Cv;
 }
 
-// --- ТИПЫ ДЛЯ МУТАЦИЙ (INPUTS И RESPONSES) ---
-
-// 1. Create
 export interface CreateCvInput {
   name: string;
   description: string;
@@ -57,7 +52,6 @@ export interface CreateCvResponse {
   createCv: Cv;
 }
 
-// 2. Update
 export interface UpdateCvInput {
   cvId: string;
   name: string;
@@ -68,10 +62,10 @@ export interface UpdateCvResponse {
   updateCv: Cv;
 }
 
-// 3. Delete
 export interface DeleteCvInput {
   cvId: string;
 }
+
 export interface DeleteCvResponse {
   deleteCv: {
     affected: number;

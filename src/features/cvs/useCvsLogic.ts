@@ -56,7 +56,6 @@ const cvs: CvForTable[] = useMemo(() => {
 
   const loading = mode === "user" ? isLoadingUser : isLoadingGlobal;
 
-  // --- Фильтрация и сортировка ---
   const filteredAndSortedCvs = useMemo(() => {
     const lowerTerm = searchTerm.toLowerCase();
     const filtered = cvs.filter(cv =>
