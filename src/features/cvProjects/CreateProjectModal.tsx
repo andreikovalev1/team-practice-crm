@@ -130,7 +130,7 @@ export function CreateProjectModal({
           />
 
           <div className="relative">
-            <label className="absolute -top-3 left-3 bg-white px-1 text-sm text-gray-500 z-10">
+            <label className="absolute -top-3 left-3 bg-white px-1 text-sm text-gray-500 transition-all dark:peer-focus:text-red-700 dark:text-[#757575] dark:bg-[#353535]">
               Start Date
             </label>
             <input
@@ -138,12 +138,12 @@ export function CreateProjectModal({
               required
               value={startDate}
               onChange={handleStartDateChange}
-              className="w-full bg-transparent border border-gray-300 p-3 text-sm md:text-base text-gray-900 focus:outline-none focus:border-red-700 transition-colors"
+              className="w-full bg-transparent border dark:text-[#ECECED] border-gray-300 p-3 text-sm md:text-base text-gray-900 focus:outline-none focus:border-red-700 transition-colors dark:border-[#757575] dark:focus:border-red-700"
             />
           </div>
 
           <div className="relative">
-            <label className="absolute -top-3 left-3 bg-white px-1 text-sm text-gray-500 z-10">
+            <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500 transition-all dark:peer-focus:text-red-700 dark:text-[#757575] dark:bg-[#353535]">
               End Date
             </label>
             <input
@@ -152,13 +152,13 @@ export function CreateProjectModal({
               min={startDate}
               disabled={!startDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full bg-transparent border border-gray-300 p-3 text-sm md:text-base text-gray-900 focus:outline-none focus:border-red-700 transition-colors disabled:opacity-50"
+              className="w-full bg-transparent border border-gray-300 p-3 text-sm md:text-base text-gray-900 focus:outline-none disabled:opacity-50 focus:border-red-700 transition-colors dark:border-[#757575] dark:focus:border-red-700 dark:text-[#ECECED]"
             />
           </div>
         </div>
 
         <div className="relative">
-          <label className="absolute -top-3 left-3 bg-white px-1 text-sm text-gray-500 z-10">
+          <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-400 dark:bg-[#353535] dark:border-[#757575] dark:text-[#757575] dark:peer-focus:text-red-700">
             Description
           </label>
           <textarea
@@ -166,25 +166,27 @@ export function CreateProjectModal({
             rows={4}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full bg-transparent border border-gray-300 p-3 text-sm md:text-base text-gray-900 focus:outline-none focus:border-red-700 transition-colors resize-none"
+            className="w-full bg-transparent border dark:text-[#ECECED] border-gray-300 p-3 text-sm md:text-base text-gray-900 focus:outline-none focus:border-red-700 transition-colors resize-none dark:border-[#757575] dark:focus:border-red-700" 
             placeholder="Describe the project..."
           />
         </div>
 
         <div className="relative" ref={dropdownRef}>
-          <label className="absolute -top-3 left-3 bg-white px-1 text-sm text-gray-500 z-10">
+          <label className="absolute -top-3 left-3 bg-white px-1 text-sm text-gray-500 z-10 dark:peer-focus:text-red-700 dark:text-[#757575] dark:bg-[#353535]">
             Environment / Tech Stack
           </label>
 
           <div
             className={`w-full border ${
-              isDropdownOpen ? "border-red-700" : "border-gray-300"
-            } bg-white transition-colors cursor-pointer`}
+              isDropdownOpen
+                ? "border-red-700"
+                : "border-gray-300 dark:border-[#757575]"
+            } bg-white dark:bg-[#353535] transition-colors cursor-pointer`}
             onClick={() => setIsDropdownOpen(true)}
           >
             <div className="p-3 min-h-[48px] flex flex-wrap gap-2 items-center pr-10">
               {environment.length === 0 && !isDropdownOpen && (
-                <span className="text-gray-400 text-sm">Click to add technologies…</span>
+                <span className="text-gray-400 dark:text-[#757575] text-sm">Click to add technologies…</span>
               )}
 
               {environment.map((tech) => (

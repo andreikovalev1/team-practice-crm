@@ -116,20 +116,20 @@ function ProjectFormContent({
           required
         />
         <div className="relative">
-          <label className="absolute -top-3 left-3 bg-white px-1 text-sm text-gray-500 transition-all">
-            Start Date
+            <label className="absolute -top-3 left-3 bg-white px-1 text-sm text-gray-500 transition-all dark:peer-focus:text-red-700 dark:text-[#757575] dark:bg-[#353535]">
+              Start Date
           </label>
           <input
             type="date"
             required
             value={startDate}
             onChange={handleStartDateChange}
-            className="w-full bg-transparent border border-gray-300 dark:border-zinc-700 p-3 text-sm md:text-base text-gray-900 dark:text-white focus:outline-none focus:border-red-700 transition-colors"
-          />
+              className="w-full bg-transparent border border-gray-300 p-3 text-sm md:text-base text-gray-900 focus:outline-none focus:border-red-700 transition-colors dark:border-[#757575] dark:focus:border-red-700 dark:text-[#ECECED]"
+            />
         </div>
         <div className="relative">
-          <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500 transition-all">
-            End Date
+            <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500 transition-all dark:peer-focus:text-red-700 dark:text-[#757575] dark:bg-[#353535]">
+              End Date
           </label>
           <input
             type="date"
@@ -137,14 +137,14 @@ function ProjectFormContent({
             min={startDate}
             disabled={!startDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="w-full bg-transparent border border-gray-300 dark:border-zinc-700 p-3 text-sm md:text-base text-gray-900 dark:text-white focus:outline-none focus:border-red-700 transition-colors disabled:opacity-50"
-          />
+              className="w-full bg-transparent border border-gray-300 p-3 text-sm md:text-base text-gray-900 focus:outline-none disabled:opacity-50 focus:border-red-700 transition-colors dark:border-[#757575] dark:focus:border-red-700 dark:text-[#ECECED]"
+            />
         </div>
       </div>
 
       <div className="relative">
-        <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500">
-          Description
+          <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-400 dark:bg-[#353535] dark:border-[#757575] dark:focus:border-red-700 dark:text-[#757575]">
+            Description
         </label>
         <textarea
           required
@@ -172,7 +172,7 @@ function ProjectFormContent({
         />
         <div className="flex flex-wrap gap-2 mt-2">
           {environment.map((env, idx) => (
-            <span key={idx} className="px-3 py-1 bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-white rounded-full text-xs flex items-center gap-2 border dark:border-zinc-600">
+            <span key={idx} className="px-3 py-1 bg-zinc-200 text-zinc-900 rounded-full text-xs flex items-center gap-2 border dark:bg-[#454545] dark:text-[#ECECED]">
               {env}
               <button type="button" onClick={() => setEnvironment(prev => prev.filter((_, i) => i !== idx))}>
                 <X size={12} className="text-zinc-500 hover:text-red-500" />
@@ -182,7 +182,7 @@ function ProjectFormContent({
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row justify-end gap-4 dark:bg-zinc-900 sticky bottom-0 dark:border-zinc-800">
+      <div className="flex flex-col md:flex-row justify-end gap-4 sticky bottom-0 dark:border-zinc-800 dark:bg-[#353535]">
           <OvalButton text="CANCEL" variant="ovalOutline" type="button" onClick={onClose} className="w-full" />
           <OvalButton text="UPDATE" variant="oval" type="submit" className="w-full" />
       </div>

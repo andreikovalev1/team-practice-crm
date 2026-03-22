@@ -87,7 +87,7 @@ export function AddProjectModal({ isOpen, onClose, onAdd }: AddProjectModalProps
           />
 
           <div className="relative">
-            <label className="absolute -top-3 left-3 bg-white px-1 text-sm text-gray-500 transition-all">
+            <label className="absolute -top-3 left-3 bg-white px-1 text-sm text-gray-500 transition-all dark:peer-focus:text-red-700 dark:text-[#757575] dark:bg-[#353535]">
               Start Date
             </label>
             <input
@@ -95,12 +95,12 @@ export function AddProjectModal({ isOpen, onClose, onAdd }: AddProjectModalProps
               required
               value={startDate}
               onChange={handleStartDateChange}
-              className="w-full bg-transparent border border-gray-300 p-3 text-sm md:text-base text-gray-900 focus:outline-none focus:border-red-700 transition-colors"
+              className="w-full bg-transparent border border-gray-300 p-3 text-sm md:text-base text-gray-900 focus:outline-none focus:border-red-700 transition-colors dark:border-[#757575] dark:focus:border-red-700"
             />
           </div>
 
           <div className="relative">
-            <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500 transition-all">
+            <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500 transition-all dark:peer-focus:text-red-700 dark:text-[#757575] dark:bg-[#353535]">
               End Date
             </label>
             <input
@@ -109,35 +109,35 @@ export function AddProjectModal({ isOpen, onClose, onAdd }: AddProjectModalProps
               min={startDate}
               disabled={!startDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full bg-transparent border border-gray-300 p-3 text-sm md:text-base text-gray-900 focus:outline-none focus:border-red-700 transition-colors disabled:opacity-50"
+              className="w-full bg-transparent border border-gray-300 p-3 text-sm md:text-base text-gray-900 focus:outline-none disabled:opacity-50 focus:border-red-700 transition-colors dark:border-[#757575] dark:focus:border-red-700"
             />
           </div>
         </div>
 
         <div className="relative">
-          <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-400">
+          <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-400 dark:bg-[#353535] dark:border-[#757575] dark:focus:border-red-700 dark:text-[#757575]">
             Description
           </label>
           <textarea
             readOnly
             rows={3}
             value={selectedProject?.description || ""}
-            className="w-full bg-gray-50 border border-gray-200 p-3 text-sm md:text-base text-gray-500 focus:outline-none cursor-not-allowed resize-none"
+            className="w-full bg-gray-50 border border-gray-200 p-3 text-sm md:text-base text-gray-500 focus:outline-none cursor-not-allowed resize-none dark:bg-[#353535] dark:border-[#757575] dark:text-[#ECECED]"
           />
         </div>
 
-        <div className="relative border border-gray-200 p-3 min-h-[52px] flex items-center flex-wrap gap-2 bg-gray-50">
-          <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-400">
+        <div className="relative border border-gray-200 p-3 min-h-[52px] flex items-center flex-wrap gap-2 bg-gray-50 dark:bg-[#353535] dark:text-[#ECECED] dark:border-[#757575]">
+          <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-400 dark:bg-[#353535] dark:text-[#757575]">
             Environment
           </label>
           {selectedProject?.environment?.length ? (
             selectedProject.environment.map((env, idx) => (
-              <span key={idx} className="px-2 py-0.5 bg-gray-200 text-gray-700 text-sm md:text-base font-medium">
+              <span key={idx} className="px-2 py-0.5 bg-gray-200 text-gray-700 text-sm md:text-base font-medium dark:bg-[#454545] dark:text-[#757575]">
                 {env}
               </span>
             ))
           ) : (
-            <span className="text-gray-400 text-sm  md:text-base">No environment specified</span>
+            <span className="text-gray-400 text-sm dark:text-[#757575] md:text-base">No environment specified</span>
           )}
         </div>
 
@@ -150,7 +150,7 @@ export function AddProjectModal({ isOpen, onClose, onAdd }: AddProjectModalProps
           />
           <div className="flex flex-wrap gap-2 mt-2">
             {responsibilities.map((resp, idx) => (
-              <span key={idx} className="px-3 py-1 bg-red-50 text-red-700 rounded-full text-xs flex items-center gap-2 border border-red-100">
+              <span key={idx} className="px-3 py-1 bg-red-50 text-red-700 rounded-full text-xs flex items-center gap-2 border border-red-100 dark:bg-[#454545] dark:text-[#ECECED] dark:border-[#454545]">
                 {resp}
                 <button type="button" onClick={() => setResponsibilities(prev => prev.filter((_, i) => i !== idx))}>
                   <X size={12} />
@@ -160,7 +160,7 @@ export function AddProjectModal({ isOpen, onClose, onAdd }: AddProjectModalProps
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-end gap-4 pt-3 bg-white sticky bottom-0">
+        <div className="flex flex-col md:flex-row justify-end gap-4 pt-3 bg-white sticky bottom-0 dark:bg-[#353535]">
             <OvalButton text="CANCEL" variant="ovalOutline" type="button" onClick={onClose} className="w-full" />
             <OvalButton text="ADD" variant="oval" type="submit" className="w-full" />
         </div>
