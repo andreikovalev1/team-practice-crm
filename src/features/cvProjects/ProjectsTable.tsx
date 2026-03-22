@@ -101,7 +101,7 @@ export function ProjectsTable({
         {label}
         <GoArrowUp
           className={`transition-all duration-200 ${
-            isActive ? "text-gray-900" : "text-gray-300 group-hover:text-gray-500"
+            isActive ? "text-black" : "text-gray-300"
           }`}
           size={18}
         />
@@ -132,7 +132,7 @@ export function ProjectsTable({
           {canModify && (
             <button
               onClick={onAddClick}
-              className="flex items-center justify-center w-10 h-10 md:w-auto md:px-4 md:py-2 text-red-600 bg-red-50 hover:bg-red-100 md:bg-transparent md:hover:bg-red-50 transition-colors rounded-full font-bold text-sm uppercase tracking-wider shrink-0"
+              className="flex items-center justify-center w-10 h-10 md:w-auto md:px-4 md:py-2 text-red-600 bg-red-50 hover:bg-red-100 dark:hover:bg-red-900/40 md:bg-transparent md:hover:bg-red-50 transition-colors rounded-full font-medium text-sm uppercase tracking-wider shrink-0"
             >
               <Plus size={20} className="shrink-0" />
               <span className="hidden md:inline md:ml-2">

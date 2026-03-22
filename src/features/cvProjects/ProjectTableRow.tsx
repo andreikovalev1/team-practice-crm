@@ -39,9 +39,9 @@ export function ProjectTableRow({ project, isReadOnly, onDeleteClick, onEditClic
 
   return (
     <tbody 
-      className="border-b border-gray-200 hover:bg-zinc-50/50 transition-colors cursor-pointer"
+      className="border-b border-gray-200 hover:bg-zinc-50/50 dark:hover:bg-[#454545] transition-colors cursor-pointer"
     >
-      <tr className="[&>td]:py-4 [&>td]:px-4 text-sm md:text-base font-medium text-gray-900">
+      <tr className="[&>td]:py-4 [&>td]:px-4 text-sm md:text-base font-medium text-gray-900 dark:text-[#ECECED]">
         <td className="w-[45%] md:w-[30%] min-w-[140px] align-top">{project.project.name}</td>
         <td className="w-[45%] md:w-[25%] min-w-[140px] align-top">{project.project.domain}</td>
         <td className="hidden md:table-cell md:w-[20%] min-w-[120px] align-top">{formatDate(project.start_date)}</td>
@@ -57,7 +57,7 @@ export function ProjectTableRow({ project, isReadOnly, onDeleteClick, onEditClic
               <DropdownMenuContent align="end" className="w-48 rounded-xl shadow-lg">
                 <DropdownMenuItem 
                   onClick={handleEdit}
-                  className="cursor-pointer py-2.5 transition-colors focus:bg-gray-50"
+                  className="cursor-pointer py-2.5 transition-colors "
                 >
                   <Pencil className="mr-2 h-4 w-4 text-gray-500" />
                   <span>Update Project</span>
@@ -77,12 +77,12 @@ export function ProjectTableRow({ project, isReadOnly, onDeleteClick, onEditClic
 
       <tr className="text-sm md:text-base [&>td]:pb-6">
         <td colSpan={5} className="px-4">
-          <p className="text-gray-500 mb-4 leading-relaxed max-w-4xl">
+          <p className="text-gray-500 dark:text-[#757575] mb-4 leading-relaxed max-w-4xl">
             {project.project.description}
           </p>
           <div className="flex flex-wrap gap-2 mb-3">
             {project.responsibilities?.map((resp, idx) => (
-                <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-900 rounded-full text-sm font-medium border">
+                <span key={idx} className="px-3 py-1 dark:bg-[#757575] dark:text-[#ECECED] bg-gray-100 text-gray-900 rounded-full text-sm font-medium border">
                 {resp}
                 </span>
             ))}

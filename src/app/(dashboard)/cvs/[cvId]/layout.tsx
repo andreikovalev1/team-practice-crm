@@ -28,10 +28,10 @@ export default function CvLayout({ children }: { children: React.ReactNode }) {
       }} className="mb-6">
         <div className="px-4">
           <TabsList variant="line" className="bg-transparent h-12 w-full justify-start">
-            <TabsTrigger value="details" className="uppercase">Details</TabsTrigger>
-            <TabsTrigger value="skills" className="uppercase">Skills</TabsTrigger>
-            <TabsTrigger value="projects" className="uppercase">Projects</TabsTrigger>
-            <TabsTrigger value="preview" className="uppercase">Preview</TabsTrigger>
+            <TabsTrigger value="details" className="uppercase cursor-pointer">Details</TabsTrigger>
+            <TabsTrigger value="skills" className="uppercase cursor-pointer">Skills</TabsTrigger>
+            <TabsTrigger value="projects" className="uppercase cursor-pointer">Projects</TabsTrigger>
+            <TabsTrigger value="preview" className="uppercase cursor-pointer">Preview</TabsTrigger>
           </TabsList>
         </div>
       </Tabs>

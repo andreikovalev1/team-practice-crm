@@ -61,8 +61,8 @@ export default function FloatingSelect({
         className={`
           relative w-full border duration-200 cursor-pointer flex items-center justify-between
           bg-transparent px-3 py-3 text-sm text-gray-900 md:text-base
-          ${disabled ? "opacity-50 cursor-not-allowed border-gray-300" : ""}
-          ${isFocused ? "border-red-700" : "border-gray-300"}
+          ${disabled ? "opacity-50 cursor-not-allowed border-gray-300 dark:border-[#757575]" : ""}
+          ${isFocused ? "border-red-700 dark:border-red-700" : "border-gray-300 dark:border-[#757575]"}
         `}
       >
         <span className={`truncate ${value ? "text-gray-900 dark:text-[#ECECED]" : "text-transparent"}`}>
@@ -80,7 +80,7 @@ export default function FloatingSelect({
         className={`
           absolute left-3 bg-white dark:text-[#757575] px-1 transition-all duration-200 pointer-events-none z-5 dark:bg-[#353535]
           ${isOpen || value ? "-top-3 text-sm" : "top-3.5 text-sm md:text-base"}
-          ${isFocused ? "text-[#C10007]" : "text-gray-500"}
+          ${isFocused ? "text-[#C10007] dark:text-[#C10007]" : "text-gray-500"}
         `}
       >
         {label}
@@ -95,7 +95,7 @@ export default function FloatingSelect({
                 onClick={() => handleSelect(opt.name)}
                 className={`
                   px-4 py-2.5 text-sm cursor-pointer transition-colors text-left
-                  ${value === opt.name ? "bg-red-50 text-[#C8372D] dark:bg-[#454545] font-medium" : "text-gray-700 dark:text-[#ECECED] dark:hover:bg-[#454545] hover:bg-gray-50 hover:text-gray-900"}
+                  ${value === opt.name ? "bg-red-50 text-[#C8372D] font-medium" : "text-gray-700 dark:text-[#ECECED] dark:hover:bg-[#454545] hover:bg-gray-50 hover:text-gray-900"}
                 `}
               >
                 {opt.name}

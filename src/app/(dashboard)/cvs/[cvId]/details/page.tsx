@@ -83,11 +83,11 @@ function CvDetailsForm({ cv }: { cv: NonNullable<GetCvByIdResponse["cv"]> }) {
              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
              placeholder=" "
              rows={6}
-             className={`peer w-full border border-gray-300 px-3 py-3 text-sm md:text-base outline-none transition-all resize-none break-words${
+             className={`peer w-full border border-gray-300 px-3 py-3 text-sm md:text-base outline-none transition-all resize-none break-words dark:border-[#757575] dark:focus:border-red-700 ${
               isReadOnly ? "bg-gray-50 cursor-default" : "focus:border-red-700"
             }`}
            />
-           <label className="absolute left-3 top-3 bg-white px-1 text-sm text-gray-500 transition-all peer-focus:-translate-y-5 peer-not-placeholder-shown:-translate-y-5 peer-focus:text-xs peer-focus:text-red-700 pointer-events-none">
+           <label className="absolute left-3 top-3 dark:bg-[#353535] dark:text-[#757575] dark:peer-focus:text-red-700 bg-white px-1 text-sm text-gray-500 transition-all peer-focus:-translate-y-5 peer-not-placeholder-shown:-translate-y-5 peer-focus:text-xs peer-focus:text-red-700 pointer-events-none">
              Description
            </label>
         </div>
